@@ -82,12 +82,6 @@ ENTRYPOINT [ "/bin/bash" ]
 
 
 
-
-
-
-
-
-
 # Clean cache
 RUN apt-get clean
 RUN set -x; rm -rf /var/lib/apt/lists/*
