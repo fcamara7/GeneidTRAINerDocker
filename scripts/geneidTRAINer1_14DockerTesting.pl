@@ -16,8 +16,8 @@ my $PROGRAM = "geneidTRAINer";
 my $VERSION = "1.1";
 #my $HOME = $ENV{'HOME'};
 ###my $TMP = $ENV{'TMPDIR'};
-my $path = "/testdir";
-$ENV{'PATH'} = $path.":".$ENV{'PATH'};
+my $path = "/scripts";
+#$ENV{'PATH'} = $path.":".$ENV{'PATH'};
 #print STDERR "path: $path envPATH: $ENV{'PATH'}";
 my $TMP      = '/tmp';
 ##my $TMP      = "$TMPDIR";
@@ -122,8 +122,8 @@ print STDERR $usage and exit unless ($species && $gff && $fasta && $sout && ($br
 
 # EXAMPLE COMMAND LINE: ./geneidTRAINer1_1.pl -species S.cerevisiae -gff S_cerevisiae4training.gff -fastas yeast_genome.fa -sout stats.txt -branch no -reduced no
 
-$results = $path.".output.$species/";
-
+#$results = $path.".output.$species/";
+$results = "/output";
 #print STDERR "path: $path";
 #print STDERR "results: $results";
 
@@ -2170,7 +2170,7 @@ my $gff2gp = "";
 my $fastagp = "";
 my $gffgp = "";
 
-open LOCID, "$path/gff2gp.awk $gff | sort -k 1 |";
+open LOCID, "gff2gp.awk $gff | sort -k 1 |";
   	    while (<LOCID>) {
 	    
 		$gff2gp .= $_;
@@ -2235,7 +2235,7 @@ my $tempseqlen = $output.$species.$type.".gp_cds_length";
             
 
 my $cdsgp = "";
-           open LOCID, "$path/gff2cds source=\"annotations\" $tempgp_gff | sort -k1,1 | join $tempseqlen - |";
+           open LOCID, "gff2cds source=\"annotations\" $tempgp_gff | sort -k1,1 | join $tempseqlen - |";
   	      while (<LOCID>) {
   		  $cdsgp .= $_;
   	      }
@@ -2296,7 +2296,7 @@ my $tempseqlencontig = $output.$species.$type.".gp_cds_contig_length";
 
 
 my $gpcontig = "";
-open LOCID, "$path/multiple_annot2one.awk species=$species leng=$lengp $tempcdsgp |";
+open LOCID, "multiple_annot2one.awk species=$species leng=$lengp $tempcdsgp |";
   	    while (<LOCID>) {
 	    
 		$gpcontig .= $_;
@@ -2310,7 +2310,7 @@ my $tempgff2gpcontig = $output.$species.$type.".contig.gp.cds";
 	    close FOUT;
 
 my $cds2gffcontig = "";
- open LOCID, "$path/cds2gff $tempgff2gpcontig | gawk 'BEGIN{OFS=\"\\t\";}{if (NR==1){print \"$species\",\"annotations\",\"Sequence\",\"1\",$lengp,\".\",\".\",\".\",\".\";print}else {print}}' -  | ";
+ open LOCID, "cds2gff $tempgff2gpcontig | gawk 'BEGIN{OFS=\"\\t\";}{if (NR==1){print \"$species\",\"annotations\",\"Sequence\",\"1\",$lengp,\".\",\".\",\".\",\".\";print}else {print}}' -  | ";
          while (<LOCID>) {
   		  $cds2gffcontig .= $_;
   	      }
@@ -2869,39 +2869,39 @@ sub getKmatrix {
  	######
  #	die "$len != $len2\n" if $len != $len2;
 	#	print STDERR "$path/frequency.awk 1 $true_seqs > $true_seq_name.freq\n";
- 	`gawk -f $path/frequency.awk 1 $true_seqs > $true_seq_name.freq`;
+ 	`gawk -f frequency.awk 1 $true_seqs > $true_seq_name.freq`;
 	 #      print STDERR "$path/frequency.awk 1 $false_seqs > $sitesdir/$false_seq_name.freq\n";
- 	`gawk -f $path/frequency.awk 1 $false_seqs > $sitesdir/$false_seq_name.freq`;
+ 	`gawk -f frequency.awk 1 $false_seqs > $sitesdir/$false_seq_name.freq`;
 	
 	if ($donor) {
-	`gawk -f $path/information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=38 && \$1>=25' > $true_seq_name-$false_seq_name`;
+	`gawk -f information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=38 && \$1>=25' > $true_seq_name-$false_seq_name`;
 	
 	$tempinfolog = "$true_seq_name-$false_seq_name";
 	print STDERR "tempinfolog: $tempinfolog \n";
 	}
 	if ($accept) {
-	`gawk -f $path/information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=33 && \$1>=2' > $true_seq_name-$false_seq_name`;
+	`gawk -f information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=33 && \$1>=2' > $true_seq_name-$false_seq_name`;
          $tempinfolog = "$true_seq_name-$false_seq_name";
 	}
 	if ($star) {
-	`gawk -f $path/information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=37 && \$1>=25' > $true_seq_name-$false_seq_name`;
+	`gawk -f information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=37 && \$1>=25' > $true_seq_name-$false_seq_name`;
          $tempinfolog = "$true_seq_name-$false_seq_name";
 	}
 	
 	if ($branch) {
-	`gawk -f $path/information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=41 && \$1>=28' > $true_seq_name-$false_seq_name`;
+	`gawk -f information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=41 && \$1>=28' > $true_seq_name-$false_seq_name`;
          $tempinfolog = "$true_seq_name-$false_seq_name";
 	}
 	
 
  	if (! $order) {
-	     `gawk -f $path/logratio_zero_order.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq > $true_seq_name-log.$ordname-matrix`;		
+	     `gawk -f logratio_zero_order.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq > $true_seq_name-log.$ordname-matrix`;		
 	    
 
  	} else {
- 	    `gawk -f $path/Getkmatrix.awk $order $len $true_seqs | $sort > $true_seq_name.$ordname-matrix`;
- 	    `gawk -f $path/Getkmatrix.awk $order $len2 $false_seqs | $sort > $sitesdir/$false_seq_name.$ordname-matrix`;
- 	    `gawk -f $path/logratio_kmatrix.awk $sitesdir/$false_seq_name.$ordname-matrix $true_seq_name.$ordname-matrix > $true_seq_name-log.$ordname-matrix`;
+ 	    `gawk -f Getkmatrix.awk $order $len $true_seqs | $sort > $true_seq_name.$ordname-matrix`;
+ 	    `gawk -f Getkmatrix.awk $order $len2 $false_seqs | $sort > $sitesdir/$false_seq_name.$ordname-matrix`;
+ 	    `gawk -f logratio_kmatrix.awk $sitesdir/$false_seq_name.$ordname-matrix $true_seq_name.$ordname-matrix > $true_seq_name-log.$ordname-matrix`;
  	}
  	#need to check output and then go on
  
@@ -3007,8 +3007,8 @@ if (!$jacknife){
 	  my $newoffset = $offset + 3;
 	  my $posoffset = $offset + 4;
 	    
- 	`gawk -f $path/submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
-	`$path/preparedimatrixdonor4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `;
+ 	`gawk -f submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
+	`preparedimatrixdonor4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `;
      # print STDERR "submatrix.awk $start $end $true_seq_name-log.$ordname-matrix/$true_seq_name-log-info.$ordname-matrix";
 
       } elsif ($order>=1 && $accept) {
@@ -3017,8 +3017,8 @@ if (!$jacknife){
 	  my $newoffset = $offset;
 	  my $posoffset = $offset + 1;
 	    
- 	`gawk -f $path/submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
-	`$path/preparedimatrixacceptor4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `;
+ 	`gawk -f submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
+	`preparedimatrixacceptor4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `;
     #	  print STDERR "submatrix.awk $start $end $true_seq_name-log.$ordname-matrix/$true_seq_name-log-info.$ordname-matrix";
  
       }  elsif ($order>=2 && $star) {
@@ -3027,14 +3027,14 @@ if (!$jacknife){
 	  my $newoffset = $offset - 1;
 	  my $posoffset = $offset;
 	    
- 	`gawk -f $path/submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
-	`$path/preparetrimatrixstart4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `; 
+ 	`gawk -f submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
+	`preparetrimatrixstart4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `; 
 }
 else {
 
-   # print STDERR "$path/submatrix_order0.awk $start $end $true_seq_name-log.$ordname-matrix\n";
+   # print STDERR "submatrix_order0.awk $start $end $true_seq_name-log.$ordname-matrix\n";
 	
-	`gawk -f $path/submatrix_order0.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix`;
+	`gawk -f submatrix_order0.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix`;
 
     }
 ####CREATE DATA STRUCTURE CONTAINING MATRIX OF INTEREST
@@ -3975,11 +3975,11 @@ sub predictPlotgff2ps {
 		    `egrep -w '$gene_id' $tempjkf_geneid >> $TMP/$gene_id.gff`;
 		}
 		    if (!$contigopt){
-		       `$path/gff2ps -v -p -- $TMP/$gene_id.gff > $plotsdir/$species.${gene_id}.ps`;
+		       `gff2ps -v -p -- $TMP/$gene_id.gff > $plotsdir/$species.${gene_id}.ps`;
 		    print STDERR "#";}
 		    elsif ($contigopt) {
 			my $nucleotidesperline = 10000;
-			`$path/gff2ps -v -p -N $nucleotidesperline -C $path/.gff2psrcNEW -- $TMP/$gene_id.gff > $plotsdir/$species.gv`;
+			`gff2ps -v -p -N $nucleotidesperline -C $path/.gff2psrcNEW -- $TMP/$gene_id.gff > $plotsdir/$species.gv`;
 			print STDERR "#";
 		    }
     	}		       
