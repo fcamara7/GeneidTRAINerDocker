@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 use Getopt::Long;
-use File::Path;
+use File::Path;e
 use File::Basename;
 use Geneid::Param;
 use Geneid::Isocore;
@@ -22,7 +22,7 @@ $ENV{'PATH'} = $path.":".$ENV{'PATH'};
 my $TMP      = '/tmp';
 ##my $TMP      = "$TMPDIR";
 my $TMPROOT   = "trainer_$$";
-my $CEGMATMP  = "$TMP/$TMPROOT";
+##my $CEGMATMP  = "$TMP/$TMPROOT";
 
 
 ########PROGRAM SPECIFIC VARIABLES
@@ -879,9 +879,9 @@ open LOCID, "gawk '{print  substr(\$2,($startdonor-3),($prof_len_don+6))}' $outd
  	    print FOUT "$donsub";
  	    close FOUT;
 
-print STDERR "$path/pictogram $donorsubprofile  $plotsdir/Donor -bits -land\n";
+print STDERR "pictogram $donorsubprofile  $plotsdir/Donor -bits -land\n";
 
-`$path/pictogram $donorsubprofile $plotsdir/Donor -bits -land`;
+`pictogram $donorsubprofile $plotsdir/Donor -bits -land`;
 
 #`mv $path/Donor.ps $plotsdir`;
 
@@ -932,9 +932,9 @@ open LOCID, "gawk '{print  substr(\$2,($startacceptor-3),($prof_len_acc+6))}' $o
  	    print FOUT "$accsub";
  	    close FOUT;
 
-print STDERR "$path/pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land\n";
+print STDERR "pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land\n";
 
-`$path/pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land`;
+`pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land`;
 
 #`mv $path/Acceptor.ps $plotsdir`;
 
@@ -991,7 +991,7 @@ open LOCID, "gawk '{print  substr(\$2,($startstart-3),($prof_len_sta+6))}' $outs
  	    print FOUT "$stasub";
  	    close FOUT;
 
-`$path/pictogram $startsubprofile  $plotsdir/Start -bits -land`;
+`pictogram $startsubprofile  $plotsdir/Start -bits -land`;
 
 #`mv $path/Start.ps $plotsdir`;
 
@@ -1041,9 +1041,9 @@ open LOCID, "gawk '{print  substr(\$2,($startbranch-3),($prof_len_bra+6))}' $ful
  	    print FOUT "$brasub";
  	    close FOUT;
 
-print STDERR "$path/pictogram $startsubprofile  $plotsdir/Branch -bits -land\n";
+print STDERR "pictogram $startsubprofile  $plotsdir/Branch -bits -land\n";
 
-`$path/pictogram $branchsubprofile  $plotsdir/Branch -bits -land`;
+`pictogram $branchsubprofile  $plotsdir/Branch -bits -land`;
 
 #`mv $path/Branch.ps $plotsdir`;
 #unlink $branchsubprofile;
@@ -1504,9 +1504,9 @@ sub extractCDSINTRON{
     	    my ($genomic_id,$gene_id)=split;
 	    `egrep -w '$gene_id\$' $gff > $TMP/$gene_id.gff`;
 	  #  print STDERR "$path/SSgff -cE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ CDS//' >> $results/cds_${species}/${species}${type}.cds.fa";
-            `$path/SSgff -cE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ CDS//' >> $results/cds_${species}/${species}${type}.cds.fa`;
+            `SSgff -cE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ CDS//' >> $results/cds_${species}/${species}${type}.cds.fa`;
           # print STDERR "$path/SSgff -iE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ Intron.*//' >> $results/intron_${species}/${species}${type}.intron.fa";
-    	    `$path/SSgff -iE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ Intron.*//' >> $results/intron_${species}/${species}${type}.intron.fa`;
+    	    `SSgff -iE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ Intron.*//' >> $results/intron_${species}/${species}${type}.intron.fa`;
    	    $count++;
    	    print STDERR "$count ..";
 	   
@@ -1758,7 +1758,7 @@ sub extractprocessSITES{
 	  #  print STDERR "$genomic_id,$gene_id\n";
     	    `egrep -w '$gene_id\$' $gff > $TMP/$gene_id.gff`;
 	  #  print STDERR "$gene_id $gff $TMP/$gene_id.gff \n\n";
-    	    `$path/SSgff -dabeE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff > $TMP/${gene_id}.all_sites`;
+    	    `SSgff -dabeE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff > $TMP/${gene_id}.all_sites`;
     	    foreach my $site (qw(Acceptor Donor Stop Start)){
     	#	print STDERR "egrep -A 1 $site $TMP/${gene_id}.all_sites $sitesdir/${site}_sites.fa\n";
 		`egrep -A 1 $site $TMP/${gene_id}.all_sites | sed -e '/--/d' -e '/^\$/d' >> $sitesdir/${site}_sites.fa`;
@@ -3135,7 +3135,7 @@ else {
 	     `geneid -GP $results/${newparam}.temp $gpfa | egrep -vw 'exon' | gawk 'NR>5 {if (\$2==\"Sequence\") print \"\#\$\"; if (substr(\$1,1,1)!=\"\#\") print }' > $TMP/Predictions.${newparam}.gff`;
 	
 
-	     my  @evaluation_output  = split " ",  `$path/evaluation -sta $TMP/Predictions.${newparam}.gff $gpgff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\\n\", $IoWF, $IeWF, $iAccCtx, $iMin, \$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
+	     my  @evaluation_output  = split " ",  `evaluation -sta $TMP/Predictions.${newparam}.gff $gpgff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\\n\", $IoWF, $IeWF, $iAccCtx, $iMin, \$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
 
 
 
@@ -3180,7 +3180,7 @@ my $param = Geneid::Param->new();
 	     `geneid -GP $results/${newparam}.temp $gpfa | egrep -vw 'exon' | gawk 'NR>5 {if (\$2==\"Sequence\") print \"\#\$\"; if (substr(\$1,1,1)!=\"\#\") print }' > $TMP/Predictions.${newparam}.gff`;
 	
 
-	     my  @evaluation_output  = split " ",  `$path/evaluation -sta $TMP/Predictions.${newparam}.gff $gpgff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\\n\", $IoWF, $IeWF, \$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
+	     my  @evaluation_output  = split " ",  `evaluation -sta $TMP/Predictions.${newparam}.gff $gpgff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\\n\", $IoWF, $IeWF, \$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
 
 
 
@@ -3358,7 +3358,7 @@ sub EvaluateParameter {
 	     `geneid -GP $results/$newparam $gpfa | egrep -vw 'exon' | gawk 'NR>5 {if (\$2==\"Sequence\") print \"\#\$\"; if (substr(\$1,1,1)!=\"\#\") print }' > $results/test.predictions.${newparam}.gff`;
 	
 
-	     my  @evaluation_test  = split " ",  `$path/evaluation -sta $results/test.predictions.${newparam}.gff $gpgff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\\n\", \$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
+	     my  @evaluation_test  = split " ",  `evaluation -sta $results/test.predictions.${newparam}.gff $gpgff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\\n\", \$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
 
 
      return \@evaluation_test;
@@ -3733,13 +3733,13 @@ $count++;
 
 if ($branchsw) {
 
-    my  @evaluation_jacknife  = split " ",  `$path/evaluation -sta $temp_jkf_geneid $gptraingff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\%6.2f \%6.2f \%6.2f \%6.2f\\n\", $bestIoWF,$bestIeWF,$bestAcc,$bestMin,\$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
+    my  @evaluation_jacknife  = split " ",  `evaluation -sta $temp_jkf_geneid $gptraingff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\%6.2f \%6.2f \%6.2f \%6.2f\\n\", $bestIoWF,$bestIeWF,$bestAcc,$bestMin,\$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
 
     return \@evaluation_jacknife;
 
 } elsif (!$branchsw){
     
-    my  @evaluation_jacknife  = split " ",  `$path/evaluation -sta $temp_jkf_geneid $gptraingff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\\n\", $bestIoWF,$bestIeWF,\$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
+    my  @evaluation_jacknife  = split " ",  `evaluation -sta $temp_jkf_geneid $gptraingff | tail -2 | head -1 |  gawk '{printf \"\%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f \%6.2f\\n\", $bestIoWF,$bestIeWF,\$1, \$2, \$3, \$4, \$5, \$6, \$9, \$10, \$11, \$7, \$8}'`; 
 
     return \@evaluation_jacknife;
 
