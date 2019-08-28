@@ -28,9 +28,15 @@ WORKDIR /scripts
 
 #these are gawk programs required by geneidTRAINer1_14DockerTesting.pl
 
-COPY frequency.awk information.awk submatrix.awk gff2ps preparetrimatrixstart4parameter.awk preparedimatrixdonor4parameter.awk \
-preparedimatrixacceptor4parameter.awk logratio_zero_order.awk logratio_kmatrix.awk multiple_annot2one.awk Getkmatrix.awk \
-submatrix_order0.awk submatrix.awk information.awk gff2gp.awk cds2gff gff2cds ./
+#COPY frequency.awk information.awk submatrix.awk gff2ps preparetrimatrixstart4parameter.awk preparedimatrixdonor4parameter.awk \
+#preparedimatrixacceptor4parameter.awk logratio_zero_order.awk logratio_kmatrix.awk multiple_annot2one.awk Getkmatrix.awk \
+#submatrix_order0.awk submatrix.awk information.awk gff2gp.awk cds2gff gff2cds ./
+
+COPY scripts/*.awk scripts/cds2gff scripts/gff2cds scripts/gff2ps ./
+
+# copy PERL modules to scripts directory 
+
+COPY scripts/Geneid/ Geneid/
 
 
 #these are files required by the the wrapper perl script geneidTRAINer1_14DockerTesting.pl
@@ -38,9 +44,9 @@ COPY genetic.code .gff2psrcNEW genetic.code.thermophila ./
 
 # these are C programs and need to be compiled
 
-COPY pictogram.tar.gz .
-COPY SSgff.tgz .
-COPY Evaluation.tgz .
+COPY scripts/pictogram.tar.gz ./
+COPY scripts/SSgff.tgz ./
+COPY scripts/Evaluation.tgz ./
 
 
 # compile pictogram.tar.gz binary will be in /scripts/pictogram
@@ -59,16 +65,12 @@ RUN tar -xzvf Evaluation.tgz && cd Evaluation && cd objects/ && rm *.o && cd ../
 
 RUN rm ./Evaluation.tgz ./SSgff.tgz ./pictogram.tar.gz
 
-# copy modules to scripts directory 
+#RUN CPAN FOR SOME REQUIRED MODULES
 
-COPY Geneid/ ./Geneid/
-
-#RUN CPAN
-
-RUN cpanm Data::Dumper \
-Getopt::Long \
+RUN cpanm Data::Dumper \ 
+Getopt::Long \ 
 File::Path \
-File::Basename \
+File::Basename \ 
 XML::Parser \
 Bio::Seq \
 Bio::DB::Fasta
@@ -78,8 +80,6 @@ VOLUME /output
 VOLUME /input
 
 ENTRYPOINT [ "/bin/bash" ]
-
-
 
 
 # Clean cache
