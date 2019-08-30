@@ -21,24 +21,7 @@ RUN apt-get update; apt-get install -y -q \
  libgd-dev \
  apt-file 
 
-# Copy local scripts to image
-RUN mkdir -p /scripts
-
-WORKDIR /scripts
-
-#COPY geneidTRAINer1_14DockerTesting.pl to /scripts
-
-COPY scripts/geneidTRAINer1_14DockerTesting.pl ./
-
-#copy these gawk programs required by geneidTRAINer1_14DockerTesting.pl
-
-COPY scripts/*.awk scripts/cds2gff scripts/gff2cds scripts/gff2ps ./
-
-# copy PERL modules required by the trainer program to scripts directory 
-
-COPY scripts/Geneid/ Geneid/
-
-# Run cpan to get some modules required by the in-house modules above
+# Run cpan to get some modules required by the in-house modules/perl wrapper 
 
 RUN cpanm Data::Dumper \ 
 Getopt::Long \ 
@@ -48,10 +31,10 @@ XML::Parser \
 Bio::Seq \
 Bio::DB::Fasta
 
+# Copy local scripts to image
+RUN mkdir -p /scripts
 
-#these are files required by the the wrapper perl script geneidTRAINer1_14DockerTesting.pl
-
-COPY scripts/genetic.code scripts/.gff2psrcNEW scripts/genetic.code.thermophila ./
+WORKDIR /scripts
 
 # these are C programs and need to be compiled
 
@@ -75,19 +58,29 @@ RUN tar -xzvf Evaluation.tgz && cd Evaluation && cd objects/ && rm *.o && cd ../
 
 RUN rm ./Evaluation.tgz ./SSgff.tgz ./pictogram.tar.gz
 
+####COPY geneidTRAINer1_14DockerTesting.pl to /scripts
+
+COPY scripts/geneidTRAINer1_14DockerTesting.pl ./
+
+#copy these gawk programs required by geneidTRAINer1_14DockerTesting.pl
+
+COPY scripts/*.awk scripts/cds2gff scripts/gff2cds scripts/gff2ps ./
+
+# copy PERL modules required by the trainer program to scripts directory 
+
+COPY scripts/Geneid/ Geneid/
+
+#these are files required by the the wrapper perl script geneidTRAINer1_14DockerTesting.pl
+
+COPY scripts/genetic.code scripts/.gff2psrcNEW scripts/genetic.code.thermophila ./
+
 ##set path for evaluation, pictogram and SSgff
 
 ENV PATH="/scripts/:/scripts/pictogram:/scripts/SSgff/bin:/scripts/Evaluation/bin:${PATH}"
 
-#Make testing dir and copy test example file into it
+##set PERL5LIB
 
-###RUN mkdir -p /testing
-
-###COPY testing/* /testing/
-
-#remove testing dir - files too big for github
-
-RUN rm -rf /testing
+ENV PERL5LIB="/scripts/:${PERL5LIB}"
 
 
 # Output and Input volumes

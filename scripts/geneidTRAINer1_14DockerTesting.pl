@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 use Getopt::Long;
-use File::Path;e
+use File::Path;
 use File::Basename;
 use Geneid::Param;
 use Geneid::Isocore;
@@ -3478,14 +3478,14 @@ sub runJacknife {
 	$status= system $grepAcceptor;
 
 	if ($status != 0) {
-	  die && print STDERR "FATAL ERROR !!! Unsuccessful command :\n  $grepAcceptor";
+	  print STDERR "FATAL ERROR !!! Unsuccessful command :\n  $grepAcceptor" && die;
 	};
 #	print STDERR "$grepAcceptor\n";
  
 	$status= system $grepDonor;
 
 	if ($status != 0) {
-	  die && print STDERR "FATAL ERROR !!! Unsuccessful command :\n $grepDonor";
+	  print STDERR "FATAL ERROR !!! Unsuccessful command :\n $grepDonor" && die;
 	};
 #	print STDERR "$grepDonor\n";
 
@@ -3493,7 +3493,7 @@ sub runJacknife {
 	$status= system $grepStarts;
 
 	if ($status != 0) {
-	  die && print STDERR "FATAL ERROR !!! Unsuccessful command :\n  $grepStarts";
+	  print STDERR "FATAL ERROR !!! Unsuccessful command :\n  $grepStarts" && die;
 	};
 #	print STDERR "$grepStarts\n";
 
@@ -3501,28 +3501,28 @@ if ($branchsw){
 	$status= system $grepBranches;
 
 	if ($status != 0) {
-	  die && print STDERR "FATAL ERROR !!! Unsuccessful command :\n  $grepBranches";
+	  print STDERR "FATAL ERROR !!! Unsuccessful command :\n  $grepBranches" && die;
 	};
 
     }
 	$status= system $grepMarkovCoding;
 
 	if ($status != 0) {
-	  die && print STDERR "FATAL ERROR !!! Unsuccessful command :\n $grepMarkovCoding";
+	  print STDERR "FATAL ERROR !!! Unsuccessful command :\n $grepMarkovCoding" && die;
 	};
 #	print STDERR "$status $grepMarkovCoding\n";
   
 	$status= system $grepMarkovNonCoding;
 
 	if ($status != 0) {
-	   die && print STDERR "FATAL ERROR !!! Unsuccessful command :\n  $grepMarkovNonCoding";
+	   print STDERR "FATAL ERROR !!! Unsuccessful command :\n  $grepMarkovNonCoding" && die;
 	};
 #	print STDERR "$grepMarkovNonCoding\n";
 
 	$status= system $grepSeqsToEval;
 
 	if ($status != 0) {
-	   die && print STDERR "FATAL ERROR !!! Unsuccessful command :\n $grepSeqsToEval";
+	   print STDERR "FATAL ERROR !!! Unsuccessful command :\n $grepSeqsToEval" && die;
 	};
 #	print SDTERR "$status $grepSeqsToEval";
 
