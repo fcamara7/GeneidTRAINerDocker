@@ -79,6 +79,16 @@ RUN rm ./Evaluation.tgz ./SSgff.tgz ./pictogram.tar.gz
 
 ENV PATH="/scripts/:/scripts/pictogram:/scripts/SSgff/bin:/scripts/Evaluation/bin:${PATH}"
 
+#Make testing dir and copy test example file into it
+
+###RUN mkdir -p /testing
+
+###COPY testing/* /testing/
+
+#remove testing dir - files too big for github
+
+RUN rm -rf /testing
+
 
 # Output and Input volumes
 VOLUME /output
