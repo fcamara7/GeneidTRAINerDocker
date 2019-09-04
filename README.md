@@ -8,3 +8,5 @@ docker build -t  geneidtrainerdocker .
 In order to run it (the example below uses test data as input):
 
 docker run -u $(id -u):$(id -g) -v $(pwd):/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -sout stats.txt -branch no -reduced no 
+
+
