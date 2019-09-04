@@ -19,7 +19,10 @@ my $VERSION = "1.1";
 my $path = "/scripts";
 #$ENV{'PATH'} = $path.":".$ENV{'PATH'};
 #print STDERR "path: $path envPATH: $ENV{'PATH'}";
-my $TMP      = '/tmp';
+#my $TMP      = '/tmp';
+my $TMP = "./tmp/";
+`mkdir -p $TMP`; 
+#print STDERR "my TMP dir: $TMP";
 ##my $TMP      = "$TMPDIR";
 my $TMPROOT   = "trainer_$$";
 ##my $CEGMATMP  = "$TMP/$TMPROOT";
@@ -107,6 +110,7 @@ GetOptions(
 	   'species:s'         => \$species,
 	   'gff:s'         => \$gff,
 	   'fastas:s'      => \$fasta,
+           'results:s'     => \$results,
 	   'sout|statsout:s'	=> \$sout,
 	   'branch:s'	=> \$branchp,
 	   'reduced|red:s'	=> \$reduced
@@ -116,25 +120,32 @@ GetOptions(
 	   	   );
 
 #my $usage = "Usage: $0 -species H.sapiens -gff gffname -fastas fastasname -sout <statsfile_out> -branch <yes/no> -reduced <yes/no> -programs <programs_path> -results <results_path> \n ";
-my $usage = "Usage: $0 -species H.sapiens -gff gffname -fastas fastasname -sout <statsfile_out> -branch <yes/no> -reduced <yes/no>  \n ";
+my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir_full_path> -sout <statsfile_out> -branch <yes/no> -reduced <yes/no>  \n ";
 
-print STDERR $usage and exit unless ($species && $gff && $fasta && $sout && ($branchp =~ /^(yes|y)|(n|no)$/i) && ($reduced =~ /^(yes|y)|(n|no)$/i));
+print STDERR $usage and exit unless ($species && $gff && $fasta && $results && $sout && ($branchp =~ /^(yes|y)|(n|no)$/i) && ($reduced =~ /^(yes|y)|(n|no)$/i));
 
 # EXAMPLE COMMAND LINE: ./geneidTRAINer1_1.pl -species S.cerevisiae -gff S_cerevisiae4training.gff -fastas yeast_genome.fa -sout stats.txt -branch no -reduced no
 
 #$results = $path.".output.$species/";
-$results = "/output";
+#$results = "/output";
 #print STDERR "path: $path";
-#print STDERR "results: $results";
+#print STDERR "\nresults: $results\n\n";
 
 if (-d "$results") {
 print STDERR "There is a directory named $results..\nHowever not removing directory and its contents\n";
 
 	#rmtree([ "$results/" ]);
+print STDERR "\nmkdir -p $results\n";
         `mkdir -p $results;`;
+#exit;
       #  $redir = "$results/cds_${species}/";
 
-}else{`mkdir -p $results;`;}
+}else{
+
+    `mkdir -p $results;`;
+#print STDERR "mkdir -p $results";
+    #exit;
+;}
 
 ##########################################################################
 ##                                                                      ##
@@ -236,7 +247,7 @@ print STDERR "\nA subset of $totalseqs4training sequences (randomly chosen from 
 print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 
 ######################################################################
-} ###reduced/short version training starting with PWMs PLUS BACKGROUND# 
+} ###reduced/short version training starting with PWMs# 
 #######################################################################
 #######################################################################
 #######################################################################
@@ -247,15 +258,16 @@ if (!$reducedtraining) { #DO ONLY FIRST TIME YOU RUN FULL TRAINING PIPELINE
 
 ####CREATE A VARIABLE SPECIES FOR A GIVEN SPECIES ONLY ONCE####
 my $varsmemory = $species.".variables";
-#print STDERR "test: $varsmemory\n";
-#print STDERR "test2: ${results}$varsmemory\n";
-open (STORV, ">${results}$varsmemory")or die;
+#print STDERR "\ntest: $varsmemory\n";
+#print STDERR "test2: ${results}/$varsmemory\n";
+open (STORV, ">${results}/$varsmemory")or die;
 #######################################################
 ###MAKE A STATISTICS DIRECTORY
 
 print STDERR "Create a statistics directory for this species\n";
 `mkdir -p $results/statistics_${species}/`;
 $statsdir = "$results/statistics_${species}/";
+#print STDERR "statsdir: $statsdir";
 ###########################################################
 ####store statistics directory variable
 print STORV Data::Dumper->Dump([$statsdir], ['$statsdir']);
@@ -275,6 +287,8 @@ print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 #chomp $results;        
 
 #chdir($results) or die "Cant chdir to $results $!";
+
+#print STDERR "temptbl: ${results}/$species.genomic.tbl\n";
 
 my $temptbl = ${results}.$species.".genomic.tbl";    
 
@@ -299,8 +313,12 @@ $temptblcaps = ${results}.$species.".genomic.tbl";
  	    print FOUT "$tblcaps";
 	    close FOUT;
 
+#print STDERR "temptblcaps: $temptblcaps";
+
         $value = `gawk '{print \$1}' $temptblcaps | sort | uniq | wc | gawk '{print \$1}'`; 
         chomp $value;
+
+##exit;
 
 print STDERR "\nThe user has provided $value genomic sequences\n";
 
@@ -364,7 +382,7 @@ print STDERR "There is already a directory named $results/fastas_${species}!\nRe
 #PLOTS JUST ONCE KEEP DATA IF IT HAD ALREADY BEEN CREATED
  if (-d "$statsdir/plots_${species}") { ###$statsdir = "$results/statistics_${species}/";
 
-     print STDERR "There is already a directory named $statsdir"."plots, however will keep contents, they may be overwritten";
+     print STDERR "\nThere is already a directory named $statsdir"."plots, however will keep contents, they may be overwritten";
     `mkdir -p $statsdir/plots_${species}`;
     $plotsdir = "$statsdir/plots_${species}";
     print STDERR "\n";
@@ -380,7 +398,7 @@ print STORV Data::Dumper->Dump([$plotsdir], ['$plotsdir']);
 #######
 
        ##place genomic sequences in "fastas_$species" directory
-       print STDERR "move genomic sequences into \"fastas_$species\" directory\n";
+       print STDERR "\nmove genomic sequences into \"fastas_$species\" directory\n";
        print STDERR "(also transfer genomic fasta length info)\n\n";
       ##do not create fastas in diretory if they are already created and their number corresponds to the number of sequences in thr array
 ###CONVERT GENOMICS FASTA TO MULTI FASTA AND PLACE THEM IN APPROPRIATE DIRECTORY
@@ -455,13 +473,13 @@ print STDERR "Convert $temptblcaps to multiple genomic fastas and place them in 
      }
      close LOCID2;
        
-       $templocus_id = ${results}.$species."_locus_id";   
+       $templocus_id = ${results}."/".$species."_locus_id";   
        
        open FOUT, ">$templocus_id";
        print FOUT "$locus_id";
        close FOUT;
     
-     
+###exit;     
   
 ########
 
@@ -490,11 +508,13 @@ print STDERR "\nObtain list of all genes\n\n";
       close LOCID;
 
 
-  my $templist = ${results}.$species."_list_all_seqs";   
+  my $templist = ${results}."/".$species."_list_all_seqs";   
         open FOUT, ">$templist";
         print FOUT "$list_seqs";
         close FOUT;
-  
+
+#exit;  
+
 ####store list of gene models the first time the pipeline is run for a given species
 print STORV Data::Dumper->Dump([$templist], ['$templist']);
 
@@ -555,7 +575,7 @@ if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
 #	}
 	  
   	  ####
-  	    $templocus_id_new = ${results}.$species."_locus_id_training_setaside80";   
+  	    $templocus_id_new = ${results}."/".$species."_locus_id_training_setaside80";   
 	    
 	    open FOUT, ">$templocus_id_new";
   	    print FOUT "$new_locus_id";
@@ -582,7 +602,7 @@ if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
   	      }
   	    close LOCID;
 
-  	    $tempgff4training = ${results}.$species.".gff_training_setaside80";   
+  	    $tempgff4training = ${results}."/".$species.".gff_training_setaside80";   
  	    open FOUT, ">$tempgff4training";
  	    print FOUT "$gff4training";
  	    close FOUT;
@@ -600,7 +620,7 @@ if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
     }
      close LOCID;
 
-	    $templist_train = ${results}.$species."_list_train_seqs_setaside80";   
+	    $templist_train = ${results}."/".$species."_list_train_seqs_setaside80";   
 	    open FOUT, ">$templist_train";
 	    print FOUT "$list_seqs_train";
 	    close FOUT;
@@ -620,7 +640,7 @@ if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
    	      }
    	    close LOCID;
  	    chomp $locusideval;
- 	    $templocusid_eval = ${results}.$species."_locus_id_evaluation_setaside20";
+ 	    $templocusid_eval = ${results}."/".$species."_locus_id_evaluation_setaside20";
  	    open FOUT, ">$templocusid_eval";
  	    print FOUT "$locusideval";
  	    close FOUT; 
@@ -643,7 +663,7 @@ my $gff4evaluation = "";
   	      }
   	    close LOCID;
 
-  	    $tempgff4evaluation = ${results}.$species.".gff_evaluation_setaside20";   
+  	    $tempgff4evaluation = ${results}."/".$species.".gff_evaluation_setaside20";   
  	    open FOUT, ">$tempgff4evaluation";
  	    print FOUT "$gff4evaluation";
  	    close FOUT;
@@ -719,7 +739,7 @@ elsif ($total_seqs < 25) { # seqs < 500
 
 } # seqs < 25
     
-}######### ONLY EXECUTED FIRST TIME THE PIPELINE IS RUN FOR A GIVEN SPECIES
+}######### ABOVE ONLY EXECUTED FIRST TIME THE PIPELINE IS RUN FOR A GIVEN SPECIES
 
 #print STDERR "\nCHECK: use all sequences ?: $useallseqs\njacknife ?: $jacknifevalidate\n";
 
@@ -749,6 +769,8 @@ if (!$reducedtraining) { #ONLY FIRST TIME ("NOT SHORT VERSION") FOR A GIVEN SPEC
     
    ($outcdseval,$outintroneval,$outlocus_id_eval,$outgffeval,$inframeeval) = @{extractCDSINTRON($tempgeneidgffsortedeval,$templocusid_eval,".eval",$results)};
  ###EVAL
+
+     #exit;
     	
 } elsif ($useallseqs){ #USE SAME SEQS TO TRAIN/EVALUATE
 ####Convert general gff2 to geneid gff format
@@ -760,7 +782,7 @@ if (!$reducedtraining) { #ONLY FIRST TIME ("NOT SHORT VERSION") FOR A GIVEN SPEC
     
     ($outcds,$outintron,$outlocus_id,$outgff,$inframe) = @{extractCDSINTRON($tempgeneidgffsorted,$templocus_id,".train",$results)};
       
-} #USE ALL SEQS TO TRAIN/EVALUATE
+} #USE SAME SEQS TO TRAIN/EVALUATE
 
 ####extract and check splice sites and start codon. Use only canonical info #IN SEQUENCES USED IN TRAINING
      ($outdonortbl,$totalnoncandon,$outacceptortbl,$totalnoncanacc,$outstarttbl,$totalnoncansta) = @{extractprocessSITES($outgff,$outlocus_id)};
@@ -798,7 +820,7 @@ print STDERR "DONE\n";
    print STORV Data::Dumper->Dump([$gpevalgff,$gpevalfa,$gpevaltbl,$gpevallen,$gpevalcontiggff,$gpevalcontigfa,$gpevalcontigtbl,$gpevalcontiglen,$tempgeneidgffsortedeval], ['$gpevalgff','$gpevalfa','$gpevaltbl','$gpevallen','$gpevalcontiggff','$gpevalcontigfa','$gpevalcontigtbl','$gpevalcontiglen','$tempgeneidgffsortedeval']);
 ########################################
 
-
+   
 }#END OF NOT USING ALL SEQS
 
 
@@ -831,6 +853,8 @@ my $numseqs = 100000;
 	    $bckgrnd = $species."_background.info";
 	    $bckgrnd = getBackground($kmer,$fasta,$temptblcaps,$numseqs,$bckgrnd,$sitesdir);
 
+
+
   #  print STDERR "bckgrnd: $bckgrnd \n";
 
 ###STORE VARIABLE INFO IN DATA DUMPER###
@@ -838,7 +862,9 @@ my $numseqs = 100000;
 ########################################
 ##############################################################
 close STORV;
-}###IF REDUCED TRAINING
+
+#   exit;
+}###IF NOT REDUCED TRAINING
 ########
 #########
 #get donor site statistics
@@ -991,6 +1017,8 @@ open LOCID, "gawk '{print  substr(\$2,($startstart-3),($prof_len_sta+6))}' $outs
  	    print FOUT "$stasub";
  	    close FOUT;
 
+print STDERR "pictogram $startsubprofile  $plotsdir/Start -bits -land\n";
+
 `pictogram $startsubprofile  $plotsdir/Start -bits -land`;
 
 #`mv $path/Start.ps $plotsdir`;
@@ -1041,7 +1069,7 @@ open LOCID, "gawk '{print  substr(\$2,($startbranch-3),($prof_len_bra+6))}' $ful
  	    print FOUT "$brasub";
  	    close FOUT;
 
-print STDERR "pictogram $startsubprofile  $plotsdir/Branch -bits -land\n";
+print STDERR "pictogram $branchsubprofile  $plotsdir/Branch -bits -land\n";
 
 `pictogram $branchsubprofile  $plotsdir/Branch -bits -land`;
 
@@ -1084,7 +1112,7 @@ print STDERR "\nshortest intron: $shortintron\nlongest intron: $longintron\nmini
 ##################################################
 ###WRITE PRELIMINARY NON-OPTIMIZED PARAMETER FILE
 $param->writeParam("$results/$species.geneid.param");
-print STDERR "PARAM: $param";
+#print STDERR "PARAM: $param";
 my $newparam = "$species.geneid.param";
 print STDERR "newparam: $newparam";
 ################################################
@@ -1437,13 +1465,14 @@ print SOUT join("\t",@jacknifeeval),"\n";
 ######Obtain predictions on flanked sequences and plot them using gff2ps
 #########################################################################
 
-do {
-             print "\nDo you want to plot gff2ps graphs with the annotations and predictions given by the new $species parameter file (yes or no)?\n";
-  	    $answer=<STDIN>;
-	     chomp $answer;
- 	} while ($answer !~ /^(yes|y)|(n|no)$/i);
+#do {
+#             print "\nDo you want to plot gff2ps graphs with the annotations and predictions given by the new $species parameter file (yes or no)?\n";
+#  	    $answer=<STDIN>;
+#	     chomp $answer;
+ #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
 
-if ($answer =~ /^(yes|y)$/i) {
+
+#if ($answer =~ /^(yes|y)$/i) {
 
 if ($jacknifevalidate && $useallseqs && !$contigopt) {
 
@@ -1463,7 +1492,9 @@ predictPlotgff2ps($paramopt,$gptraincontigfa,$gptraincontiggff,$gptraincontiglen
 predictPlotgff2ps($paramopt,$gptrainfa,$gptraingff,$gptrainlen,$temp_jkf_geneid);
 }
 
-}
+print STDERR "n\plotting of the gff2ps graphs with the annotations and predictions given by the new $species parameter file completed\n";
+
+#}
 #####
 
 #####unlink unnecessary files!
@@ -1474,6 +1505,14 @@ predictPlotgff2ps($paramopt,$gptrainfa,$gptraingff,$gptrainlen,$temp_jkf_geneid)
 
 
 close SOUT;
+
+#remove tmpdir
+
+print STDERR "remove TMP dir: $TMP";
+
+#`rm -rf $TMP`;
+	rmtree([ "$TMP" ]);
+
 ######################################
 #######################################
 ###END OF MAIN PORTION OF SCRIPT#######
@@ -2182,9 +2221,9 @@ my $tempgff2gp = $output.$species.$type.".gp";
 	    open FOUT, ">$tempgff2gp";
 	    print FOUT "$gff2gp";
 	    close FOUT;
-print STDERR "BEFORE GETGENES: $fastasdir,$tempgff2gp,$path,$outtblname\n";
+#print STDERR "BEFORE GETGENES: $fastasdir,$tempgff2gp,$path,$outtblname\n";
 my $pretblgp = GetGenes($fastasdir,$tempgff2gp,$path,$outtblname);
-print STDERR "PRETBL AFTER GETGENES: $pretblgp \n";
+#print STDERR "PRETBL AFTER GETGENES: $pretblgp \n";
 
 print STDERR "\nGet sequences of 400-nt flanked sequences in tabular and gff formats\n";
 
@@ -2967,6 +3006,7 @@ return ($start,$end);
 
     }#end BitScoreGraph
 
+=head
 if (!$jacknife){
 	my $resp = "";
 	my $sline = "";
@@ -2974,6 +3014,7 @@ if (!$jacknife){
 	do {
            print STDERR "#1 Automatically selected subsequence from $start to $end to use in profile.\nDo you prefer to change the start or end? ";
   	   $resp = readline(STDIN);
+	  # exit;
        } while ($resp !~ /^(yes|y)|(n|no)$/i);
 	if ($resp =~/^(yes|y)/i) {
  	    do {
@@ -2988,6 +3029,7 @@ if (!$jacknife){
  	    $end = $1;
  	}
     }#if not jacknife
+=cut
  	$offset = $offset - $order;
  	#$start = $start - $order;
 if (!$jacknife){
@@ -3791,13 +3833,16 @@ chomp $shortintron;
 #my $longintron =  $intronlist[$totintrons - 1];
 my $longintron = int($mean + ($st * 2) > 6000 ? 25000 : $mean + ($st * 2));
 chomp $longintron;
-my $answer = "";
-do {
-             print "\nDo you want to use this automatically selected range of introns ($shortintron to $longintron) in the geneid gene model (yes/no)?\n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
-  	    $answer=<STDIN>;
-	     chomp $answer;
- 	} while ($answer !~ /^(yes|y)|(n|no)$/i);
+#my $answer = "";
+#do {
+ #            print "\nDo you want to use this automatically selected range of introns ($shortintron to $longintron) in the geneid gene model (yes/no)?\n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
+  #	    $answer=<STDIN>;
+#	     chomp $answer;
+ #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
 
+print "\n The selected range of introns in the geneid gene model was set to be ($shortintron to $longintron) \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
+
+=head
 if ($answer =~ /^(no|n)$/i) {
  my $sline = "";
  my $eline = "";
@@ -3812,17 +3857,20 @@ if ($answer =~ /^(no|n)$/i) {
  	    } while ($eline !~/(\d+)/ || $eline <= $sline);
  	    $longintron = $1;
 }
-
+=cut
 
 my $minintergenic = 200;
 my $maxintergenic = 'Infinity';
 
-do {
-             print "\nDo you want to use this automatically selected intergenic distance range ($minintergenic to $maxintergenic) in the geneid gene model (yes/no)?\n";
-  	    $answer=<STDIN>;
-	     chomp $answer;
- 	} while ($answer !~ /^(yes|y)|(n|no)$/i);
+#do {
+ #            print "\nDo you want to use this automatically selected intergenic distance range ($minintergenic to $maxintergenic) in the geneid gene model (yes/no)?\n";
+  #	    $answer=<STDIN>;
+#	     chomp $answer;
+ #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
 
+print "\nThe automatically selected intergenic distance range was set to be ($minintergenic to $maxintergenic) in the geneid gene model\n";
+
+=head
 if ($answer =~ /^(no|n)$/i) {
     my $sline = "";
     my $eline = "";
@@ -3838,6 +3886,7 @@ if ($answer =~ /^(no|n)$/i) {
  	    $maxintergenic = $1;
 
 }
+=cut
 
 ##use shortest and longest intron lengths in gene model of parameter file 
 $param->geneModel->intronRange($shortintron,$longintron);
@@ -3948,7 +3997,7 @@ sub predictPlotgff2ps {
     my $gff2psplots =  $plotsdir."$species.gff2ps.prediction.plots.ps";
   
 
-     open LOCID, "geneid -GP $paramopt $gpfa | egrep -vw 'exon' | gawk 'NR>5 {OFS=\"\\t\";if (\$3==\"Gene\") print \"\#\$\"; \$2=\"geneid_$species\"; if (substr(\$1,1,1)!=\"\#\")
+     open LOCID, "geneid -GP $results/$paramopt $gpfa | egrep -vw 'exon' | gawk 'NR>5 {OFS=\"\\t\";if (\$3==\"Gene\") print \"\#\$\"; \$2=\"geneid_$species\"; if (substr(\$1,1,1)!=\"\#\")
  print }' |";
     while (<LOCID>) {
 	$geneidall .= $_;
@@ -4044,6 +4093,7 @@ my ($fa,$tblout) =  @_;
 open(IN,"<$fa");
 open(TOUT,">$tblout");
 #print STDERR "$fa INSIDE LOOP\n\n";
+#print STDERR "$tblout INSIDE LOOP\n\n";
  my $count = 0;
   while(<IN>){
     chomp;

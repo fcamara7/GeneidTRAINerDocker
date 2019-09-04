@@ -58,10 +58,6 @@ RUN tar -xzvf Evaluation.tgz && cd Evaluation && cd objects/ && rm *.o && cd ../
 
 RUN rm ./Evaluation.tgz ./SSgff.tgz ./pictogram.tar.gz
 
-####COPY geneidTRAINer1_14DockerTesting.pl to /scripts
-
-COPY scripts/geneidTRAINer1_14DockerTesting.pl ./
-
 #copy these gawk programs required by geneidTRAINer1_14DockerTesting.pl
 
 COPY scripts/*.awk scripts/cds2gff scripts/gff2cds scripts/gff2ps ./
@@ -82,13 +78,19 @@ ENV PATH="/scripts/:/scripts/pictogram:/scripts/SSgff/bin:/scripts/Evaluation/bi
 
 ENV PERL5LIB="/scripts/:${PERL5LIB}"
 
+####COPY geneidTRAINer1_14DockerTesting.pl to /scripts MOST FREQUENTLY MODIFIED FILE
+
+COPY scripts/geneidTRAINer1_14DockerTesting.pl ./
+
+
 
 # Output and Input volumes
-VOLUME /output
-VOLUME /input
+#VOLUME /data
+#VOLUME /input
+#VOLUME /output
 
-ENTRYPOINT [ "/bin/bash" ]
-
+ENTRYPOINT [ "/scripts/geneidTRAINer1_14DockerTesting.pl" ]
+# ENTRYPOINT [ "/bin/bash" ]
 
 # Clean cache
 RUN apt-get clean
