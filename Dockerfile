@@ -78,18 +78,16 @@ ENV PATH="/scripts/:/scripts/pictogram:/scripts/SSgff/bin:/scripts/Evaluation/bi
 
 ENV PERL5LIB="/scripts/:${PERL5LIB}"
 
-####COPY geneidTRAINer1_14DockerTesting.pl to /scripts MOST FREQUENTLY MODIFIED FILE
+####COPY geneidTRAINer1_14DockerTesting.pl to /scripts MOST FREQUENTLY MODIFIED FILE  mv geneidTRAINer1_14DockerTesting.pl geneidTRAINer4docker.pl
 
-COPY scripts/geneidTRAINer1_14DockerTesting.pl ./
-
-
+COPY scripts/geneidTRAINer4docker.pl ./
 
 # Output and Input volumes
 #VOLUME /data
 #VOLUME /input
 #VOLUME /output
 
-ENTRYPOINT [ "/scripts/geneidTRAINer1_14DockerTesting.pl" ]
+ENTRYPOINT [ "/scripts/geneidTRAINer4docker.pl" ]
 # ENTRYPOINT [ "/bin/bash" ]
 
 # Clean cache
