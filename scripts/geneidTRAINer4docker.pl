@@ -13,7 +13,7 @@ use Data::Dumper;
 
 # MAIN VARIABLES 
 my $PROGRAM = "geneidTRAINer";
-my $VERSION = "1.1";
+my $VERSION = "1.2docker";
 #my $HOME = $ENV{'HOME'};
 ###my $TMP = $ENV{'TMPDIR'};
 my $path = "/scripts";
@@ -34,11 +34,10 @@ my $gff = "";
 my $fasta = "";
 my $temptblcaps = "";
 my $label = 0;
-
 my $cutoff = -7; # for PWM profiles
 my $pin = "-";
 my $pout = "-";
-my $sout = "-";
+#my $sout = "-";
 my $results = "";
 my $species = "";
 my $answer = "";
@@ -67,6 +66,7 @@ my $tblseq = "";
 my $usebranch = 0;
 my $branchp = "";
 my $memefile = "";
+my $extconffile = "";
 my $motifnumber = "";
 my $memeanswer = "";
 my ($branchmatrix,$prof_len_bra,$fxdbraoffset,$startbranch,$endbranch)=("","","","","");
@@ -103,6 +103,12 @@ my $tempgeneidgffsorted = "";
 my $tempgeneidgffsortedeval = "";
 my $ext_flg = 0;
 my $gfffiltered = "";
+my $extdata = "";
+my $useextdata = 0;
+my $minintergenicusr = 0;
+my $maxintergenicusr = 0;
+my $shortintronusr = 0;
+my $longintronusr = 0;
 
 #print STDERR "$gfffiltered";
 
@@ -111,20 +117,21 @@ GetOptions(
 	   'gff:s'         => \$gff,
 	   'fastas:s'      => \$fasta,
            'results:s'     => \$results,
-	   'sout|statsout:s'	=> \$sout,
-	   'branch:s'	=> \$branchp,
-	   'reduced|red:s'	=> \$reduced
+           'userdata:s'      => \$extdata
+	 #  'branch:s'	=> \$branchp
+	 #  'reduced|red:s'	=> \$reduced
 	 #  'programs:s'	=> \$path
          #  'results:s' => \$results
-           
+         # 'sout|statsout:s'	=> \$sout,
 	   	   );
 
 #my $usage = "Usage: $0 -species H.sapiens -gff gffname -fastas fastasname -sout <statsfile_out> -branch <yes/no> -reduced <yes/no> -programs <programs_path> -results <results_path> \n ";
-my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir_full_path> -sout <statsfile_out> -branch <yes/no> -reduced <yes/no>  \n ";
+#my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -branch <yes/no> -userdata <configfilename>\n ";
+my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -userdata <configfilenamepath>\n ";
 
-print STDERR $usage and exit unless ($species && $gff && $fasta && $results && $sout && ($branchp =~ /^(yes|y)|(n|no)$/i) && ($reduced =~ /^(yes|y)|(n|no)$/i));
 
-# EXAMPLE COMMAND LINE: ./geneidTRAINer1_1.pl -species S.cerevisiae -gff S_cerevisiae4training.gff -fastas yeast_genome.fa -sout stats.txt -branch no -reduced no
+print STDERR $usage and exit unless ($species && $gff && $fasta && $results); #&& ($branchp =~ /^(yes|y)|(n|no)$/i); && ($extdata =~ /^(yes|y)|(n|no)$/i)); #&& ($reduced =~ /^(yes|y)|(n|no)$/i)); && $sout
+
 
 #$results = $path.".output.$species/";
 #$results = "/output";
@@ -132,19 +139,15 @@ print STDERR $usage and exit unless ($species && $gff && $fasta && $results && $
 #print STDERR "\nresults: $results\n\n";
 
 if (-d "$results") {
-print STDERR "There is a directory named $results..\nHowever not removing directory and its contents\n";
+print STDERR "There is a directory named $results..\nremoving directory and its contents\n";
 
-	#rmtree([ "$results/" ]);
+	rmtree([ "$results/" ]);
 print STDERR "\nmkdir -p $results\n";
         `mkdir -p $results;`;
-#exit;
-      #  $redir = "$results/cds_${species}/";
 
 }else{
 
     `mkdir -p $results;`;
-#print STDERR "mkdir -p $results";
-    #exit;
 ;}
 
 ##########################################################################
@@ -179,7 +182,10 @@ system("which logratio_zero_order.awk > /dev/null;")   && &go_to_die("The gawk s
 system("which preparedimatrixacceptor4parameter.awk > /dev/null;")   && &go_to_die("The gawk script preparedimatrixacceptor4parameter.awk is not found or is not executable");
 system("which preparedimatrixdonor4parameter.awk > /dev/null;")   && &go_to_die("The gawk script preparedimatrixdonor4parameter.awk is not found or is not executable");
 system("which preparetrimatrixstart4parameter.awk > /dev/null;")   && &go_to_die("The gawk script preparetrimatrixstart4parameter.awk is not found or is not executable");
-#gff2cds
+
+
+
+
 ########################################
 ########################################
 ###IF THERE IS A MEME BRANCH PROFILE####
@@ -187,7 +193,7 @@ system("which preparetrimatrixstart4parameter.awk > /dev/null;")   && &go_to_die
 ########################################
 
 
-
+=head
 if ($branchp =~ /^(yes|y)/i) { ###IF THERE IS A MEME-DISCOVERED BRANCH POINT PROFILE
 
 $usebranch = 1;
@@ -211,7 +217,43 @@ print STDERR $usage and exit;
 
 }
 }###IF THERE IS A MEME-DISCOVERED BRANCH POINT PROFILE END
+=cut
 
+########################################
+########################################
+###IF THERE IS A USER DATA CONFIG FILE####
+########################################
+########################################
+
+if ($extdata) { ###IF THERE IS A USER DATA CONFIG FILE
+
+$useextdata = 1;
+
+print STDERR "\nuserdata: $useextdata\n";
+
+#do {
+ #            print STDERR "\n\nYou chose to include some user-selected values in training $species. Please, indicate the name of the file containing the external data (and make sure the file is in the right path). The user should modify the sample user data file as described in the instructions)\n";
+  #	     $extdata=<STDIN>;
+#	     chomp $extdata;
+ #	} while ($extdata !~ /^.+$/i);
+
+if (-e "$extdata") {
+print "File exists and is named: ($extdata) \n\n";
+#open (CONFIGF, ">$extdata")or die;
+
+open FILE, "<$extdata" || die "You need to provide a file with used derived data \n";
+while(<FILE>){eval $_};
+die "can't restore variables from $extdata: $@" if $@;
+close FILE;
+
+}
+else {
+print "File does not exist";
+
+print STDERR $usage and exit;
+
+}
+}###IF THERE IS AN FILE CONTAINING A FEW VALUES TO BE USED PREFERENTIALLY BY THE GENEIDTRAINER OVERRIDING THE VALUES DETERMINED TO BE THE BEST BY THE PIPELINE 
 
 #############################
 #############################
@@ -221,6 +263,7 @@ print STDERR $usage and exit;
 #############################################################
 ###REDUCED/SHORT TRAINING#####SKIPS ALL BUT BACKGROUND/PWM/MM5
 #############################################################
+=head
 if ($reduced =~ /^(yes|y)/i) { ###reduced/short training starting with PWMs PLUS BACKGROUND 
 
 $reducedtraining = 1;
@@ -251,9 +294,9 @@ print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 #######################################################################
 #######################################################################
 #######################################################################
+=cut
 
-
-##########################################FULL TRAINING -MANDATORY FOR THE FIRST TIME GENEID IS TRAINED FOR A GIVEN SPECIES
+##########################################FULL TRAINING -MANDATORY FOR THE FIRST TIME GENEID IS TRAINED FOR A GIVEN SPECIES NOT REDUCED
 if (!$reducedtraining) { #DO ONLY FIRST TIME YOU RUN FULL TRAINING PIPELINE 
 
 ####CREATE A VARIABLE SPECIES FOR A GIVEN SPECIES ONLY ONCE####
@@ -276,7 +319,8 @@ print STORV Data::Dumper->Dump([$statsdir], ['$statsdir']);
 ##CREATE A STATS/PARAMETER FILE 
 my @timeData = localtime(time);
 #STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
-my $statsout = "$statsdir".join('_', @timeData)."_$sout";
+#my $statsout = "$statsdir".join('_', @timeData)."_$sout";
+my $statsout = "$statsdir".join('_', @timeData)."_training_statistics";
 ###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
 open SOUT,">$statsout";
 print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
@@ -1097,17 +1141,26 @@ if (!defined @{$param->isocores}[0]->Markov_Transition_probability_matrix($marko
 ####PRODUCE FILE WITH STATS
 if ($usebranch) {
 
-($shortintron,$longintron,$minintergenic,$maxintergenic) = WriteStatsFile($species,$sout,$outintron,$outcds,$outgff,$inframe,$inframeeval,$seqsused,$totalnoncandon,$totalnoncanacc,$totalnoncansta,$markovmodel,$totalcoding,$totalnoncoding,$startdonor,$enddonor,$startacceptor,$endacceptor,$startstart,$endstart,$startbranch,$endbranch,$usebranch,$useallseqs);
+($shortintron,$longintron,$minintergenic,$maxintergenic) = WriteStatsFile($species,$outintron,$outcds,$outgff,$inframe,$inframeeval,$seqsused,$totalnoncandon,$totalnoncanacc,$totalnoncansta,$markovmodel,$totalcoding,$totalnoncoding,$startdonor,$enddonor,$startacceptor,$endacceptor,$startstart,$endstart,$startbranch,$endbranch,$usebranch,$useallseqs);
 
 } else {
 
-($shortintron,$longintron,$minintergenic,$maxintergenic) = WriteStatsFile($species,$sout,$outintron,$outcds,$outgff,$inframe,$inframeeval,$seqsused,$totalnoncandon,$totalnoncanacc,$totalnoncansta,$markovmodel,$totalcoding,$totalnoncoding,$startdonor,$enddonor,$startacceptor,$endacceptor,$startstart,$endstart,0,0,0,$useallseqs);
-
+($shortintron,$longintron,$minintergenic,$maxintergenic) = WriteStatsFile($species,$outintron,$outcds,$outgff,$inframe,$inframeeval,$seqsused,$totalnoncandon,$totalnoncanacc,$totalnoncansta,$markovmodel,$totalcoding,$totalnoncoding,$startdonor,$enddonor,$startacceptor,$endacceptor,$startstart,$endstart,0,0,0,$useallseqs);
 
 } 
 
 
+
+if (!$useextdata) {
+
 print STDERR "\nshortest intron: $shortintron\nlongest intron: $longintron\nminimum intergenic: $minintergenic\nmaximum intergenic: $maxintergenic\n";
+
+} else {
+
+
+print STDERR "\nshortest intron: $shortintronusr\nlongest intron: $longintronusr\nminimum intergenic: $minintergenicusr\nmaximum intergenic: $maxintergenicusr\n";
+
+}
 
 ##################################################
 ###WRITE PRELIMINARY NON-OPTIMIZED PARAMETER FILE
@@ -1490,9 +1543,10 @@ predictPlotgff2ps($paramopt,$gptraincontigfa,$gptraincontiggff,$gptraincontiglen
 }elsif (!$contigopt && !$useallseqs && $jacknifevalidate) {
    
 predictPlotgff2ps($paramopt,$gptrainfa,$gptraingff,$gptrainlen,$temp_jkf_geneid);
+
 }
 
-print STDERR "n\plotting of the gff2ps graphs with the annotations and predictions given by the new $species parameter file completed\n";
+print STDERR "\nplotting of the gff2ps graphs with the annotations and predictions given by the new $species parameter file completed\n";
 
 #}
 #####
@@ -3278,7 +3332,7 @@ print SOUT "\nBest parameter file performance obtained using oWF: ".$sortedeval[
 @evaluationinit= (qw(oWF eWF SN SP CC SNe SPe SNSP SNg SPg SNSPg raME raWE));
 
 print STDERR "Sorted performance results (Three best performance estimates) for different values of oWF and eWF:\n".join("\t",@evaluationinit),"\n";
-print SOUT "Sorted performance results (best to worst) for different values of oWF and eWF:\n\n".join("\t",@evaluationinit),"\n";
+print SOUT "\nSorted performance results (best to worst) for different values of oWF and eWF:\n\n".join("\t",@evaluationinit),"\n";
 
 foreach my $eval_ref (@sortedeval){
 
@@ -3795,7 +3849,7 @@ if ($branchsw) {
 sub WriteStatsFile {
 
 
-my($species,$sout,$outintron,$outcds,$outgff,$inframe,$inframeeval,$seqsused,$totalnoncandon,$totalnoncanacc,$totalnoncansta,$markovmodel,$totalcoding,$totalnoncoding,$stdo,$endo,$stac,$enac,$stst,$enst,$stbr,$enbr,$branchsw,$useallseqs) =  @_;
+my($species,$outintron,$outcds,$outgff,$inframe,$inframeeval,$seqsused,$totalnoncandon,$totalnoncanacc,$totalnoncansta,$markovmodel,$totalcoding,$totalnoncoding,$stdo,$endo,$stac,$enac,$stst,$enst,$stbr,$enbr,$branchsw,$useallseqs) =  @_;
 
 ###OBTAIN GENE MODEL SET STATISTICS
 
@@ -3813,10 +3867,16 @@ my @intronlength = `gawk '{print length(\$2)}' $outintron`;
 my ($mean, $st) = average(\@intronlength); 
 #print STDERR "INTRON: $mean, $st\n";
 
+###INTRON MIN AND MAX LENGTH
+
+#if (!$useextdata) {
+
 my @intronlist = `gawk '{print length(\$2)}' $outintron | sort -n`;
 
 my $totintrons = scalar(@intronlist);
 my @intronlen =();
+
+
 my $intr = "";
 for (my $i=0;$i<=scalar(@intronlist)-1;$i++){
 
@@ -3833,6 +3893,10 @@ chomp $shortintron;
 #my $longintron =  $intronlist[$totintrons - 1];
 my $longintron = int($mean + ($st * 2) > 6000 ? 25000 : $mean + ($st * 2));
 chomp $longintron;
+
+#} #execute if not using external data 
+
+
 #my $answer = "";
 #do {
  #            print "\nDo you want to use this automatically selected range of introns ($shortintron to $longintron) in the geneid gene model (yes/no)?\n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
@@ -3840,7 +3904,23 @@ chomp $longintron;
 #	     chomp $answer;
  #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
 
-print "\n The selected range of introns in the geneid gene model was set to be ($shortintron to $longintron) \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
+if (!$useextdata) {
+
+print "\n The selected range of introns in the geneid gene model was automatically set to be ($shortintron to $longintron) \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
+
+} #execute if not using external data 
+
+ else {
+
+    #my $shortintronaut=$shortintron;
+    #my $longintronaut=$longintron;
+
+
+print "\n The user-selected range of introns in the geneid gene model was set to be ($shortintronusr to $longintronusr) rather than the automatically selected $shortintron to $longintron \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
+
+}
+
+#print SOUT  "\n The selected range of introns in the geneid gene model was set to be ($shortintron to $longintron) \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
 
 =head
 if ($answer =~ /^(no|n)$/i) {
@@ -3868,7 +3948,22 @@ my $maxintergenic = 'Infinity';
 #	     chomp $answer;
  #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
 
+if (!$useextdata) {
+
 print "\nThe automatically selected intergenic distance range was set to be ($minintergenic to $maxintergenic) in the geneid gene model\n";
+
+} else {
+
+   #my $minintergenicaut=$minintergenic;
+    #my $maxintergenicaut=$maxintergenic;
+
+print "\nThe user-selected intergenic distance range was set to be ($minintergenicusr to $maxintergenicusr) rather than the default ($minintergenic to $maxintergenic) in the geneid gene model\n";
+
+
+}
+ 
+
+#print SOUT  "\nThe automatically selected intergenic distance range was set to be ($minintergenic to $maxintergenic) in the geneid gene model\n";
 
 =head
 if ($answer =~ /^(no|n)$/i) {
@@ -3889,8 +3984,17 @@ if ($answer =~ /^(no|n)$/i) {
 =cut
 
 ##use shortest and longest intron lengths in gene model of parameter file 
+if (!$useextdata) {
+
 $param->geneModel->intronRange($shortintron,$longintron);
 $param->geneModel->intergenicRange($minintergenic,$maxintergenic);
+
+} else {
+
+$param->geneModel->intronRange($shortintronusr,$longintronusr);
+$param->geneModel->intergenicRange($minintergenicusr,$maxintergenicusr);
+
+}
 ###############################
 
 my @CDSGCcontent = `gawk '{print gsub(/[GC]/,".",\$2)/length(\$2)}' $outcds`;
@@ -3920,22 +4024,30 @@ chomp $singlegenes;
 
 #print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 
-print SOUT "\nA subset of $totalseqs4training sequences (randomly chosen from the $total_seqs gene models) was used for training\n\n";
+print SOUT "\n\nA subset of $totalseqs4training sequences (randomly chosen from the $total_seqs gene models) was used for training\n\n";
 
 if (!$useallseqs){
-print SOUT "The user has selected to use $seqsused gene models (80 % of total) for training and to set aside $gffseqseval annotations (20 % of total) for evaluation\n\n";
-}else {print SOUT "$total_seqs gene models were used for both training and evaluation\n\n"};
+print SOUT "\n$seqsused gene models (80 % of total) were used for training and $gffseqseval annotations (20 % of total) set aside for evaluation (randomly)\n\n";
+}else {print SOUT "\n$total_seqs gene models were used for both training and evaluation\n\n"};
 
 if (!$useallseqs){
-print SOUT "$inframe of the gene models translate into proteins with in-frame stops within the training set and $inframeeval in the evaluation set (seqs removed).\n\n";}else {print SOUT "$inframe of the gene models translate into proteins with in-frame stops within the training set.\n\n"};
+print SOUT "\n$inframe of the gene models translate into proteins with in-frame stops within the training set and $inframeeval in the evaluation set (seqs removed).\n\n";}else {print SOUT "$inframe of the gene models translate into proteins with in-frame stops within the training set.\n\n"};
 print SOUT "There are $totalnoncandon non-canonical donors as part of the training set\n\n";
 print SOUT "There are $totalnoncanacc non-canonical acceptors as part of the training set\n\n";
 print SOUT "There are $totalnoncansta non-canonical start sites as part of the training set\n\n";
 print SOUT "These gene models correspond to $totalcoding coding bases and $totalnoncoding non-coding bases\n\n";
 print SOUT "Deriving a markov model for the coding potential of order $markovmodel\n\n";
 print SOUT "The intronic sequences extracted from the gene models have an average length of $mean, with $st of SD\n";
+if (!$useextdata) {
 print SOUT "Geneid can predict gene models having introns with a minimum length of $shortintron nucleotides and a maximum of $longintron bases (boundaries used in gene model) \n\n";
-print SOUT "The minimum (user selected) intergenic distance was set to $minintergenic nucleotides whereas the maximum was set to $maxintergenic (boundaries used in gene model) \n\n";
+}else {
+print SOUT "Geneid can predict gene models having introns with a minimum length of $shortintronusr nucleotides and a maximum of $longintronusr bases (boundaries used in gene model which were user-selected) \n\n";
+}
+if (!$useextdata) {
+print SOUT "The minimum intergenic distance was set to $minintergenic nucleotides whereas the maximum was set to $maxintergenic (boundaries used in gene model) \n\n";
+}else {
+    print SOUT "The minimum (user selected) intergenic distance was set to $minintergenicusr nucleotides whereas the maximum was set to $maxintergenicusr (boundaries used in gene model) \n\n
+";}
 print SOUT "The GC content of the exonic and intronic sequences is $meangc (SD $stgc) and $meangci (SD $stgci) respectively \n\n";
 print SOUT "The gene models used for training contain $totexons exons \n\n";
 print SOUT "The gene models average $avgex exons per gene (SD $stex)\n\n";
@@ -3950,8 +4062,12 @@ print SOUT "The start site profile chosen by the user spans ".($enst-$stst+1)." 
 print SOUT "The branch site profile chosen by the user spans ".($enbr-$stbr+1)." nucleotides: position $stbr to $enbr\n";
 	}
 
-
+if (!$useextdata) {
 return ($shortintron,$longintron,$minintergenic,$maxintergenic);
+} else {
+return ($shortintronusr,$longintronusr,$minintergenicusr,$maxintergenicusr);
+
+}
 
 
 }
