@@ -64,7 +64,7 @@ my $starttbl = "";
 my $id;
 my $tblseq = "";
 my $usebranch = 0;
-my $branchp = "";
+my @branchp = ();
 my $memefile = "";
 my $extconffile = "";
 my $motifnumber = "";
@@ -109,6 +109,15 @@ my $minintergenicusr = 0;
 my $maxintergenicusr = 0;
 my $shortintronusr = 0;
 my $longintronusr = 0;
+my $startusrdon = 0;
+my $endusrdon = 0;
+my $startusracc = 0;
+my $endusracc = 0;
+my $startusrsta = 0;
+my $endusrsta = 0;
+my $startusrbra = 0;
+my $endusrbra = 0;
+my $userprofile = 0;
 
 #print STDERR "$gfffiltered";
 
@@ -117,8 +126,10 @@ GetOptions(
 	   'gff:s'         => \$gff,
 	   'fastas:s'      => \$fasta,
            'results:s'     => \$results,
-           'userdata:s'      => \$extdata
-	 #  'branch:s'	=> \$branchp
+           'reduced|red:s'	=> \$reduced,
+           'userdata:s'      => \$extdata,
+           'branch=s{2}'	=> \@branchp
+	 # 
 	 #  'reduced|red:s'	=> \$reduced
 	 #  'programs:s'	=> \$path
          #  'results:s' => \$results
@@ -127,17 +138,24 @@ GetOptions(
 
 #my $usage = "Usage: $0 -species H.sapiens -gff gffname -fastas fastasname -sout <statsfile_out> -branch <yes/no> -reduced <yes/no> -programs <programs_path> -results <results_path> \n ";
 #my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -branch <yes/no> -userdata <configfilename>\n ";
-my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -userdata <configfilenamepath>\n ";
+my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -reduced <yes/no> -userdata <configfilenamepath> (optional) -branch <pathmemefilename profile#> (optional)\n ";
 
 
-print STDERR $usage and exit unless ($species && $gff && $fasta && $results); #&& ($branchp =~ /^(yes|y)|(n|no)$/i); && ($extdata =~ /^(yes|y)|(n|no)$/i)); #&& ($reduced =~ /^(yes|y)|(n|no)$/i)); && $sout
+print STDERR $usage and exit unless ($species && $gff && $fasta && $results && ($reduced =~ /^(yes|y)|(n|no)$/i)); #&& ($branchp =~ /^(yes|y)|(n|no)$/i); && ($extdata =~ /^(yes|y)|(n|no)$/i)); #&& ($reduced =~ /^(yes|y)|(n|no)$/i)); && $sout
 
+
+####DECLARE A VARIABLE FOR A GIVEN SPECIES WHERE SEVERAL VALUES OBTAINED BY TRAINING NEED BE SAVED####
+
+
+my $varsmemory = "${species}.variables";
+
+print STDERR "\n declaring ${species}.variables file\n";
 
 #$results = $path.".output.$species/";
 #$results = "/output";
 #print STDERR "path: $path";
 #print STDERR "\nresults: $results\n\n";
-
+=head
 if (-d "$results") {
 print STDERR "There is a directory named $results..\nremoving directory and its contents\n";
 
@@ -149,7 +167,7 @@ print STDERR "\nmkdir -p $results\n";
 
     `mkdir -p $results;`;
 ;}
-
+=cut
 ##########################################################################
 ##                                                                      ##
 ##                          INITIAL CHECKS                              ##
@@ -178,46 +196,12 @@ system("which submatrix_order0.awk > /dev/null;")   && &go_to_die("The gawk scri
 system("which Getkmatrix.awk > /dev/null;")   && &go_to_die("The gawk script Getkmatrix.awk is not found or is not executable");
 system("which multiple_annot2one.awk > /dev/null;")   && &go_to_die("The gawk script multiple_annot2one.awk is not found or is not executable");
 system("which logratio_kmatrix.awk > /dev/null;")   && &go_to_die("The gawk script logratio_kmatrix.awk is not found or is not executable");
+
 system("which logratio_zero_order.awk > /dev/null;")   && &go_to_die("The gawk script logratio_zero_order.awk is not found or is not executable");
 system("which preparedimatrixacceptor4parameter.awk > /dev/null;")   && &go_to_die("The gawk script preparedimatrixacceptor4parameter.awk is not found or is not executable");
 system("which preparedimatrixdonor4parameter.awk > /dev/null;")   && &go_to_die("The gawk script preparedimatrixdonor4parameter.awk is not found or is not executable");
 system("which preparetrimatrixstart4parameter.awk > /dev/null;")   && &go_to_die("The gawk script preparetrimatrixstart4parameter.awk is not found or is not executable");
 
-
-
-
-########################################
-########################################
-###IF THERE IS A MEME BRANCH PROFILE####
-########################################
-########################################
-
-
-=head
-if ($branchp =~ /^(yes|y)/i) { ###IF THERE IS A MEME-DISCOVERED BRANCH POINT PROFILE
-
-$usebranch = 1;
-
-do {
-             print STDERR "\n\nYou chose to use meme branch profile information in training $species. Please, indicate the name of the meme output file (make sure the file is in the right path) followed by the number of the motif the branch profile (i.e. write down -meme.txt 2- if the meme output file is called meme.txt and the second motif is the one corresponding to the branch profile)\n";
-  	     $memeanswer=<STDIN>;
-	     chomp $memeanswer;
- 	} while ($memeanswer !~ /^(.+)\s+(\d+)$/i);
-
-$memefile=$1;
-$motifnumber=$2;
-
-if (-e "$memefile") {
-print "File exists and is named: ($memefile) \n\n";
-}
-else {
-print "File does not exist";
-
-print STDERR $usage and exit;
-
-}
-}###IF THERE IS A MEME-DISCOVERED BRANCH POINT PROFILE END
-=cut
 
 ########################################
 ########################################
@@ -225,11 +209,80 @@ print STDERR $usage and exit;
 ########################################
 ########################################
 
-if ($extdata) { ###IF THERE IS A USER DATA CONFIG FILE
+if (-s $extdata) { ###IF THERE IS A USER DATA CONFIG FILE 
 
 $useextdata = 1;
+print "File exists and is named: ($extdata) \n\n";
 
-print STDERR "\nuserdata: $useextdata\n";
+open FILE, "<$extdata" || die "You need to provide a file with used derived data \n";
+while(<FILE>){eval $_};
+die "can't restore variables from $extdata: $@" if $@;
+close FILE;
+
+
+if ($startusrdon) {
+ 
+    if (!$endusrdon || $endusrdon<=$startusrdon) {
+
+
+    print STDERR "\nsince the start of the donor profile was set (\$startusrdon:$startusrdon) its end coordinate must be set (\$donorusrdon) with a value > than \$startusrdon:$startusrdon\nMPORTANT: The profile should be obtained automatically at least the first time so that the user can have access to the score distribution graph on the statistics output file\n" and exit;
+
+}
+
+}
+
+if ($startusracc) {
+ 
+    if (!$endusracc || $endusracc<=$startusracc) {
+
+    print STDERR "\nsince the start of the acceptor profile was set (\$startusracc: $startusracc) its end coordinate must be set (\$endusracc) with a value > than \$startusracc:$startusracc\nIMPORTANT: The profile should be obtained automatically at least the first time so that the user can have access to the score distribution graph on the statistics output file\n" and exit;
+
+}
+
+}
+
+if ($startusrsta) {
+ 
+    if (!$endusrsta || $endusrsta<=$startusrsta) {
+
+    print STDERR "\nsince the start of the start profile was set (\$startusrsta:$startusrsta) its end coordinate must be set (\$endusrsta) with a value > than \$startusrsta:$startusrsta\nIMPORTANT: The profile should be obtained automatically at least the first time so that the user can have access to the score distribution graph on the statistics output file\n" and exit;
+
+}
+
+}
+
+if ($startusrbra) {
+ 
+    if (!$endusrbra || $endusrbra<=$startusrbra) {
+
+    print STDERR "\nsince the start of the branch profile was set (\$startusrbra:$startusrbra) its end coordinate must be set (\$endusrbra) with a value > than \$startusrbra:$startusrbra\nMPORTANT: The profile should be obtained automatically at least the first time so that the user can have access to the score distribution graph on the statistics output file\n" and exit;
+
+}
+
+}
+
+
+if ($shortintronusr) {
+ 
+    if (!$longintronusr || $longintronusr<=$shortintronusr) {
+
+    print STDERR "\nsince a new minimum length for an intron was selected (\$shortintronusr:$shortintronusr) the longest allowed intron (\$longintronusr) must also be set with a value > than \$shortintronusr:$shortintronusr\n" and exit;
+
+    }
+
+}
+
+if ($minintergenicusr) {
+ 
+    if (!$maxintergenicusr || $maxintergenicusr<=$minintergenicusr) {
+
+    print STDERR "\nsince a new minimum allowed intergenic distance was selected (\$minintergenicusr:$minintergenicusr) the longest intergenic distance (\$maxintergenicusr) must also be set with a value > than \$minintergenicusr:$minintergenicusr\n" and exit;
+
+}
+
+}
+
+#print STDERR "\nuserdata: $useextdata\n";
 
 #do {
  #            print STDERR "\n\nYou chose to include some user-selected values in training $species. Please, indicate the name of the file containing the external data (and make sure the file is in the right path). The user should modify the sample user data file as described in the instructions)\n";
@@ -237,23 +290,69 @@ print STDERR "\nuserdata: $useextdata\n";
 #	     chomp $extdata;
  #	} while ($extdata !~ /^.+$/i);
 
-if (-e "$extdata") {
-print "File exists and is named: ($extdata) \n\n";
+#if (-e "$extdata") {
+#print "File exists and is named: ($extdata) \n\n";
 #open (CONFIGF, ">$extdata")or die;
 
-open FILE, "<$extdata" || die "You need to provide a file with used derived data \n";
-while(<FILE>){eval $_};
-die "can't restore variables from $extdata: $@" if $@;
-close FILE;
 
-}
-else {
-print "File does not exist";
+}###IF THERE IS AN FILE CONTAINING A FEW VALUES TO BE USED PREFERENTIALLY BY THE GENEIDTRAINER OVERRIDING THE VALUES DETERMINED TO BE THE BEST BY THE PIPELINE 
+#else {
+#print "\nFile \$extdata=$extdata does not exist\n" and exit;
+
+#print STDERR "#1 $usage"
+
+#}
+
+
+########################################
+########################################
+###IF THERE IS A MEME BRANCH PROFILE####
+########################################
+########################################
+my $brel = 0;
+$brel = @branchp;
+
+if ($brel == "2") { ###IF THERE IS A MEME-DISCOVERED BRANCH POINT PROFILE
+
+$usebranch = 1;
+
+#do {
+ #            print STDERR "\n\nYou chose to use meme branch profile information in training $species. Please, indic#ate the name of the meme output file (make sure the file is in the right path) followed by the number of the motif #the branch profile (i.e. write down -meme.txt 2- if the meme output file is called meme.txt and the second motif is# the one corresponding to the branch profile)\n";
+#  	     $memeanswer=<STDIN>;
+#	     chomp $memeanswer;
+# 	} while ($memeanswer !~ /^(.+)\s+(\d+)$/i);
+
+my $stringbranch = join(" ",@branchp);
+
+#if ($stringbranch =~ /^(.+)\s+(\d+)$/i )
+
+$stringbranch =~ /^(.+?)\s+(\d)$/i ;
+
+$memefile=$1;
+$motifnumber=$2;
+
+
+#{
+
+#}else {
+
+  #  print STDERR "Please, indicate the name of the meme output file (make sure the file is in the right path) followed by the number of the motif the branch profile (i.e. write down -meme.txt 2- if the meme output file is called meme.txt and the second motif is the one corresponding to the branch profile)" and exit;
+#}
+
+if (! -e "$memefile" || $motifnumber !~ /\d/i ) {
+print "Please, indicate the name of the meme output file (make sure the file is in the right path) followed by the number of the motif the branch profile (i.e. write down -meme.txt 2- if the meme output file is called meme.txt and the second motif is the one corresponding to the branch profile) \n\n";
 
 print STDERR $usage and exit;
 
 }
-}###IF THERE IS AN FILE CONTAINING A FEW VALUES TO BE USED PREFERENTIALLY BY THE GENEIDTRAINER OVERRIDING THE VALUES DETERMINED TO BE THE BEST BY THE PIPELINE 
+#else {
+#print "File does not exist";
+
+
+
+#}
+}###IF THERE IS A MEME-DISCOVERED BRANCH POINT PROFILE END
+
 
 #############################
 #############################
@@ -263,14 +362,29 @@ print STDERR $usage and exit;
 #############################################################
 ###REDUCED/SHORT TRAINING#####SKIPS ALL BUT BACKGROUND/PWM/MM5
 #############################################################
-=head
-if ($reduced =~ /^(yes|y)/i) { ###reduced/short training starting with PWMs PLUS BACKGROUND 
+#=head
+#print STDERR "\$reduced: \n$reduced\n"
+
+if (-s "${results}$varsmemory" &&  $reduced =~ /^(yes|y)/i) { ###reduced/short training starting with PWMs 
 
 $reducedtraining = 1;
 
-print STDERR "\n\nYou chose to continue the training of $species by assuming the cds, intronic sequences and splice sites have already been extracted... \n\n";
+if (-d "$results") {
+print STDERR "There is a directory named $results..\nbut elected the option to repeat the training for this species so NOT removing its contents\n";
+
+#	rmtree([ "$results/" ]);
+#print STDERR "\nmkdir -p $results\n";
+ #       `mkdir -p $results;`;
+
+}else{
+
+    `mkdir -p $results;`;
+;}
+
+
+print STDERR "\n\nYou chose to continue the training of $species by assuming the cds, intronic sequences and splice sites have already been extracted \n\n";
   	     
-open FILE, "<$results/${species}.variables" || die "You need to have run the training program once previously to execute the reduced version of the geneid training program \n";
+open FILE, "<$results/$varsmemory" || die "You need to have run the training program once previously to execute the reduced version of the geneid training program \n";
 while(<FILE>){eval $_};
 die "can't restore variables from ${species}.variables: $@" if $@;
 close FILE;
@@ -279,32 +393,39 @@ close FILE;
 ##CREATE A STATS FILE 
 my @timeData = localtime(time);
 #STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
-my $statsout = $statsdir.join('_', @timeData)."_$sout";
+my $statsout = $statsdir.join('_', @timeData)."_training_statistics";
 ###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
 open SOUT,">$statsout";
 
 if (!$useallseqs){print STDERR "\nThe reduced training process will use 80% of the gene-model sequences ($totalseqs4training)/20% will used for posterior evaluation of the newly developed parameter file ($gffseqseval)\n";} else {print STDERR "The reduced training process will use ALL of the gene-model sequences ($total_seqs)\n"};
-if ($jacknifevalidate){print STDERR "\nThe reduced training process will include a 10x cross validation of the accuracy of the new $species parameter file\n";}
+#if ($jacknifevalidate){print STDERR "\nThe reduced training process will include a 10x cross validation of the accuracy of the new $species parameter file\n";}
 
 print STDERR "\nA subset of $totalseqs4training sequences (randomly chosen from the $total_seqs gene models) was used for training\n";
 print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 
 ######################################################################
-} ###reduced/short version training starting with PWMs# 
-#######################################################################
-#######################################################################
-#######################################################################
-=cut
+} #END OF SETTING SCRIPT FOR REDUCED TRAININING
 
 ##########################################FULL TRAINING -MANDATORY FOR THE FIRST TIME GENEID IS TRAINED FOR A GIVEN SPECIES NOT REDUCED
 if (!$reducedtraining) { #DO ONLY FIRST TIME YOU RUN FULL TRAINING PIPELINE 
 
-####CREATE A VARIABLE SPECIES FOR A GIVEN SPECIES ONLY ONCE####
-my $varsmemory = $species.".variables";
-#print STDERR "\ntest: $varsmemory\n";
-#print STDERR "test2: ${results}/$varsmemory\n";
+if (-d "$results") {
+print STDERR "There is a directory named $results..\nremoving directory and its contents\n";
+
+	rmtree([ "$results/" ]);
+print STDERR "\nmkdir -p $results\n";
+        `mkdir -p $results;`;
+
+}else{
+
+    `mkdir -p $results;`;
+;}
+
+print STDERR "\ntest: $varsmemory\n";
+print STDERR "test2: ${results}/$varsmemory\n";
 open (STORV, ">${results}/$varsmemory")or die;
 #######################################################
+
 ###MAKE A STATISTICS DIRECTORY
 
 print STDERR "Create a statistics directory for this species\n";
@@ -313,6 +434,7 @@ $statsdir = "$results/statistics_${species}/";
 #print STDERR "statsdir: $statsdir";
 ###########################################################
 ####store statistics directory variable
+print STORV Data::Dumper->Dump([$results], ['$results']);
 print STORV Data::Dumper->Dump([$statsdir], ['$statsdir']);
 ####
 
@@ -569,9 +691,23 @@ print STORV Data::Dumper->Dump([$templist], ['$templist']);
 ###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
 #open SOUT,">$statsout";
 
-}########DO ONLY FIRST TIME YOU RUN FULL TRAINING PIPELINE IF (!REDUCED TRAINING)
+}
+
+########DO ONLY FIRST TIME YOU RUN FULL TRAINING PIPELINE IF (!REDUCED TRAINING)
 ######NOT EXECUTED WHEN REDUCED METHOD IS CHOSEN
 
+ #else {
+
+   # print STDERR "\n${results}$varsmemory does not seem to exist. Run pipeline at least once in full mode: \"-reduced no\" \n" and exit;
+
+#}
+
+
+###reduced/short version training starting with PWMs# 
+
+
+
+#######################################################################
 ###########################################################
 #CREATING A PARAMETER FILE REGARDLESS OF WHETHER THE TRAINING IS COMPLETE OR SHORT VERSION
 #########################################
@@ -790,7 +926,7 @@ elsif ($total_seqs < 25) { # seqs < 500
 ##############################################
 ################################CALL SUBS:
 ##############################################
-if (!$reducedtraining) { #ONLY FIRST TIME ("NOT SHORT VERSION") FOR A GIVEN SPECIES
+if (!$reducedtraining) { #ONLY FIRST TIME ("NOT SHORTER VERSION") FOR A GIVEN SPECIES
 
     if (!$useallseqs){ ##SET SEQS FOR EVAL AND TRAINING (SUBSETS)
 
@@ -908,7 +1044,13 @@ my $numseqs = 100000;
 close STORV;
 
 #   exit;
-}###IF NOT REDUCED TRAINING
+} ###IF NOT REDUCED TRAINING !$reducedtraining
+
+
+####IF "REDUCED" TRAINING WILLS START AT THIS POINT: DONOR,ACCEPTOR,START AND BRANCH PROFILE STATS:
+
+
+
 ########
 #########
 #get donor site statistics
@@ -930,8 +1072,15 @@ my $donoffset = "30"; #position before intron (last of exon (31) -1 for offset)
 
 print STDERR "\nThere are $numbersites donor sites, enough for a matrix of order $order, prior offset: $donoffset $outdonortbl $bckgrnd\n";
 
+if ($startusrdon)
 
-my ($donormatrix,$prof_len_don,$fxddonoffset,$startdonor,$enddonor) = getKmatrix($outdonortbl,$bckgrnd,$order,$donoffset,1,0,0,0,0,0,0);
+{$userprofile= 1;}
+
+else {$userprofile = 0;}
+
+
+my ($donormatrix,$prof_len_don,$fxddonoffset,$startdonor,$enddonor) = getKmatrix($outdonortbl,$bckgrnd,$order,$donoffset,1,0,0,0,0,0,0,$userprofile);
+
 if (!defined @{$param->isocores}[0]->set_profile('Donor_profile',$prof_len_don,$fxddonoffset,$cutoff,$order,0,1,0,0,0,0,$donormatrix)){die "error in setting profile\n";}
 
 my $donsub ="";
@@ -981,9 +1130,17 @@ print STDERR "pictogram $donorsubprofile  $plotsdir/Donor -bits -land\n";
     $order = "0";
  }
 
+if ($startusracc)
+
+{$userprofile= 1;}
+
+else {$userprofile = 0;}
+
+
  print STDERR "\nThere are $numbersites acceptor sites, enough for a matrix of order $order, offset: $accoffset \n";
 
- my ($acceptormatrix,$prof_len_acc,$fxdaccoffset,$startacceptor,$endacceptor) = getKmatrix($outacceptortbl,$bckgrnd,$order,$accoffset,0,1,0,0,0,0,0);
+
+ my ($acceptormatrix,$prof_len_acc,$fxdaccoffset,$startacceptor,$endacceptor) = getKmatrix($outacceptortbl,$bckgrnd,$order,$accoffset,0,1,0,0,0,0,0,$userprofile);
 if (!defined @{$param->isocores}[0]->set_profile('Acceptor_profile',$prof_len_acc,$fxdaccoffset,$cutoff,$order,0,1,0,0,0,0,$acceptormatrix)){die "error in setting profile\n";}
 
 
@@ -1038,9 +1195,17 @@ print STDERR "pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land\n";
     $order = "0";
  }
 
+
+if ($startusrsta)
+
+{$userprofile= 1;}
+
+else {$userprofile = 0;}
+
+
  print STDERR "\nThere are $numbersites start sites, enough for a matrix of order $order, offset: $staoffset \n";
 
- my ($startmatrix,$prof_len_sta,$fxdstaoffset,$startstart,$endstart) = getKmatrix($outstarttbl,$bckgrnd,$order,$staoffset,0,0,1,0,0,0,0);
+ my ($startmatrix,$prof_len_sta,$fxdstaoffset,$startstart,$endstart) = getKmatrix($outstarttbl,$bckgrnd,$order,$staoffset,0,0,1,0,0,0,0,$userprofile);
 
 ####write to parameter file
 if (!defined @{$param->isocores}[0]->set_profile('Start_profile',$prof_len_sta,$fxdstaoffset,$cutoff,$order,0,1,0,0,0,0,$startmatrix)){die "error in setting profile\n";}
@@ -1090,9 +1255,15 @@ $fullengthbranchtbl = processBranch($memefile,$motifnumber,$outintron);
  my $braoffset = "32"; #before the A (branch) (33)minus 1 for offset)
 
 
+if ($startusrbra)
+
+{$userprofile= 1;}
+
+else {$userprofile = 0;}
+
 print STDERR "\nThere are $numbersites branch sites, enough for a matrix of order $order, offset: $braoffset \n";
 
-my ($branchmatrix,$prof_len_bra,$fxdbraoffset,$startbranch,$endbranch) = getKmatrix($fullengthbranchtbl,$bckgrnd,$order,$braoffset,0,0,0,1,0,0,0);
+my ($branchmatrix,$prof_len_bra,$fxdbraoffset,$startbranch,$endbranch) = getKmatrix($fullengthbranchtbl,$bckgrnd,$order,$braoffset,0,0,0,1,0,0,0,$userprofile);
 
 ####write to parameter file
 if (!defined @{$param->isocores}[0]->set_profile('Branch_point_profile',$prof_len_bra,$fxdbraoffset,-50,$order,0,1,40,10,0,0,$branchmatrix)){die "error in setting profile\n";}
@@ -1151,16 +1322,26 @@ if ($usebranch) {
 
 
 
-if (!$useextdata) {
+if (!$useextdata || ($shortintronusr==0 && $minintergenicusr==0) ) {
 
 print STDERR "\nshortest intron: $shortintron\nlongest intron: $longintron\nminimum intergenic: $minintergenic\nmaximum intergenic: $maxintergenic\n";
 
-} else {
-
+} elsif ($useextdata && $shortintronusr>0 && $minintergenicusr>0) {
 
 print STDERR "\nshortest intron: $shortintronusr\nlongest intron: $longintronusr\nminimum intergenic: $minintergenicusr\nmaximum intergenic: $maxintergenicusr\n";
 
-}
+} elsif ($useextdata && $shortintronusr>0 && $minintergenicusr==0) {
+
+print STDERR "\nshortest intron: $shortintronusr\nlongest intron: $longintronusr\nminimum intergenic: $minintergenic\nmaximum intergenic: $maxintergenic\n";
+
+} elsif ($useextdata && $shortintronusr==0 && $minintergenicusr>0) {
+
+print STDERR "\nshortest intron: $shortintron\nlongest intron: $longintron\nminimum intergenic: $minintergenicusr\nmaximum intergenic: $maxintergenicusr\n";
+
+} 
+
+
+
 
 ##################################################
 ###WRITE PRELIMINARY NON-OPTIMIZED PARAMETER FILE
@@ -1212,9 +1393,9 @@ my $array_ref = "";
      my $doWF = "0.05";		
      my $FoWF = "0.70";
 ##Minimum Branch Profile Distance
-     my $iMin = "7";		
+     my $iMin = "5";		
      my $dMin = "2";		
-     my $fMin = "9";
+     my $fMin = "11";
 ##ACCEPTOR CONTEXT
      my $iAccCtx = "40";		
      my $dAccCtx = "10";		
@@ -1475,7 +1656,7 @@ my $grpsiz = int (($totalseqstrain / 10) + 1);
 #my $grpsiz = 1;
 print STDERR "\nThe group size for 10 fold cross validation is $grpsiz\n\n";
 print SOUT "\nThe group size for 10 fold cross validation is $grpsiz\n\n";
-#deal with the fact that last array may have fewer elementa than the grouping value
+#deal with the fact that last array may have fewer elements than the grouping value
 my $seqstofill = ($grpsiz - @list4jkf % $grpsiz);
 if (@list4jkf % $grpsiz) {
   push @list4jkf, ("") x ($grpsiz - @list4jkf % $grpsiz)
@@ -2926,7 +3107,7 @@ return $fullengthbranches;
 ####GETKMATRIX FUNCTION (Splice site an Start codon PWMs)
 
 sub getKmatrix {
- 	my ($true_seqs,$false_seqs,$order,$offset,$donor,$accept,$star,$branch,$start,$end,$jacknife) = @_;
+ 	my ($true_seqs,$false_seqs,$order,$offset,$donor,$accept,$star,$branch,$start,$end,$jacknife,$userprofile) = @_;
  	my $original_offset = $offset;
  	my @prof = ();
 	my $tempinfolog;
@@ -3001,32 +3182,83 @@ sub getKmatrix {
 	if (!$jacknife) {
 	print STDERR "Information content profile\n";
     }
+	
+my $pwmstring = "";
 
 	if ($donor && !$jacknife) {
 
 $info_thresh = "0.15";
+$pwmstring = "donor\n";
 
-($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset);
+if (!$userprofile)
+{
+
+
+($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset,$pwmstring);
+
+
+
+} else {
+
+($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset,$pwmstring);
+
+    $start = $startusrdon;
+    $end = $endusrdon;
+}
 
 } elsif ($accept && !$jacknife) {
 
 $info_thresh = "0.04";
+$pwmstring = "acceptor\n";
+
+if (!$userprofile)
+{
 
 
-($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset);
+($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset,$pwmstring);
 
+} else {
+
+($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset,$pwmstring);
+    
+    $start = $startusracc;
+    $end = $endusracc;
+
+}
 
 } elsif ($star && !$jacknife) {
 
 $info_thresh = "0.15";
+$pwmstring = "start\n";
 
-($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset);
+if (!$userprofile)
+{
+($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset,$pwmstring);
+} else {
+
+($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset,$pwmstring);
+
+    $start = $startusrsta;
+    $end = $endusrsta;
+
+}
+
 
 } elsif ($branch && !$jacknife) {
 
 $info_thresh = "0.3";
+$pwmstring = "branch\n";
 
-($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset);
+if (!$userprofile)
+{
+($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset,$pwmstring);
+} else {
+
+($start,$end) = BitScoreGraph($tempinfolog,$info_thresh,$offset,$pwmstring);
+    
+    $start = $startusrbra;
+    $end = $endusrbra;
+}
 
 }
 
@@ -3034,8 +3266,9 @@ $info_thresh = "0.3";
 
 sub BitScoreGraph {
 	
-        my ($infooutput,$info_thresh,$offset) = @_;
+        my ($infooutput,$info_thresh,$offset,$pwmstring) = @_;
 	my @info = ($offset-1,$offset+1);
+	print SOUT "$pwmstring";
         open (INFO,"<$infooutput");
  	while (<INFO>) {
  	    next if m/^#/;
@@ -3044,6 +3277,7 @@ sub BitScoreGraph {
  	    chomp;
 	    my @fields = split;
  	    printf STDERR "%2s %2.2f %s",($fields[0],$fields[1],"=" x int($fields[1] * 30)) ;
+	    printf SOUT "%2s %2.2f %s\n",($fields[0],$fields[1],"=" x int($fields[1] * 30)) ;
  	    if ($fields[1] > $info_thresh) {
  		push (@info, $fields[0]) ;
  	    }
@@ -3055,6 +3289,7 @@ sub BitScoreGraph {
  	$start = 1 if $start < 1;
  	my $end = pop @sortedinfo;
 ####
+
 
 return ($start,$end);
 
@@ -3093,10 +3328,10 @@ if (!$jacknife){
  #	    $start = 1;
  #	}
  	$offset = $offset - $start + 1;
-print STDERR "end:$end offset:$offset start:$start\n";
-if (!$jacknife){
- 	print STDERR "new offset: $offset\nnew start: $start\nnew order: $order\n";
-    }
+#print STDERR "end:$end offset:$offset start:$start\n";
+#if (!$jacknife){
+ #	print STDERR "new offset: $offset\nnew start: $start\nnew order: $order\n";
+  #  }
 	if ($order>=1 && $donor) {
 	
 	  my $preoffset = $offset + 2;
@@ -3132,6 +3367,7 @@ else {
 	
 	`gawk -f submatrix_order0.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix`;
 
+
     }
 ####CREATE DATA STRUCTURE CONTAINING MATRIX OF INTEREST
 
@@ -3145,9 +3381,25 @@ else {
  	    push @prof, \@e;
  	}
  	close PROF;
+       
+     
  	$prof_len = $end - $start + 1;
- 	print STDERR "length: $end - $start / $prof_len \n";
- 	return (\@prof,$prof_len,$offset,$start,$end);
+
+       chomp ($pwmstring);
+#print STDERR "test: $startusrdon or $startusracc or $startusrsta or $startusrbra: 0 or 1 or 0 or 0\n";        
+if ($userprofile ) { 
+        print SOUT "\nuser-selected $pwmstring profile: start: $start end: $end / $prof_len (profile length)\n\n";
+ 	print STDERR "\nuser-selected $pwmstring profile: start: $start end: $end / $prof_len (profile length)\n\n";
+
+} else {
+
+        print SOUT "\nautomatically selected $pwmstring profile: start: $start end: $end / $prof_len (profile length)\n\n";
+ 	print STDERR "\nautomatically selected $pwmstring profile: start: $start end: $end / $prof_len (profile length)\n\n";
+
+}
+
+
+        return (\@prof,$prof_len,$offset,$start,$end);
 
 #unlink $tempinfolog;
 #unlink "$true_seq_name-log-info.$ordname-matrix";
@@ -3878,7 +4130,7 @@ my @intronlen =();
 
 
 my $intr = "";
-for (my $i=0;$i<=scalar(@intronlist)-1;$i++){
+for (my $i=0;$i<=scalar(@intronlist)-1;$i++) {
 
    $intr = $intronlist[$i];
    chomp $intr;
@@ -3894,7 +4146,7 @@ chomp $shortintron;
 my $longintron = int($mean + ($st * 2) > 6000 ? 25000 : $mean + ($st * 2));
 chomp $longintron;
 
-#} #execute if not using external data 
+###} #execute if not using external data 
 
 
 #my $answer = "";
@@ -3904,13 +4156,12 @@ chomp $longintron;
 #	     chomp $answer;
  #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
 
-if (!$useextdata) {
+if (!$useextdata ||  $shortintronusr==0) {
 
 print "\n The selected range of introns in the geneid gene model was automatically set to be ($shortintron to $longintron) \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
 
 } #execute if not using external data 
-
- else {
+elsif ($useextdata && $shortintronusr>0) {
 
     #my $shortintronaut=$shortintron;
     #my $longintronaut=$longintron;
@@ -3918,7 +4169,8 @@ print "\n The selected range of introns in the geneid gene model was automatical
 
 print "\n The user-selected range of introns in the geneid gene model was set to be ($shortintronusr to $longintronusr) rather than the automatically selected $shortintron to $longintron \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
 
-}
+ }
+
 
 #print SOUT  "\n The selected range of introns in the geneid gene model was set to be ($shortintron to $longintron) \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
 
@@ -3948,11 +4200,11 @@ my $maxintergenic = 'Infinity';
 #	     chomp $answer;
  #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
 
-if (!$useextdata) {
+if (!$useextdata || $minintergenicusr==0) {
 
 print "\nThe automatically selected intergenic distance range was set to be ($minintergenic to $maxintergenic) in the geneid gene model\n";
 
-} else {
+} elsif ($useextdata && $minintergenicusr>0) {
 
    #my $minintergenicaut=$minintergenic;
     #my $maxintergenicaut=$maxintergenic;
@@ -3984,17 +4236,28 @@ if ($answer =~ /^(no|n)$/i) {
 =cut
 
 ##use shortest and longest intron lengths in gene model of parameter file 
-if (!$useextdata) {
+if (!$useextdata || ($minintergenicusr==0 && $shortintronusr==0)) {
 
 $param->geneModel->intronRange($shortintron,$longintron);
 $param->geneModel->intergenicRange($minintergenic,$maxintergenic);
 
-} else {
+} elsif ($useextdata && $minintergenicusr>0 && $shortintronusr>0) {
 
 $param->geneModel->intronRange($shortintronusr,$longintronusr);
 $param->geneModel->intergenicRange($minintergenicusr,$maxintergenicusr);
 
+} elsif ($useextdata && $minintergenicusr==0  && $shortintronusr>0) {
+
+$param->geneModel->intronRange($shortintronusr,$longintronusr);
+$param->geneModel->intergenicRange($minintergenic,$maxintergenic);
+
+} elsif ($useextdata && $minintergenicusr>0  && $shortintronusr==0) {
+
+$param->geneModel->intronRange($shortintron,$longintron);
+$param->geneModel->intergenicRange($minintergenicusr,$maxintergenicusr);
+
 }
+
 ###############################
 
 my @CDSGCcontent = `gawk '{print gsub(/[GC]/,".",\$2)/length(\$2)}' $outcds`;
@@ -4026,35 +4289,42 @@ chomp $singlegenes;
 
 print SOUT "\n\nA subset of $totalseqs4training sequences (randomly chosen from the $total_seqs gene models) was used for training\n\n";
 
-if (!$useallseqs){
+if (!$useallseqs) {
 print SOUT "\n$seqsused gene models (80 % of total) were used for training and $gffseqseval annotations (20 % of total) set aside for evaluation (randomly)\n\n";
-}else {print SOUT "\n$total_seqs gene models were used for both training and evaluation\n\n"};
+} else {print SOUT "\n$total_seqs gene models were used for both training and evaluation\n\n"; }
 
 if (!$useallseqs){
-print SOUT "\n$inframe of the gene models translate into proteins with in-frame stops within the training set and $inframeeval in the evaluation set (seqs removed).\n\n";}else {print SOUT "$inframe of the gene models translate into proteins with in-frame stops within the training set.\n\n"};
+    print SOUT "\n$inframe of the gene models translate into proteins with in-frame stops within the training set and $inframeeval in the evaluation set (seqs removed).\n\n"; } else { print SOUT "$inframe of the gene models translate into proteins with in-frame stops within the training set.\n\n"; }
+
 print SOUT "There are $totalnoncandon non-canonical donors as part of the training set\n\n";
 print SOUT "There are $totalnoncanacc non-canonical acceptors as part of the training set\n\n";
 print SOUT "There are $totalnoncansta non-canonical start sites as part of the training set\n\n";
 print SOUT "These gene models correspond to $totalcoding coding bases and $totalnoncoding non-coding bases\n\n";
 print SOUT "Deriving a markov model for the coding potential of order $markovmodel\n\n";
-print SOUT "The intronic sequences extracted from the gene models have an average length of $mean, with $st of SD\n";
-if (!$useextdata) {
-print SOUT "Geneid can predict gene models having introns with a minimum length of $shortintron nucleotides and a maximum of $longintron bases (boundaries used in gene model) \n\n";
-}else {
+print SOUT "The intronic sequences extracted from the gene models have an average length of $mean, with $st of SD\n\n";
+
+if (!$useextdata || $shortintronusr<="0") {
+print SOUT "Geneid can predict gene models having introns with a minimum length of $shortintron nucleotides and a maximum of $longintron bases (boundaries used in gene model were automatically selected) \n\n";
+} elsif ($useextdata && $shortintronusr>"0") {
 print SOUT "Geneid can predict gene models having introns with a minimum length of $shortintronusr nucleotides and a maximum of $longintronusr bases (boundaries used in gene model which were user-selected) \n\n";
 }
-if (!$useextdata) {
-print SOUT "The minimum intergenic distance was set to $minintergenic nucleotides whereas the maximum was set to $maxintergenic (boundaries used in gene model) \n\n";
-}else {
-    print SOUT "The minimum (user selected) intergenic distance was set to $minintergenicusr nucleotides whereas the maximum was set to $maxintergenicusr (boundaries used in gene model) \n\n
-";}
+
+
+if (!$useextdata || $minintergenicusr<="0") {
+print SOUT "The minimum (automatically selected) intergenic distance was set to $minintergenic nucleotides whereas the maximum was set to $maxintergenic (boundaries used in gene model) \n\n";
+} elsif ($useextdata && $minintergenicusr>"0") {
+    print SOUT "The minimum (user selected) intergenic distance was set to $minintergenicusr nucleotides whereas the maximum was set to $maxintergenicusr (boundaries used in gene model) \n\n"; }
+
 print SOUT "The GC content of the exonic and intronic sequences is $meangc (SD $stgc) and $meangci (SD $stgci) respectively \n\n";
 print SOUT "The gene models used for training contain $totexons exons \n\n";
 print SOUT "The gene models average $avgex exons per gene (SD $stex)\n\n";
 print SOUT "The average length of the exons (non-single) in the training set gene models is $avgle (SD $stle)\n\n";
-if (!$useallseqs){
+
+if (!$useallseqs) {
 print SOUT "The training set includes $singlegenes single-exon genes (out of $seqsused ) gene models\n\n";
-}else{print SOUT "The training set includes $singlegenes single-exon genes (out of $total_seqs) gene models\n\n";}
+} else {print SOUT "The training set includes $singlegenes single-exon genes (out of $total_seqs) gene models\n\n"; }
+
+
 print SOUT "The donor site profile chosen by the user spans ".($endo-$stdo+1)." nucleotides: position $stdo to $endo\n";
 print SOUT "The acceptor site profile chosen by the user spans ".($enac-$stac+1)." nucleotides: position $stac to $enac\n";
 print SOUT "The start site profile chosen by the user spans ".($enst-$stst+1)." nucleotides: position $stst to $enst\n";
@@ -4062,15 +4332,26 @@ print SOUT "The start site profile chosen by the user spans ".($enst-$stst+1)." 
 print SOUT "The branch site profile chosen by the user spans ".($enbr-$stbr+1)." nucleotides: position $stbr to $enbr\n";
 	}
 
-if (!$useextdata) {
+if (!$useextdata || ($minintergenicusr=="0" && $shortintronusr=="0")) {
+
 return ($shortintron,$longintron,$minintergenic,$maxintergenic);
-} else {
-return ($shortintronusr,$longintronusr,$minintergenicusr,$maxintergenicusr);
 
+} 
+
+elsif ($useextdata && $shortintronusr=="0") {
+
+return ($shortintron,$longintron,$minintergenicusr,$maxintergenicusr);
+
+       }   
+
+elsif ($useextdata && $minintergenicusr=="0") {
+
+return ($shortintronusr,$longintronusr,$minintergenic,$maxintergenic);
+
+       }
+	 
 }
 
-
-}
 
 sub average {
     my ($sequences) = @_;
