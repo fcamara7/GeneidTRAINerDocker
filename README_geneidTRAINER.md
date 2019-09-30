@@ -1,4 +1,5 @@
 # GeneidTRAINerDocker
+
 Docker container containing the perl program that we use to automatically train the ab initio program geneid. It also creates a set of files used to evaluate geneid and other gene prediction programs that used in our #in house# protein-coding genome annotation pipeline (which will automated using NextFlow in the next few months)  
 
 To start the docker container GeneidTRAINerDocker type the following:
@@ -9,7 +10,7 @@ In order to see what the command line for the program type:
 
 **docker run -it geneidtrainerdocker**
 
-Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -reduced <yes/no> -userdata <configfilenamepath> (optional) -branch <pathmemefilename profile#> (optional)
+_Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -reduced <yes/no> -userdata <configfilenamepath> (optional) -branch <pathmemefilename profile#> (optional)_
 
 The minimal set of option to to run geneidTRAINer in the context of docker are: 
 
