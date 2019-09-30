@@ -103,9 +103,9 @@ Until a few years ago most training of geneid for different species, and subsequ
 
 In this document we are going to describe the development of a PERL language integration tool (GeneidTrainer.pl), which allows us to combine all the above-mentioned scripts/programs into a single pipeline-like script. While the newly developed script was designed to be user-interactive at a few steps along the execution flow the user is not required to have much knowledge of the training process itself.  The GeneidTrainer.pl script must be run directly from a Unix command line. 
 
-## 2. DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer.pl)
+# 2. DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer.pl)
 
-# 2.1 INPUT OPTIONS
+## 2.1 INPUT OPTIONS
 
 THe input options are described in greater detail at the beginning of this document.
 
@@ -115,31 +115,31 @@ _Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fa
 
 The required options are:
 
-## 1) "-species": the name of the species being trained (i.e. “H.sapiens”); 
+### 1) "-species": the name of the species being trained (i.e. “H.sapiens”); 
 
-## 2) "-gff": a GFF-format file (version2) containing the coordinates of the gene models to be used in the training process; an example of a GFF file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2)  
-## 3) "-fastas": a single (multi-)FASTA file with the DNA sequences of the gene models plus a good number of flanking nucleotides; an example of a FASTA file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.4training.fa).   
+### 2) "-gff": a GFF-format file (version2) containing the coordinates of the gene models to be used in the training process; an example of a GFF file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2)  
+### 3) "-fastas": a single (multi-)FASTA file with the DNA sequences of the gene models plus a good number of flanking nucleotides; an example of a FASTA file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.4training.fa).   
 
-## 4) "-results": The directory in the where the results should be stored, in context of the $PWD (user-defined working directory). i.e. "./output"
+### 4) "-results": The directory in the where the results should be stored, in context of the $PWD (user-defined working directory). i.e. "./output"
 
-## 5) "-reduced": (yes/no) an indication of whether the full pipeline should be run or, if the user has already trained once,a “reduced” version executed from the point at which the user chooses the boundaries of the different splice site (an occasionally branch) profiles
+### 5) "-reduced": (yes/no) an indication of whether the full pipeline should be run or, if the user has already trained once,a “reduced” version executed from the point at which the user chooses the boundaries of the different splice site (an occasionally branch) profiles
 
 The optional options are:
 
-## 6) "-userdata" (config file name and path): a "user-configurable file" in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. (see beginning of this document for more details) 
+### 6) "-userdata" (config file name and path): a "user-configurable file" in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. (see beginning of this document for more details) 
 
-## 7) "-branch": the path to, and name of branch site profile if it has been previously produced (using the motif-finding  program MEME) and should be used in the training process; (ONLY USED FOR SOME SPECIES OF FUNGI WHICH ARE EXPECTED TO POSSESS A CONSERVED BRANCH POINT) 
+### 7) "-branch": the path to, and name of branch site profile if it has been previously produced (using the motif-finding  program MEME) and should be used in the training process; (ONLY USED FOR SOME SPECIES OF FUNGI WHICH ARE EXPECTED TO POSSESS A CONSERVED BRANCH POINT) 
 
 
-# 2.2 PARAMETER FILE BUILDING MODULES
+## 2.2 PARAMETER FILE BUILDING MODULES
 
-We have developed two parameter file-building modules in PERL programming language that are intrinsic to the training pipeline. Geneid::Param allows the parameter file to be built on the fly as the different splice site and coding statistics are computed and optimizations completed. Geneid::Isocore is a handler for isocores in the geneid parameter file and is used mainly in the building of parameters for those species that possess more than one isocore.  
+We have developed two parameter file-building modules in PERL programming language that are intrinsic to the training pipeline. **Geneid::Param** allows the parameter file to be built on the fly as the different splice site and coding statistics are computed and optimizations completed. Geneid::Isocore is a handler for isocores in the geneid parameter file and is used mainly in the building of parameters for those species that possess more than one isocore.  
 
-# 2.3 TRAINING STATISTICS OUTPUT FILE
+## 2.3 TRAINING STATISTICS OUTPUT FILE
 
 As the newly developed parameter file for a particular species is being built a text file is written which includes detailed statistics on the training set as well as on the training process itself. It also indicates the name of the optimized parameter file and the accuracy  performance estimation. This file will be produced each time the pipeline is executed and stored under the directory set by the option **-results** (i.e. "./output" in the example in the beginning of this document). The file will be stored in a directory called "statistics_$SPECIES" (i.e. statistics_M.cingulata). THe statistics file name will include information with regard to its creation date: "". 
 
 
-# 3.0 CONCLUSIONS
+## 3.0 CONCLUSIONS
 
 The automated training pipeline program (in the context of a docker container) described here allows for a much faster and less cumbersome training of the gene predictor geneid than possible before. It also requires much less “know-how” on part of the user. Furthermore, in most instances the performance of the newly developed matrix is the same or very close to the accuracy obtained with the previous, slower, more user-intervention dependent training strategy.
