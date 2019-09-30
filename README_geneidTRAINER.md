@@ -10,7 +10,7 @@ In order to see what the command line for the program type:
 
 **docker run -it geneidtrainerdocker**
 
-_Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch <pathmemefilename profile#> (optional)_
+_Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
 
 The minimal set of option to to run geneidTRAINer in the context of docker are: 
 
@@ -20,16 +20,16 @@ The example above uses test data in https://public-docs.crg.eu/rguigo/Data/fcama
 
 ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing should contain a number of files that can be used to test the geneidtrainer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections by GeneidTRAINer:***
 
-**1. M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2
+**1. M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2**
 
-a GFF2 file that includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species M.cingulata as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as "M.cingulata.geneid.optimized.param". The coordinates represented in this are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa".When training geneid for any species the user should provide GeneidTRAINer with a ggf2 with this format. 
+a GFF2 file that includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species M.cingulata as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**. The coordinates represented in this are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa".When training geneid for any species the user should provide GeneidTRAINer with a ggf2 with this format. 
 
 
-**2. M.cingulata.4training.fa
+**2. M.cingulata.4training.fa**
 
 File containing a few contigs/scaffolds of the hymenoptera species M.cingulata which incorporate the 100 gene models used to train/evaluate geneid for this species. 
 
-**3. config.ext 
+**3. config.ext** 
 
 a "user-configurable file" in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. 
 
@@ -37,18 +37,18 @@ Currently the user can select minimum and maximum intron size, minimum and maxim
 
 The config file currently has the following variables that can be modified by the user. Note that setting the variables to "0" tells geneidTRAINer to ignore them and tells the program to use automatically generated values:
 
-$shortintronusr = '20';  #minimum intron size used by geneid (gene model)
-$longintronusr = '350';  #maximum intron size used by geneid (gene model)
-$minintergenicusr = '100'; #minimum intergenic distance used by geneid (gene model)
-$maxintergenicusr = '500'; #maximum intergenic distance used by geneid (gene model)
-$startusrsta = '28'; #start coordinate for the start codon profile
-$endusrsta = '35';   #end coordinate for the start codon profile (must be >> than the start coordinate)
-$startusracc = '7';  #start coordinate for the acceptor profile
-$endusracc = '31';  #end coordinate for the acceptor profile (must be >> than the start coordinate)
-$startusrdon = '0'; #start coordinate for the donor profile
-$endusrdon = '0';  #end coordinate for the donir profile (must be >> than the start coordinate)
-$startusrbra = '0'; #start coordinate for the branch site profile
-$endusrbra = '0'; #end coordinate for the branch site profile (must be >> than the start coordinate)
+>$shortintronusr = '20';  #minimum intron size used by geneid (gene model)
+>$longintronusr = '350';  #maximum intron size used by geneid (gene model)
+>$minintergenicusr = '100'; #minimum intergenic distance used by geneid (gene model)
+>$maxintergenicusr = '500'; #maximum intergenic distance used by geneid (gene model)
+>$startusrsta = '28'; #start coordinate for the start codon profile
+>$endusrsta = '35';   #end coordinate for the start codon profile (must be >> than the start coordinate)
+>$startusracc = '7';  #start coordinate for the acceptor profile
+>$endusracc = '31';  #end coordinate for the acceptor profile (must be >> than the start coordinate)
+>$startusrdon = '0'; #start coordinate for the donor profile
+>$endusrdon = '0';  #end coordinate for the donir profile (must be >> than the start coordinate)
+>$startusrbra = '0'; #start coordinate for the branch site profile
+>$endusrbra = '0'; #end coordinate for the branch site profile (must be >> than the start coordinate)
 
 refer to the profile diagram produced by geneidTRAINer (located for example in $PWD/output/statistics_M.cingulata ) in order to better select profiles alternative to the ones generated automatically. 
 
