@@ -37,20 +37,18 @@ Currently the user can select minimum and maximum intron size, minimum and maxim
 
 The config file currently has the following variables that can be modified by the user. Note that setting the variables to "0" tells geneidTRAINer to ignore them and tells the program to use automatically generated values:
 
-$shortintronusr = '20';  #minimum intron size used by geneid (gene model)
-
-$longintronusr = '350';  #maximum intron size used by geneid (gene model)
-
-$minintergenicusr = '100'; #minimum intergenic distance used by geneid (gene model)
-$maxintergenicusr = '500'; #maximum intergenic distance used by geneid (gene model)
-$startusrsta = '28'; #start coordinate for the start codon profile
-$endusrsta = '35';   #end coordinate for the start codon profile (must be >> than the start coordinate)
-$startusracc = '7';  #start coordinate for the acceptor profile
-$endusracc = '31';  #end coordinate for the acceptor profile (must be >> than the start coordinate)
-$startusrdon = '0'; #start coordinate for the donor profile
-$endusrdon = '0';  #end coordinate for the donir profile (must be >> than the start coordinate)
-$startusrbra = '0'; #start coordinate for the branch site profile
-$endusrbra = '0'; #end coordinate for the branch site profile (must be >> than the start coordinate)
+$shortintronusr = '20';  #minimum intron size used by geneid (gene model)  
+$longintronusr = '350';  #maximum intron size used by geneid (gene model)  
+$minintergenicusr = '100'; #minimum intergenic distance used by geneid (gene model)  
+$maxintergenicusr = '500'; #maximum intergenic distance used by geneid (gene model)  
+$startusrsta = '28'; #start coordinate for the start codon profile  
+$endusrsta = '35';   #end coordinate for the start codon profile (must be >> than the start coordinate)  
+$startusracc = '7';  #start coordinate for the acceptor profile  
+$endusracc = '31';  #end coordinate for the acceptor profile (must be >> than the start coordinate)  
+$startusrdon = '0'; #start coordinate for the donor profile  
+$endusrdon = '0';  #end coordinate for the donir profile (must be >> than the start coordinate)  
+$startusrbra = '0'; #start coordinate for the branch site profile  
+$endusrbra = '0'; #end coordinate for the branch site profile (must be >> than the start coordinate)  
 
 refer to the profile diagram produced by geneidTRAINer (located for example in $PWD/output/statistics_M.cingulata ) in order to better select profiles alternative to the ones generated automatically. 
 
