@@ -38,7 +38,9 @@ Currently the user can select minimum and maximum intron size, minimum and maxim
 The config file currently has the following variables that can be modified by the user. Note that setting the variables to "0" tells geneidTRAINer to ignore them and tells the program to use automatically generated values:
 
 >$shortintronusr = '20';  #minimum intron size used by geneid (gene model)
+
 >$longintronusr = '350';  #maximum intron size used by geneid (gene model)
+
 >$minintergenicusr = '100'; #minimum intergenic distance used by geneid (gene model)
 >$maxintergenicusr = '500'; #maximum intergenic distance used by geneid (gene model)
 >$startusrsta = '28'; #start coordinate for the start codon profile
