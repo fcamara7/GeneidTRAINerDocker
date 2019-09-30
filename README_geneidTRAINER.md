@@ -3,21 +3,20 @@ Docker container containing the perl program that we use to automatically train 
 
 To start the docker container GeneidTRAINerDocker type the following:
 
-docker build -t  geneidtrainerdocker .
+**docker build -t  geneidtrainerdocker .**
 
 In order to see what the command line for the program type:
 
-docker run -it geneidtrainerdocker 
-
+**docker run -it geneidtrainerdocker**
 Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -reduced <yes/no> -userdata <configfilenamepath> (optional) -branch <pathmemefilename profile#> (optional)
 
 The minimal set of option to to run geneidTRAINer in the context of docker are: 
 
-**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no 
+**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
 
 The example above uses test data in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
 
-***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing should contain a number of files that can be used to test the geneidtrainer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections by GeneidTRAINer:
+***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing should contain a number of files that can be used to test the geneidtrainer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections by GeneidTRAINer:***
 
 **1. M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2
 
