@@ -56,7 +56,7 @@ refer to the profile diagram produced by geneidTRAINer (located for example in $
 
 The output files/directory of GeneidTRAINer should be created in the path selected by the user. These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
 
-**M.cingulata.geneid.optimized.param
+_**M.cingulata.geneid.optimized.param**_
 
 The user can also find statistics on the training process by going the directory
 
@@ -65,31 +65,33 @@ $PWD/output/statistics_M.cingulata (if the results dir is set to be "./output")
 Importantly, the statistics file (i.e. "22_51_14_27_8_119_5_269_0_training_statistics") should included the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she/he wants to change their automatically selected start and end coordinates using the "config.ext" file.
 
 
-####IMPORTANT###
+**####IMPORTANT###**
 
-***In order to run geneidTRAINer you must have docker installed on your machine***
+**In order to run geneidTRAINer you must have docker installed on your machine**
 
 The default command line for geneidTRAINer (no external config file) given the test files above is:
 
-**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no 
+**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
 
-Where $PWD is the user-selected working directory which inside the docker container is mounted as "/data". The command line above aslo assumes that the user created a directory called "input" in the $PWD where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). The results are put into a directory called "output" also created by the user in the working directory $PWD
+Where **$PWD** is the user-selected working directory which inside the docker container is mounted as "/data". The command line above aslo assumes that the user created a directory called "input" in the $PWD where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). The results are put into a directory called "output" also created by the user in the working directory $PWD
 
-the option "-reduced no" tells the program to run the training from the beginning. If after having trained geneid for the species of interest AT LEAST ONCE the user wishes to retrain it starting only at the point where the splice site and start profile length is selected it can do so by setting "-reduced" to YES (-reduced yes). This will *ONLY* be useful when combined with using an external config file (i.e. -userdata .input/config.ext as described above) with user-selected profile start and end coordinates for any of the splice sites or startcodon (branch sites in a subser of fungi) and/or different minimum and maximum intron and intergenic sizes than those selected automatically by geneidTRAINer.    
+the option **"-reduced no"** tells the program to run the training from the beginning. If after having trained geneid for the species of interest AT LEAST ONCE the user wishes to retrain it starting only at the point where the splice site and start profile length is selected it can do so by setting "-reduced" to YES (**-reduced yes**). _This will *ONLY* be useful when combined with using an external config file (i.e. -userdata .input/config.ext as described above) with user-selected profile start and end coordinates for any of the splice sites or startcodon (branch sites in a subser of fungi) and/or different minimum and maximum intron and intergenic sizes than those selected automatically by geneidTRAINer._    
 
-the user can also set -reduced to NO (-reduced no) and provide an external config file (-userdata ./input/config with non-default values of minimim/maximum intron/intergenic sizes and start/end coordinates for splice sites/start profiles. 
+However, the user can also set -reduced to NO (**-reduced no**) and still provide an external config file (**"-userdata ./input/config.ext**" with non-default values of minimim/maximum intron/intergenic sizes and start/end coordinates for splice sites/start profiles. 
 
 
-If the user decides to use the config file the command line should instead be:
+Therefore if the user decides to use the config file the command line should instead be:
 
-**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced <no/yes> -userdata ./input/config.ext
+**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced <no/yes> -userdata ./input/config.ext**
 #########################################################################
+
+
 
 
 **The remainder of this document contains more detailed information concerning the gene prediction program geneid, the files required to run the geneid training pipeline (geneidTRAINer) in the context of the docker container, and the different input options.  
 
 
-INTRODUCTION
+###INTRODUCTION
 
 Geneid is a widely used, well established, ab initio gene prediction program used to find genes in anonymous genomic sequences designed to possess an hierarchical structure. In the first step, splice sites, (possibly) branch sites, start and stop codons are predicted and scored along the sequence using either Position Weight Arrays (PWAs) or Markov Models (of order 1 or 2) depending on the number of available sites. In a second step, exons are built from the sites. Exons are scored as the sum of the scores of the defining sites, plus the log-likelihood ratio of a Markov Model for coding DNA.  Finally, from the set of predicted exons, the gene structure is assembled, maximizing the sum of the scores of the assembled exons.
 
@@ -105,19 +107,16 @@ Until a few years ago most training of geneid for different species, and subsequ
 
 In this document we are going to describe the development of a PERL language integration tool (GeneidTrainer.pl), which allows us to combine all the above-mentioned scripts/programs into a single pipeline-like script. While the newly developed script was designed to be user-interactive at a few steps along the execution flow the user is not required to have much knowledge of the training process itself.  The GeneidTrainer.pl script must be run directly from a Unix command line. 
 
-2. DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer.pl)
+###2. DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer.pl)
 
-2.1 INPUT OPTIONS
+##2.1 INPUT OPTIONS
 
-The script has several input options. The required options are:
+The script has a number of input options. The required options are:
 
-1) the name of the species being trained (i.e. “H.sapiens”); 
+#1) the name of the species being trained (i.e. “H.sapiens”); 
 
-2) a GFF-format file (version2,link) containing the coordinates of the gene models to be used in the training process; an example of a GFF file which can be used to test the pipeline can be obtained from ().   
-
-3) a single (multi-)FASTA file with the DNA sequences of the gene models plus a good number of flanking nucleotides; an example of a FASTA file which can be used to test the pipeline can be obtained from ().   
-
-4) the name of the statistics file to be built as the the training pipeline is being executed; 
+#2) a GFF-format file (version2) containing the coordinates of the gene models to be used in the training process; an example of a GFF file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2)  
+#3) a single (multi-)FASTA file with the DNA sequences of the gene models plus a good number of flanking nucleotides; an example of a FASTA file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.4training.fa).   
 
 5) an indication of whether a branch site profile has been previously produced (using the motif-finding  program MEME) and should be used in the training process; (ONLY USED FOR SOME SPECIES OF FUNGI WHICH ARE EXPECTED TO POSSESS A CONSERVED BRANCH POINT) 
 
