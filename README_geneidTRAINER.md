@@ -8,6 +8,7 @@ To start the docker container GeneidTRAINerDocker type the following:
 In order to see what the command line for the program type:
 
 **docker run -it geneidtrainerdocker**
+
 Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -reduced <yes/no> -userdata <configfilenamepath> (optional) -branch <pathmemefilename profile#> (optional)
 
 The minimal set of option to to run geneidTRAINer in the context of docker are: 
