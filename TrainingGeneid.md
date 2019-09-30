@@ -20,7 +20,7 @@ In this document we describe the development of a PERL language integration tool
 
 ## 2.1 INPUT OPTIONS
 
-THe input options are described in greater detail at the beginning of this document.
+THe input options are described in greater detail in the main README me for this project.
 
 The script has a number of input options:
 
