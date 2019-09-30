@@ -77,7 +77,7 @@ Where **$PWD** is the user-selected working directory which inside the docker co
 
 the option **"-reduced no"** tells the program to run the training from the beginning. If after having trained geneid for the species of interest AT LEAST ONCE the user wishes to retrain it starting only at the point where the splice site and start profile length is selected it can do so by setting "-reduced" to YES (**-reduced yes**). _This will *ONLY* be useful when combined with using an external config file (i.e. -userdata .input/config.ext as described above) with user-selected profile start and end coordinates for any of the splice sites or startcodon (branch sites in a subser of fungi) and/or different minimum and maximum intron and intergenic sizes than those selected automatically by geneidTRAINer._    
 
-However, the user can also set -reduced to NO (**-reduced no**) and still provide an external config file (**"-userdata ./input/config.ext**" with non-default values of minimim/maximum intron/intergenic sizes and start/end coordinates for splice sites/start profiles. 
+However, the user can also set -reduced to NO (**-reduced no**) and still provide an external config file (**"-userdata ./input/config.ext**") with non-default values of minimim/maximum intron/intergenic sizes and start/end coordinates for splice sites/start profiles. 
 
 
 Therefore if the user decides to use the config file the command line should instead be:
@@ -88,10 +88,10 @@ Therefore if the user decides to use the config file the command line should ins
 
 
 
-**The remainder of this document contains more detailed information concerning the gene prediction program geneid, the files required to run the geneid training pipeline (geneidTRAINer) in the context of the docker container, and the different input options.  
+**The remainder of this document contains more detailed information concerning the gene prediction program geneid, the files required to run the geneid training pipeline (geneidTRAINer) in the context of the docker container, and the different input options.**  
 
 
-###INTRODUCTION
+#INTRODUCTION
 
 Geneid is a widely used, well established, ab initio gene prediction program used to find genes in anonymous genomic sequences designed to possess an hierarchical structure. In the first step, splice sites, (possibly) branch sites, start and stop codons are predicted and scored along the sequence using either Position Weight Arrays (PWAs) or Markov Models (of order 1 or 2) depending on the number of available sites. In a second step, exons are built from the sites. Exons are scored as the sum of the scores of the defining sites, plus the log-likelihood ratio of a Markov Model for coding DNA.  Finally, from the set of predicted exons, the gene structure is assembled, maximizing the sum of the scores of the assembled exons.
 
@@ -107,9 +107,9 @@ Until a few years ago most training of geneid for different species, and subsequ
 
 In this document we are going to describe the development of a PERL language integration tool (GeneidTrainer.pl), which allows us to combine all the above-mentioned scripts/programs into a single pipeline-like script. While the newly developed script was designed to be user-interactive at a few steps along the execution flow the user is not required to have much knowledge of the training process itself.  The GeneidTrainer.pl script must be run directly from a Unix command line. 
 
-###2. DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer.pl)
+##2. DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer.pl)
 
-##2.1 INPUT OPTIONS
+#2.1 INPUT OPTIONS
 
 The script has a number of input options. The required options are:
 
