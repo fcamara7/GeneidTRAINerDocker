@@ -10,7 +10,7 @@ In order to see what the command line for the program type:
 
 **docker run -it geneidtrainerdocker**
 
-_Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -reduced <yes/no> -userdata <configfilenamepath> (optional) -branch <pathmemefilename profile#> (optional)_
+_Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch <pathmemefilename profile#> (optional)_
 
 The minimal set of option to to run geneidTRAINer in the context of docker are: 
 
