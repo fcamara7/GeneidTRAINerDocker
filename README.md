@@ -21,7 +21,7 @@ The "minimal" set of options to to run geneidTRAINer in the context of docker ar
 
 **docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
 
-The example above uses test data in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
+The example above uses test data found in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
 
 ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing should contain a number of files that can be used to test the geneidtrainer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections by GeneidTRAINer:***
 
