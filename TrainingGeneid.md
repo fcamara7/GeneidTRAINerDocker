@@ -46,12 +46,13 @@ The optional command line parameters are:
 
 ## 2.2 PARAMETER FILE BUILDING MODULES
 
-We have developed a few parameter file-building modules in PERL programming language that are intrinsic to the training pipeline. **Geneid::Param** allows the parameter file to be built on the fly as the different splice site and coding statistics are computed and optimizations completed. **Geneid::Isocore** is a handler for isocores in the geneid parameter file and is used mainly in the building of parameters for those species that possess more than one isocore. **Geneid::GeneModel** is a gandler for GeneModel objects in GeneID parameter files. **Geneid::geneidCEGMA** contains a number of functions that we used to derive the coding potential of the candidate sequences using markov models of order 4 or 5. This module was based on same tool from HMMstar.pm (Ian Korf) and is based on a module used by the program CEGMA (ref.).
+We have developed a few parameter file-building modules in PERL programming language that are intrinsic to the training pipeline. **Geneid::Param** allows the parameter file to be built on the fly as the different splice site and coding statistics are computed and optimizations completed. **Geneid::Isocore** is a handler for isocores in the geneid parameter file and is used mainly in the building of parameters for those species that possess more than one isocore. **Geneid::GeneModel** is a gandler for GeneModel objects in GeneID parameter files. **Geneid::geneidCEGMA** contains a number of functions that we used to derive the coding potential of the candidate sequences using markov models of order 4 or 5. This module was based on same tool from HMMstar.pm (Ian Korf) and on a module used by the program CEGMA (ref.).
 
 ## 2.3 TRAINING STATISTICS OUTPUT FILE
 
 As the newly developed parameter file for a particular species is being built a text file is written which includes detailed statistics on the training set as well as on the training process itself. It also indicates the name of the optimized parameter file and the accuracy  performance estimation. This file will be produced each time the pipeline is executed and stored under the directory set by the option **-results** (i.e. "./output" in the example in the beginning of this document). The file will be stored in a directory called "statistics_$SPECIES" (i.e. statistics_M.cingulata). The statistics file name will include information with regard to its creation date and time (in hours and minutes): "i.e. 1_Oct_Tue_10_13_training_statistics". 
 
+## 2.4 PLOTS OF OF SPLICE SITES AND START CODON
 
 ## 3.0 CONCLUSIONS
 
