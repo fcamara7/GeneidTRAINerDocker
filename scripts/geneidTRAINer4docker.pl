@@ -391,7 +391,12 @@ close FILE;
 
 
 ##CREATE A STATS FILE 
-my @timeData = localtime(time);
+#my @timeData = localtime(time);
+my @months = qw/Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec/;
+my @days = qw/Sun Mon Tue Wed Thu Fri Sat Sun/;
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+my @timeData = ($mday,$months[$mon],$days[$wday],$hour,$min);
+
 #STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
 my $statsout = $statsdir.join('_', @timeData)."_training_statistics";
 ###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
