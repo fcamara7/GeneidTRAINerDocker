@@ -12,7 +12,7 @@ Once docker is installed in you system and in order build the docker container G
 
 **docker build -t  geneidtrainerdocker .**
 
-In order to see the actual command line for the training pipeline type:
+To see the actual command line for the training pipeline type:
 
 **docker run -it geneidtrainerdocker**  
 _Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
