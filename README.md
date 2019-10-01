@@ -1,6 +1,6 @@
 # GeneidTRAINerDocker
 
-Docker container containing the perl program that we use to automatically train the ab initio program geneid. It also creates a set of files used to evaluate geneid and other gene prediction programs that used in our #in house# protein-coding genome annotation pipeline (which will automated using NextFlow in the next few months)  
+Docker container that includes the perl pipeline that we use to automatically train the ab initio program geneid. It also creates a set of files used to evaluate geneid and other gene prediction programs that used in our #in house# protein-coding genome annotation pipeline (which will automated using NextFlow in the next few months)  
 
 To start the docker container GeneidTRAINerDocker type the following:
 
