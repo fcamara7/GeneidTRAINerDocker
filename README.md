@@ -6,11 +6,13 @@ First the user must download the project repository containing GeneidTRAINer as 
 
 git clone https://github.com/fcamara7/GeneidTRAINerDocker.git
 
-To start the docker container GeneidTRAINerDocker type the following:
+You must also naturally have a recent version of docker installed in your system (https://docs.docker.com/install/). 
+
+Once docker is installed in you system and in order build the docker container GeneidTRAINerDocker type the following:
 
 **docker build -t  geneidtrainerdocker .**
 
-In order to see what the command line for the program type:
+In order to see the actual command line for the training pipeline type:
 
 **docker run -it geneidtrainerdocker**  
 _Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
