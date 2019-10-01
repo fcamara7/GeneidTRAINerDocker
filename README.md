@@ -27,7 +27,7 @@ The example above uses test data found in https://public-docs.crg.eu/rguigo/Data
 
 **1. M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2**
 
-a GFF2 file that includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species M.cingulata as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**. The coordinates represented in this are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa".When training geneid for any species the user should provide GeneidTRAINer with a ggf2 with this format. 
+a GFF2 file that includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**. The coordinates represented in this are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa".When training geneid for any species the user should provide GeneidTRAINer with a ggf2 with this format. 
 
 
 **2. M.cingulata.4training.fa**
@@ -67,7 +67,7 @@ The user can also find statistics on the training process by going the directory
 
 $PWD/output/statistics_M.cingulata (if the results dir is set to be "./output") 
 
-Importantly, the statistics file (i.e. "22_51_14_27_8_119_5_269_0_training_statistics") should included the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she/he wants to change their automatically selected start and end coordinates using the "config.ext" file.
+Importantly, the statistics file (i.e. "1_Oct_Tue_10_13_training_statistics") should included the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she/he wants to change their automatically selected start and end coordinates using the "config.ext" file.
 
 
 ## **IMPORTANT**
