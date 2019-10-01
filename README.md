@@ -69,12 +69,14 @@ $PWD/output/statistics_M.cingulata (if the results dir is set to be "./output")
 
 Importantly, the statistics file (i.e. "1_Oct_Tue_10_13_training_statistics") should include an ASCII representation of the nucleotide distribution of the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she/he wants to change their automatically selected start and end coordinates using the "config.ext" file.
 
-The start and spice site profile logos representing the nucleotide conervation around the start codon, donor and acceptor sites can be obtained from $PWD/output/statistics_$SPECIES/plots_$SPECIES (where $SPECIES=M.cingulata in our test case):
-Acceptor.ps  
-Donor.ps  
-Start.ps  
+The start and spice site profile logos representing the nucleotide conervation around the start codon, donor and acceptor sites can be obtained from $PWD/output/statistics_$SPECIES/plots_$SPECIES (where $SPECIES=M.cingulata in our test case):  
 
-You will also be able to find a gff2ps plot representing all genes predicted in the evaluation scaffold built by geneidtrainer.
+
+**Acceptor.ps**  
+**Donor.ps**  
+**Start.ps**  
+
+You will also be able to find a **gff2ps** () plot representing all genes predicted in the evaluation scaffold built by geneidtrainer.
 
 
 ## **IMPORTANT**
