@@ -19,7 +19,9 @@ RUN apt-get update; apt-get install -y -q \
  pkg-config \
  libgd-perl \
  libgd-dev \
- apt-file 
+ apt-file \
+ ghostscript \
+ dumb-init
 
 # Run cpan to get some modules required by the in-house modules/perl wrapper 
 
@@ -78,7 +80,8 @@ ENV PATH="/scripts/:/scripts/pictogram:/scripts/SSgff/bin:/scripts/Evaluation/bi
 
 ENV PERL5LIB="/scripts/:${PERL5LIB}"
 
-####COPY geneidTRAINer1_14DockerTesting.pl to /scripts MOST FREQUENTLY MODIFIED FILE  mv geneidTRAINer1_14DockerTesting.pl geneidTRAINer4docker.pl
+#RUN apt-get update; apt-get install -y -q \
+#    ghostscript
 
 COPY scripts/geneidTRAINer4docker.pl ./
 
@@ -87,7 +90,10 @@ COPY scripts/geneidTRAINer4docker.pl ./
 #VOLUME /input
 #VOLUME /output
 
-ENTRYPOINT [ "/scripts/geneidTRAINer4docker.pl" ]
+#RUN apt-get install -y -q \
+#   dumb-init
+
+ENTRYPOINT ["/usr/bin/dumb-init", "/scripts/geneidTRAINer4docker.pl" ]
 # ENTRYPOINT [ "/bin/bash" ]
 
 # Clean cache
