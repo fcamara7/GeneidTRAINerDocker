@@ -14,19 +14,10 @@ use Data::Dumper;
 # MAIN VARIABLES 
 my $PROGRAM = "geneidTRAINer";
 my $VERSION = "1.2docker";
-#my $HOME = $ENV{'HOME'};
-###my $TMP = $ENV{'TMPDIR'};
 my $path = "/scripts";
-#$ENV{'PATH'} = $path.":".$ENV{'PATH'};
-#print STDERR "path: $path envPATH: $ENV{'PATH'}";
-#my $TMP      = '/tmp';
 my $TMP = "./tmp/";
 `mkdir -p $TMP`; 
-#print STDERR "my TMP dir: $TMP";
-##my $TMP      = "$TMPDIR";
 my $TMPROOT   = "trainer_$$";
-##my $CEGMATMP  = "$TMP/$TMPROOT";
-#terminate script within docker(?)
 $SIG{TERM} = sub { die "Caught a sigterm $!" };
 
 ########PROGRAM SPECIFIC VARIABLES
@@ -38,7 +29,6 @@ my $label = 0;
 my $cutoff = -7; # for PWM profiles
 my $pin = "-";
 my $pout = "-";
-#my $sout = "-";
 my $results = "";
 my $species = "";
 my $answer = "";
@@ -120,8 +110,6 @@ my $startusrbra = 0;
 my $endusrbra = 0;
 my $userprofile = 0;
 
-#print STDERR "$gfffiltered";
-
 GetOptions(
 	   'species:s'         => \$species,
 	   'gff:s'         => \$gff,
@@ -130,19 +118,13 @@ GetOptions(
            'reduced|red:s'	=> \$reduced,
            'userdata:s'      => \$extdata,
            'branch=s{2}'	=> \@branchp
-	 # 
-	 #  'reduced|red:s'	=> \$reduced
-	 #  'programs:s'	=> \$path
-         #  'results:s' => \$results
-         # 'sout|statsout:s'	=> \$sout,
+	
 	   	   );
 
-#my $usage = "Usage: $0 -species H.sapiens -gff gffname -fastas fastasname -sout <statsfile_out> -branch <yes/no> -reduced <yes/no> -programs <programs_path> -results <results_path> \n ";
-#my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -branch <yes/no> -userdata <configfilename>\n ";
 my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -reduced <yes/no> -userdata <configfilenamepath> (optional) -branch <pathmemefilename profile#> (optional)\n ";
 
 
-print STDERR $usage and exit unless ($species && $gff && $fasta && $results && ($reduced =~ /^(yes|y)|(n|no)$/i)); #&& ($branchp =~ /^(yes|y)|(n|no)$/i); && ($extdata =~ /^(yes|y)|(n|no)$/i)); #&& ($reduced =~ /^(yes|y)|(n|no)$/i)); && $sout
+print STDERR $usage and exit unless ($species && $gff && $fasta && $results && ($reduced =~ /^(yes|y)|(n|no)$/i)); 
 
 
 ####DECLARE A VARIABLE FOR A GIVEN SPECIES WHERE SEVERAL VALUES OBTAINED BY TRAINING NEED BE SAVED####
@@ -150,25 +132,8 @@ print STDERR $usage and exit unless ($species && $gff && $fasta && $results && (
 
 my $varsmemory = "${species}.variables";
 
-print STDERR "\n declaring ${species}.variables file\n";
+print STDERR "\ndeclaring ${species}.variables file\n";
 
-#$results = $path.".output.$species/";
-#$results = "/output";
-#print STDERR "path: $path";
-#print STDERR "\nresults: $results\n\n";
-=head
-if (-d "$results") {
-print STDERR "There is a directory named $results..\nremoving directory and its contents\n";
-
-	rmtree([ "$results/" ]);
-print STDERR "\nmkdir -p $results\n";
-        `mkdir -p $results;`;
-
-}else{
-
-    `mkdir -p $results;`;
-;}
-=cut
 ##########################################################################
 ##                                                                      ##
 ##                          INITIAL CHECKS                              ##
@@ -206,7 +171,7 @@ system("which preparetrimatrixstart4parameter.awk > /dev/null;")   && &go_to_die
 
 ########################################
 ########################################
-###IF THERE IS A USER DATA CONFIG FILE####
+###IF THERE IS A USER DATA CONFIG FILE##
 ########################################
 ########################################
 
@@ -283,28 +248,6 @@ if ($minintergenicusr) {
 
 }
 
-#print STDERR "\nuserdata: $useextdata\n";
-
-#do {
- #            print STDERR "\n\nYou chose to include some user-selected values in training $species. Please, indicate the name of the file containing the external data (and make sure the file is in the right path). The user should modify the sample user data file as described in the instructions)\n";
-  #	     $extdata=<STDIN>;
-#	     chomp $extdata;
- #	} while ($extdata !~ /^.+$/i);
-
-#if (-e "$extdata") {
-#print "File exists and is named: ($extdata) \n\n";
-#open (CONFIGF, ">$extdata")or die;
-
-
-} ###IF THERE IS AN FILE CONTAINING A FEW VALUES TO BE USED PREFERENTIALLY BY THE GENEIDTRAINER OVERRIDING THE VALUES DETERMINED TO BE THE BEST BY THE PIPELINE 
-#else {
-#print "\nFile \$extdata=$extdata does not exist\n" and exit;
-
-#print STDERR "#1 $usage"
-
-#}
-
-
 ########################################
 ########################################
 ###IF THERE IS A MEME BRANCH PROFILE####
@@ -317,28 +260,12 @@ if ($brel == "2") { ###IF THERE IS A MEME-DISCOVERED BRANCH POINT PROFILE
 
 $usebranch = 1;
 
-#do {
- #            print STDERR "\n\nYou chose to use meme branch profile information in training $species. Please, indic#ate the name of the meme output file (make sure the file is in the right path) followed by the number of the motif #the branch profile (i.e. write down -meme.txt 2- if the meme output file is called meme.txt and the second motif is# the one corresponding to the branch profile)\n";
-#  	     $memeanswer=<STDIN>;
-#	     chomp $memeanswer;
-# 	} while ($memeanswer !~ /^(.+)\s+(\d+)$/i);
-
 my $stringbranch = join(" ",@branchp);
-
-#if ($stringbranch =~ /^(.+)\s+(\d+)$/i )
 
 $stringbranch =~ /^(.+?)\s+(\d)$/i ;
 
 $memefile=$1;
 $motifnumber=$2;
-
-
-#{
-
-#}else {
-
-  #  print STDERR "Please, indicate the name of the meme output file (make sure the file is in the right path) followed by the number of the motif the branch profile (i.e. write down -meme.txt 2- if the meme output file is called meme.txt and the second motif is the one corresponding to the branch profile)" and exit;
-#}
 
 if (! -e "$memefile" || $motifnumber !~ /\d/i ) {
 print "Please, indicate the name of the meme output file (make sure the file is in the right path) followed by the number of the motif the branch profile (i.e. write down -meme.txt 2- if the meme output file is called meme.txt and the second motif is the one corresponding to the branch profile) \n\n";
@@ -346,46 +273,32 @@ print "Please, indicate the name of the meme output file (make sure the file is 
 print STDERR $usage and exit;
 
 }
-#else {
-#print "File does not exist";
 
-
-
-#}
 }###IF THERE IS A MEME-DISCOVERED BRANCH POINT PROFILE END
 
 
-#############################
-#############################
-#############################
-
-#############################################################
-#############################################################
-###REDUCED/SHORT TRAINING#####SKIPS ALL BUT BACKGROUND/PWM/MM5
-#############################################################
-#=head
-#print STDERR "\$reduced: \n$reduced\n"
 
 if ($reduced =~ /^(no|n)/i)
 {
 
     $reducedtraining = 0;
-    print STDERR "reducedtraining:$reducedtraining\n";
+    print STDERR "should run the entire pipeline: $reducedtraining\n";
 }
 
-#REDUCED BELOW
+#############################################################
+#############################################################
+###REDUCED/SHORT TRAINING#####SKIPS ALL BUT BACKGROUND/PWM/MM5
+#############################################################
+
 if (-s "${results}$varsmemory" &&  $reduced =~ /^(yes|y)/i) { ###reduced/short training starting with PWMs 
 
 $reducedtraining = 1;
 
-print STDERR "\nreducedtraining:$reducedtraining\n";
+print STDERR "\nshould run pipeline from PWM profile selection: $reducedtraining\n";
 
 if (-d "$results") {
-print STDERR "There is a directory named $results..\nbut elected the option to repeat the training for this species so NOT removing its contents\n";
 
-#	rmtree([ "$results/" ]);
-#print STDERR "\nmkdir -p $results\n";
- #       `mkdir -p $results;`;
+print STDERR "There is a directory named $results..\n\nbut elected the option to repeat the training for this species so NOT removing its contents\n";
 
 }else{
 
@@ -402,27 +315,26 @@ close FILE;
 
 
 ##CREATE A STATS FILE 
-#my @timeData = localtime(time);
 my @months = qw/Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec/;
 my @days = qw/Sun Mon Tue Wed Thu Fri Sat Sun/;
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 my @timeData = ($mday,$months[$mon],$days[$wday],$hour,$min);
 
-#STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
+#STATS DIR WAS CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
 my $statsout = $statsdir.join('_', @timeData)."_training_statistics";
 ###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
 open SOUT,">$statsout";
 
-if (!$useallseqs){print STDERR "\nCHECK The reduced training process will use 80% of the gene-model sequences ($totalseqs4training)/20% will used for posterior evaluation of the newly developed parameter file ($gffseqseval)\n";} else {print STDERR "The reduced training process will use ALL of the gene-model sequences ($total_seqs)\n"};
-#if ($jacknifevalidate){print STDERR "\nThe reduced training process will include a 10x cross validation of the accuracy of the new $species parameter file\n";}
+if (!$useallseqs){print STDERR "\nThe reduced training process will use 80% of the gene-model sequences ($totalseqs4training)/20% will used for posterior evaluation of the newly developed parameter file ($gffseqseval)\n";} else {print STDERR "The reduced training process will use ALL of the gene-model sequences ($total_seqs)\n"};
 
 print STDERR "\nA subset of $totalseqs4training sequences (randomly chosen from the $total_seqs gene models) was used for training\n";
 print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 
-######################################################################
-} #END OF SETTING SCRIPT FOR REDUCED TRAININING
 
-##########################################FULL TRAINING -MANDATORY FOR THE FIRST TIME GENEID IS TRAINED FOR A GIVEN SPECIES NOT REDUCED
+} ########################## END OF SETTING SCRIPT FOR REDUCED TRAININING
+
+##FULL TRAINING -MANDATORY FOR THE FIRST TIME GENEID IS TRAINED FOR A GIVEN SPECIES NOT REDUCED
+
 if (!$reducedtraining) { #DO ONLY FIRST TIME YOU RUN FULL TRAINING PIPELINE 
 
 if (-d "$results") {
@@ -437,9 +349,9 @@ print STDERR "\nmkdir -p $results\n";
     `mkdir -p $results;`;
 ;}
 
-print STDERR "\ntest: $varsmemory\n";
-print STDERR "test2: ${results}/$varsmemory\n";
+print STDERR "OPEN ${results}/$varsmemory\n";
 open (STORV, ">${results}/$varsmemory")or die;
+
 #######################################################
 
 ###MAKE A STATISTICS DIRECTORY
@@ -447,16 +359,14 @@ open (STORV, ">${results}/$varsmemory")or die;
 print STDERR "Create a statistics directory for this species\n";
 `mkdir -p $results/statistics_${species}/`;
 $statsdir = "$results/statistics_${species}/";
-#print STDERR "statsdir: $statsdir";
-###########################################################
-####store statistics directory variable
+
+#####store statistics directory variable
 print STORV Data::Dumper->Dump([$results], ['$results']);
 print STORV Data::Dumper->Dump([$statsdir], ['$statsdir']);
 ####
 
 
 ##CREATE A STATS FILE 
-#my @timeData = localtime(time);
 my @months = qw/Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec/;
 my @days = qw/Sun Mon Tue Wed Thu Fri Sat Sun/;
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
@@ -464,28 +374,14 @@ my @timeData = ($mday,$months[$mon],$days[$wday],$hour,$min);
 
 #STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
 my $statsout = $statsdir.join('_', @timeData)."_training_statistics";
-###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
+
+###OPEN STATISTICS OUTPUT AT THIS TIME...AND EVERY TIME PIPELINE IS RUN
 open SOUT,">$statsout";
+#HEADER FOR STATS FILE
 print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 
-
-##CREATE A STATS/PARAMETER FILE 
-#my @timeData = localtime(time);
-#STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
-#my $statsout = "$statsdir".join('_', @timeData)."_$sout";
-#my $statsout = "$statsdir".join('_', @timeData)."_training_statistics";
-###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
-#open SOUT,">$statsout";
-#print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
-###################################
 ####Convert fasta to tabular format
-      print STDERR "\nConverting genomics fasta file ($fasta) to tabular format\n";
-
-#chomp $results;        
-
-#chdir($results) or die "Cant chdir to $results $!";
-
-#print STDERR "temptbl: ${results}/$species.genomic.tbl\n";
+print STDERR "\nConverting genomics fasta file ($fasta) to tabular format\n";
 
 my $temptbl = ${results}.$species.".genomic.tbl";    
 
@@ -493,7 +389,7 @@ $temptbl = FastaToTbl($fasta,$temptbl);
 
      `sort -o $temptbl $temptbl`;
     
- print STDERR "actg to ACTG conversion of input fasta \n";
+ print STDERR "\nactg to ACTG conversion of input fasta \n";
 
 my $tblcaps = "";
 
@@ -510,12 +406,8 @@ $temptblcaps = ${results}.$species.".genomic.tbl";
  	    print FOUT "$tblcaps";
 	    close FOUT;
 
-#print STDERR "temptblcaps: $temptblcaps";
-
         $value = `gawk '{print \$1}' $temptblcaps | sort | uniq | wc | gawk '{print \$1}'`; 
         chomp $value;
-
-##exit;
 
 print STDERR "\nThe user has provided $value genomic sequences\n";
 
@@ -598,13 +490,13 @@ print STORV Data::Dumper->Dump([$plotsdir], ['$plotsdir']);
        print STDERR "\nmove genomic sequences into \"fastas_$species\" directory\n";
        print STDERR "(also transfer genomic fasta length info)\n\n";
       ##do not create fastas in diretory if they are already created and their number corresponds to the number of sequences in thr array
-###CONVERT GENOMICS FASTA TO MULTI FASTA AND PLACE THEM IN APPROPRIATE DIRECTORY
 
+###CONVERT GENOMICS FASTA TO MULTI FASTA AND PLACE THEM IN APPROPRIATE DIRECTORY
 
 print STDERR "Convert $temptblcaps to multiple genomic fastas and place them in $fastasdir:\n";
        
        TblToFastaFile($fastasdir,$temptblcaps);
-       print STDERR "\n\nConversion of $temptblcaps to multiple genomic fastas completed..\n\nAdd fasta sequence length information to same directory\n\n";
+       print STDERR "\n\nConversion of $temptblcaps to multiple genomic fastas completed..\nAdd fasta sequence length information to same directory\n\n";
 
     opendir(D, $fastasdir) || die "Can't open directory: $!\n";
        
@@ -615,16 +507,14 @@ print STDERR "Convert $temptblcaps to multiple genomic fastas and place them in 
   
        foreach my $file (@files) {
       
-     #	print STDERR "\nNAME FASTA FILE: $file\n";
-	
+     
        	my $fnametable = ${file}.".tbl";
            $fnametable = FastaToTbl(${fastasdir}.$file,${fastasdir}.$fnametable);
 	
           open FLEN, "<$fnametable";
               while (my $line = <FLEN>) {
  	     my ($name,$seq) = split (/\s+/,$line);
-	    # print STDERR "\$name: $name\n";
-	     my $lengfasta = length($seq);
+	       my $lengfasta = length($seq);
 	      open FLEN2, ">$fastasdir/${name}_len";
                 print FLEN2 "$name $lengfasta\n";
 	      close FLEN2; 
@@ -651,8 +541,7 @@ print STDERR "Convert $temptblcaps to multiple genomic fastas and place them in 
      }
      close LOCID;
 
-     ### print STDERR "gff.filtered: $gff";
-      
+        
        open FOUT2, ">$gff";
        
        print FOUT2 "$filtergff";
@@ -715,30 +604,10 @@ print STDERR "\nObtain list of all genes\n\n";
 ####store list of gene models the first time the pipeline is run for a given species
 print STORV Data::Dumper->Dump([$templist], ['$templist']);
 
-##CREATE A STATS/PARAMETER FILE 
-#my @timeData = localtime(time);
-#STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
-#my $statsout = "$statsdir".join('_', @timeData)."_$sout";
-###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
-#open SOUT,">$statsout";
-
-}
-
-########DO ONLY FIRST TIME YOU RUN FULL TRAINING PIPELINE IF (!REDUCED TRAINING)
-######NOT EXECUTED WHEN REDUCED METHOD IS CHOSEN
-
- #else {
-
-   # print STDERR "\n${results}$varsmemory does not seem to exist. Run pipeline at least once in full mode: \"-reduced no\" \n" and exit;
-
-#}
+} #FULL PIPELINE
 
 
-###reduced/short version training starting with PWMs# 
-
-
-
-#######################################################################
+###########################################################
 ###########################################################
 #CREATING A PARAMETER FILE REGARDLESS OF WHETHER THE TRAINING IS COMPLETE OR SHORT VERSION
 #########################################
@@ -755,19 +624,10 @@ $param->isocores([Geneid::Isocore->new()]);
 ##############################################
  ####Select subset for training/evaluation###
 ##############################################
-if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
-      if ($total_seqs >= 25) {	
 
-#######	
- # 	do {
-    #         print "Do you want to set aside 20% of these sequences for later evaluation of the accuracy of the parameter file (yes or no)?\n";
-  #	    $answer=<STDIN>;
-#	     chomp $answer;
- #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
-#######
- 	
-  
-	#f ($answer =~ /^(yes|y)$/i) { # new locus_id for training#IF YES (SET ASIDE 20%)
+if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
+      if ($total_seqs >= 25) { #switch to 400 in final distributed version	
+
  	   print "20% of the input sequences will be used for later evaluation of the accuracy of the parameter file\n";
 	     
             $totalseqs4training = int(0.8*$total_seqs);
@@ -776,16 +636,13 @@ if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
 	    print STORV Data::Dumper->Dump([$totalseqs4training], ['$totalseqs4training']);
 
 	    print STDERR "\nA subset of $totalseqs4training sequences (randomly chosen from the $total_seqs gene models) was used for training\n";
-	    #print SOUT "\nA subset of $totalseqs4training sequences (randomly chosen from the $total_seqs gene models) was used for training\n";
 	    #random pick (SHUF)
    	    open LOCID, "shuf $templocus_id | head -$totalseqs4training | sort | uniq |";
    	      while (<LOCID>) {
    		  $new_locus_id .= $_;
    	      }
    	    close LOCID;
-#	}
-	  
-  	  ####
+
   	    $templocus_id_new = ${results}."/".$species."_locus_id_training_setaside80";   
 	    
 	    open FOUT, ">$templocus_id_new";
@@ -839,7 +696,7 @@ if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
 
 #####Store variable with list of sequences set aside for training 
 	   print STORV Data::Dumper->Dump([$templist_train], ['$templist_train']);
-########################	    
+    
 
 #########################  	    
 ####new locus_id for evaluation test set
@@ -858,6 +715,7 @@ if (!$reducedtraining) { #RUN ONLY FIRST TIME FOR EACH SPECIES /ONLY FIRST TIME
 
 #####Store variable with list of sequences set aside for evaluating 
 	    print STORV Data::Dumper->Dump([$templocusid_eval], ['$templocusid_eval']);
+
 #########################
 #####gff for evaluation test set
 #########################
@@ -882,81 +740,32 @@ my $gff4evaluation = "";
 ###STORE INFO ON NUMBER OF SEQUENCES TO EVALUATE PLUS GFF FILE  OF SET ASIDE SEQUENCES..
 	   print STORV Data::Dumper->Dump([$tempgff4evaluation,$gffseqseval], ['$tempgff4evaluation','$gffseqseval']);
 
-# do { ### ASK if user also wants to perform 10x validation
- #            print "At the end of the training process do you ALSO want to perform 10x cross-validation (Jacknife method)\non the training set to determine the accuracy of the new parameter file in a second unbiased manner\nThis could take a few minutes (yes or no)?\n";
-  #	    $validationanswer=<STDIN>;
-#	     chomp $validationanswer;
- #	} while ($validationanswer !~ /^(yes|y)|(n|no)$/i); # set aside for 10x validation
-
-#	    if ($validationanswer =~ /^(yes|y)$/i) {
-
-#	   $jacknifevalidate= 1;
-#	    } else {
-#	   $jacknifevalidate= 0;	
-#	    }
-###USE SEQS TO TRAIN AND EVALUATE (SEPARATE SET)
 $useallseqs = 0;
    	 
-###STORE INFORMATION AS TO WHETHER WE WOULD LIKE TO RUN JACKNIFE AND THAT SEQS WERE SET ASIDE FOR EVALUATION $useallseqs=0
-#	    print STORV Data::Dumper->Dump([$jacknifevalidate,$useallseqs], ['$jacknifevalidate','$useallseqs']);
 	    print STORV Data::Dumper->Dump([$useallseqs], ['$useallseqs']);
 ######################
 
-	
-#	}			#END IF YES (SET ASIDE 20%)
- #	elsif ($answer =~ /^(no|n)$/i) {##ASK USER IF HE WISHES TO PERFORM CROSS-VALIDATION ON TRAINING SET (IN ABSENCE OF A TEST SET)	
-#	    do {
- #            print "At the end of the training process do you want to perform 10x cross-validation\non the training set to determine the accuracy of the new parameter file more accurately\nThis could take a few minutes (yes or no)?\n";
-  #	    $validationanswer=<STDIN>;
-#	     chomp $validationanswer;
- #	} while ($validationanswer !~ /^(yes|y)|(n|no)$/i);
 
-#	    if ($validationanswer =~ /^(yes|y)$/i) {
-
-#	   $jacknifevalidate= 1;
-#	    } else {
-#	   $jacknifevalidate= 0;	
-#	    }
-	    
-#	    $useallseqs = 1;
-
-###STORE INFORMATION AS TO WHETHER WE WOULD LIKE TO RUN JACKNIFE AND THAT SEQS WERE NOT set aside for eval $useallseqs=1	    
-#	    print STORV Data::Dumper->Dump([$jacknifevalidate,$useallseqs], ['$jacknifevalidate','$useallseqs']);
-#	} #in answer is no. (no setting aside of sequences even though > 500 seqs)
-
-    }# seqs > 25 
+    }# seqs > 400
 
   ####LOOP IF WE HAVE FEWER THAN 500 SEQUENCES
-elsif ($total_seqs < 25) { # seqs < 500
+elsif ($total_seqs < 25) { # seqs < 400 FOR ALL INTENTS AND PURPOSES FOR THIS DOCKER VERSION OF THE PIPELINE JACKNIFFING IS DISABLED
 
- do {
-             print "At the end of the training process do you want to perform 10x cross-validation)\non the training set to determine the accuracy of the new parameter file more accurately\nThis could take a few minutes (yes or no)?\n";
-  	    $validationanswer=<STDIN>;
-	     chomp $validationanswer;
- 	} while ($validationanswer !~ /^(yes|y)|(n|no)$/i);
-
-	    if ($validationanswer =~ /^(yes|y)$/i) {
-
-	   $jacknifevalidate= 1;
-	    } else {
-	   $jacknifevalidate= 0;	
-	    }
-##ALWAYS USE ALL SEQS IF USER PROVIDES FEWER THAN 500 SEQS
- $useallseqs = 1;
-
-###STORE INFORMATION AS TO WHETHER WE WOULD LIKE TO RUN JACKNIFE AND THAT SEQS WERE NOT set aside for eval $useallseqs=1 <500 seqs
- print STORV Data::Dumper->Dump([$jacknifevalidate,$useallseqs], ['$jacknifevalidate','$useallseqs']);
+    print STDERR "\nre-run pipeline making sure you have at least 400 sequences to train geneid with\n" and exit;
 
 
-} # seqs < 25
+
+} # seqs < 25 (400)
     
 }######### ABOVE ONLY EXECUTED FIRST TIME THE PIPELINE IS RUN FOR A GIVEN SPECIES
 
-#print STDERR "\nCHECK: use all sequences ?: $useallseqs\njacknife ?: $jacknifevalidate\n";
+
 
 ##############################################
-################################CALL SUBS:
+################################CALL SUBS:####
 ##############################################
+
+
 if (!$reducedtraining) { #ONLY FIRST TIME ("NOT SHORTER VERSION") FOR A GIVEN SPECIES
 
     if (!$useallseqs){ ##SET SEQS FOR EVAL AND TRAINING (SUBSETS)
@@ -1042,24 +851,15 @@ print STDERR "the CDS-containing directory in $results/cds_${species}/ is no lon
 	rmtree([ "$results/cds_${species}/" ]);
 print STDERR "the intron-containing directory in $results/intron_${species}/ is no longer needed..\nRemove directory and its contents\n";
 	rmtree([ "$results/intron_${species}/" ]);
-#print STDERR "the splice-site-containing directory in $path/sites/ is no longer needed..\nRemove directory and its contents\n";
-#	rmtree([ "$path/sites/" ]);
-#print STDERR "the fastas-containing directory in $path/fastas_$species/ is no longer needed..\nRemove directory and its contents\n";
-#	rmtree([ "$path/fastas_$species/" ]);
-###
-#close STORV;
 
-#}### if reduced training (non-default) do not calculate any of the above ALL OF THE ABOVE MUST BE RUN ONLY FIRST TIME GENEID IS TRAINED FOR A GIVEN SPECIES 
 ###EVERYTHING BELOW WILL BE RUN EVERYTIME THE TRAINING PIPELINE IS RUN WHETHER "REDUCED" OR "FULL" 
-
-### EVERYTHING BELOW ALWAYS EXECUTED EVEN ON SHORT VERSION OF THE PIPELINE (REDUCED)
 
 #####GET BACKGROUND SEQUENCES 
 #User can set the length and number of the background sequences
 my $kmer = 62;
 my $numseqs = 100000;
 
-             print "Obtaining $numseqs background sequences of $kmer nucleotides each for estimating background frequencies of nucleotides\n";
+             print "\nObtaining $numseqs background sequences of $kmer nucleotides each for estimating background frequencies of nucleotides\n";
 	    
 	    $bckgrnd = $species."_background.info";
 	    $bckgrnd = getBackground($kmer,$fasta,$temptblcaps,$numseqs,$bckgrnd,$sitesdir);
@@ -1074,8 +874,7 @@ my $numseqs = 100000;
 ##############################################################
 close STORV;
 
-#   exit;
-} ###IF NOT REDUCED TRAINING !$reducedtraining
+} ###IF NOT SHORT VERSION TRAINING TRAINING !$reducedtraining
 
 
 ####IF "REDUCED" TRAINING WILLS START AT THIS POINT: DONOR,ACCEPTOR,START AND BRANCH PROFILE STATS:
@@ -1116,8 +915,6 @@ if (!defined @{$param->isocores}[0]->set_profile('Donor_profile',$prof_len_don,$
 
 my $donsub ="";
 
-#print STDERR "gawk '{print  substr(\$2,($startdonor-3),($prof_len_don+6))}' $outdonortbl\n";
-
 open LOCID, "gawk '{print  substr(\$2,($startdonor-3),($prof_len_don+6))}' $outdonortbl |";
   	      while (<LOCID>) {
   		  $donsub .= $_;
@@ -1135,14 +932,6 @@ print STDERR "pictogram $donorsubprofile  $plotsdir/Donor -bits -land\n";
 `ps2pdf $plotsdir/Donor.ps $plotsdir/Donor.pdf`;
 `rm $plotsdir/Donor.ps`;
 
-#`mv $path/Donor.ps $plotsdir`;
-
-#unlink $donorsubprofile;
-
-# print STDERR "donormatrix: \n";
-# foreach my $i (@$donormatrix){
-#     print STDERR join("\t",@$i),"\n";
-#}
 
 ########
 #########
@@ -1159,6 +948,7 @@ print STDERR "pictogram $donorsubprofile  $plotsdir/Donor -bits -land\n";
     $order = "1";
 
    } elsif ($numbersites <= 1400){
+
 
     $order = "0";
  }
@@ -1179,8 +969,6 @@ if (!defined @{$param->isocores}[0]->set_profile('Acceptor_profile',$prof_len_ac
 
 my $accsub ="";
 
-#print STDERR "gawk '{print  substr(\$2,($startacceptor-3),($prof_len_don+6))}' $outacceptortbl\n";
-
 open LOCID, "gawk '{print  substr(\$2,($startacceptor-3),($prof_len_acc+6))}' $outacceptortbl |";
   	      while (<LOCID>) {
   		  $accsub .= $_;
@@ -1198,19 +986,6 @@ print STDERR "pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land\n";
 `ps2pdf $plotsdir/Acceptor.ps $plotsdir/Acceptor.pdf`;
 `rm $plotsdir/Acceptor.ps`;
 
-
-#`mv $path/Acceptor.ps $plotsdir`;
-
-#unlink $acceptorsubprofile;
-
-
-
-
-
- #  print STDERR "acceptormatrix: \n";
-#   foreach my $i (@$acceptormatrix){
-#       print STDERR join("\t",@$i),"\n";
-#   }
 
 #########
 #########
@@ -1249,8 +1024,6 @@ if (!defined @{$param->isocores}[0]->set_profile('Start_profile',$prof_len_sta,$
 
 my $stasub ="";
 
-#print STDERR "gawk '{print  substr(\$2,($startstart-3),($prof_len_don+6))}' $outstarttbl\n";
-
 open LOCID, "gawk '{print  substr(\$2,($startstart-3),($prof_len_sta+6))}' $outstarttbl |";
   	      while (<LOCID>) {
   		  $stasub .= $_;
@@ -1268,17 +1041,11 @@ print STDERR "pictogram $startsubprofile  $plotsdir/Start -bits -land\n";
 `ps2pdf $plotsdir/Start.ps $plotsdir/Start.pdf`;
 `rm $plotsdir/Start.ps`;
 
-#`mv $path/Start.ps $plotsdir`;
-
-#unlink $startsubprofile;
-
-
 
 ##OPTIONAL BRANCH STATS (FUNGI NORMALLY, AFTER RUNNING MEME)
 if ($usebranch) {
 
 
- #print STDERR "\nCHECK: begin to process branch\n";
 $fullengthbranchtbl = processBranch($memefile,$motifnumber,$outintron);
 
 
@@ -1309,8 +1076,6 @@ if (!defined @{$param->isocores}[0]->set_profile('Branch_point_profile',$prof_le
 
 my $brasub ="";
 
-#print STDERR "gawk '{print  substr(\$2,($startstart-3),($prof_len_don+6))}' $outstarttbl\n";
-
 open LOCID, "gawk '{print  substr(\$2,($startbranch-3),($prof_len_bra+6))}' $fullengthbranchtbl |";
   	      while (<LOCID>) {
   		  $brasub .= $_;
@@ -1328,14 +1093,7 @@ print STDERR "pictogram $branchsubprofile  $plotsdir/Branch -bits -land\n";
 `ps2pdf $plotsdir/Branch.ps $plotsdir/Branch.pdf`;
 `rm $plotsdir/Branch.ps`;
 
-#`mv $path/Branch.ps $plotsdir`;
-#unlink $branchsubprofile;
-
-
-
-
-
-} # if usebranch
+} # USE usebranch
 
 
 ###DERIVE INITIAL/TRANSITION MARKOV MODEL
@@ -1381,8 +1139,6 @@ print STDERR "\nshortest intron: $shortintron\nlongest intron: $longintron\nmini
 } 
 
 
-
-
 ##################################################
 ###WRITE PRELIMINARY NON-OPTIMIZED PARAMETER FILE
 $param->writeParam("$results/$species.geneid.param");
@@ -1401,23 +1157,12 @@ print STDERR "newparam: $newparam";
 print STDERR "\nOptimizing new parameter file\n\n";
 
 my $opttype = "";
-#do {
- #          print STDERR "\nDo you wish to optimize the internal parameter file on individual 400-nt flanked sequences or on an artificial contig made up of the concatenated flanked sequences (approx. 800 nt between genes)? (Write down \"f(lanked)\" if you choose the first option and \"c(contig)\" if you prefer the second)\n";
-  #	   $opttype = readline(STDIN);
-   #    } while ($opttype !~ /^(flanked|f)|(contig|c)$/i);
-
-#if ($opttype =~ /^(contig|c)$/i) {
 
 	   $contigopt= 1;
-#	   print STDERR "\nYou chose to optimize the internal parameters of geneid based on the artificial contig and therefore NO 10x cross validation will be performed\n\n";
-#	   print SOUT "\nThe user chose to optimize the internal parameters of geneid based on an artificial contig and therefore NO 10x cross validation will be performed\n\n";
+
             print STDERR "\nThe parameter file will be optimized on an artificial contig made up of the concatenated flanked sequences (approx. 800 nt between genes)\n\n";
             print SOUT "\nThe parameter file will be optimized on an artificial contig made up of the concatenated flanked sequences (approx. 800 nt between genes)  \n\n";
 	   $jacknifevalidate= 0;
-#	    } else {
-#	   $contigopt= 0;	
-#}
-
 
 ####OPTIMIZATION FUNCTION NO BRANCH
 
@@ -1442,57 +1187,6 @@ my $array_ref = "";
      my $fAccCtx = "70";
 
 if (!$usebranch){ # no clear separate branch profile
-=head
-
-my $respo = "";
-do {
-           print STDERR "Use automatically selected range values for the optimization of geneid eWF (exon weight) and oWF (exon/oligo factor) internal parameters?\n\n(eWF: $IeWF to $FeWF; step $deWF\noWF: $IoWF to $FoWF; step $doWF)\n\nDo you prefer to change these values? ";
-  	   $respo = readline(STDIN);
-       } while ($respo !~ /^(yes|y)|(n|no)$/i);
-
-if ($respo =~/^(yes|y)/i) {
- 	    
-    my $sline = "";
-    my $eline = "";
-    my $dline = "";
-            do {
-            print STDERR "\nType new initial eWF (IeWF): ";
- 	    $sline = readline(STDIN);
- 	    } while ($sline !~/(-*[0-9]*\.*[0-9]+)/);
- 	    $IeWF = $1;
- 	    
-	    do {
-	    print STDERR "\nType new final eWF (FeWF): ";
- 	    $eline = readline(STDIN);
- 	    } while ($eline !~/(-*[0-9]*\.*[0-9]+)/|| $eline <= $sline);
- 	    $FeWF = $1;
-	    
-	    do {
-	    print STDERR "\nType step (delta) eWF (deWF)): ";
- 	    $dline = readline(STDIN);
- 	    } while ($dline !~/(-*[0-9]*\.*[0-9]+)/);
- 	    $deWF = $1;
-	    
-	    do {
-	    print STDERR "\nType new initial oWF (IoWF): ";
- 	    $sline = readline(STDIN);
- 	    } while ($sline !~/(-*[0-9]*\.*[0-9]+)/);
- 	    $IoWF = $1;
- 	    
-	    do {
-	    print STDERR "\nType new final oWF (FoWF): ";
- 	    $eline = readline(STDIN);
- 	    } while ($eline !~/(-*[0-9]*\.*[0-9]+)/ || $eline <= $sline);
- 	    $FoWF = $1;
-	    
-	    do { 
-	    print STDERR "\nType step (delta) oWF (doWF): ";
- 	    $dline = readline(STDIN);
- 	    } while ($dline !~/(-*[0-9]*\.*[0-9]+)/);
- 	    $doWF = $1;
-
-}
-=cut
 
 ###OPTIMIZATION FUNCTIONS
 
@@ -1665,7 +1359,7 @@ print SOUT join("\t",@evaluationtest),"\n\n";
 
 if ($jacknifevalidate) {
 ###################################
-###########SET UP FOR JACKNIFE:
+###########SET UP FOR JACKNIFE: NOTE: NOT IMPLEMENTED IN THE DOCKER VERSION
 ###################################
 #need output from processSequences4Optimization
  my $list4jkf = "";
@@ -1739,14 +1433,6 @@ print SOUT join("\t",@jacknifeeval),"\n";
 ######Obtain predictions on flanked sequences and plot them using gff2ps
 #########################################################################
 
-#do {
-#             print "\nDo you want to plot gff2ps graphs with the annotations and predictions given by the new $species parameter file (yes or no)?\n";
-#  	    $answer=<STDIN>;
-#	     chomp $answer;
- #	} while ($answer !~ /^(yes|y)|(n|no)$/i);
-
-
-#if ($answer =~ /^(yes|y)$/i) {
 
 if ($jacknifevalidate && $useallseqs && !$contigopt) {
 
@@ -1783,10 +1469,7 @@ close SOUT;
 
 #remove tmpdir
 
-print STDERR "remove TMP dir: $TMP";
-
-#`rm -rf $TMP`;
-	rmtree([ "$TMP" ]);
+rmtree([ "$TMP" ]);
 
 ######################################
 #######################################
@@ -1804,23 +1487,16 @@ sub extractCDSINTRON{
 
  	my ($gff,$locus_id,$type,$output) = @_;
 
-	#ERASE FASTA FILES FOR PARTICULAR SPECIES IF ALREADY EXIST
-#	unlink "$path/cds/${species}.${type}.cds.fa";
-#	unlink "$path/intron/${species}.${type}.intron.fa";
-
 # #####extract CDS and INTRON SEQUENCES
 
     	print STDERR "\nEXTRACT CDS and INTRON SEQUENCES from $type set..\n\n";
     	open(LOCUS,"<$locus_id");
-   #	print STDERR "$locus_id and $gff\n";
-  	my $count = 0;
+     	my $count = 0;
     	while (<LOCUS>) {
     	    my ($genomic_id,$gene_id)=split;
 	    `egrep -w '$gene_id\$' $gff > $TMP/$gene_id.gff`;
-	  #  print STDERR "$path/SSgff -cE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ CDS//' >> $results/cds_${species}/${species}${type}.cds.fa";
-            `SSgff -cE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ CDS//' >> $results/cds_${species}/${species}${type}.cds.fa`;
-          # print STDERR "$path/SSgff -iE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ Intron.*//' >> $results/intron_${species}/${species}${type}.intron.fa";
-    	    `SSgff -iE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ Intron.*//' >> $results/intron_${species}/${species}${type}.intron.fa`;
+	    `SSgff -cE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ CDS//' >> $results/cds_${species}/${species}${type}.cds.fa`;
+            `SSgff -iE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ Intron.*//' >> $results/intron_${species}/${species}${type}.intron.fa`;
    	    $count++;
    	    print STDERR "$count ..";
 	   
@@ -1829,7 +1505,7 @@ sub extractCDSINTRON{
 
     	print STDERR "DONE\n";
 
-# #####tabulate CDS and INTRON SEQUENCES
+######tabulate CDS and INTRON SEQUENCES
 
    	print STDERR "\nCreate tabular format of CDS and INTRON sequences for $type sequences\n";
 	
@@ -1841,7 +1517,7 @@ sub extractCDSINTRON{
         $tempcds = FastaToTbl($tempcdsfa,$tempcds);
 	print STDERR "cds tabular file created for $type sequences \n";
         
-  # ##INTRON
+####INTRON
  	 my $tempintronfa = $introndir.${species}."$type".".intron.fa";
          my $tempintron = ${output}.${species}."$type".".intron.tbl"; 
          $tempintron = FastaToTbl($tempintronfa,$tempintron);
@@ -1863,8 +1539,10 @@ sub extractCDSINTRON{
 	    close FOUT;
 	
        print STDERR "intron tabular file created with introns with more than 0 nucleotides\n";
+
 ####GET LIST OF SEQUENCES WITH LENGTH >0 and EXCLUDE FROM CDS/locus_id/gff FILES SEQUENCES WITH INTRONS WITH 0 LENGTH
-	my $intronzero = "";
+	
+            my $intronzero = "";
   	    open LOCID, "gawk '{if(length(\$2)==0){print \$1}}' $tempintron | sed 's/\\(.*\\)\\..*/\\1\\_/' | sort | uniq |";
   	    while (<LOCID>) {
 	    
@@ -1938,18 +1616,14 @@ open LOCID, "gawk '{if(length(\$2)==0){print \$1}}' $tempintron | sed 's/\\(.*\\
 	    close FOUT;
 
   
-#	rmtree([ "$results/cds/" ]);
- #	rmtree([ "$results/intron/" ]);	
-
-
 ####Convert sequences to protein format and check for in-frame stops
    	print STDERR "\nConvert sequences to protein format and check for in-frame stops and for proteins not starting with an M or not ending with a STOP\n\n";
+       
         #SHOWS WHERE GENETIC CODE FILE IS LOCATED AND ITS NAME
         my $geneticcode = $path."/genetic.code";
 	print STDERR "$path/genetic.code\n";
    	my $tempall_protein = ${output}.$species."$type".".protein";   
-       # $tempall_protein = Translate($geneticcode,$tempcds,$tempall_protein);
-	$tempall_protein = Translate($geneticcode,$tempallcds_nozero,$tempall_protein);
+       	$tempall_protein = Translate($geneticcode,$tempallcds_nozero,$tempall_protein);
 	
 	my $inframestops=`gawk '{print \$2,\$1}' $tempall_protein | egrep '[A-Z]\\*[A-Z]\|^[^M]\|[^\\*] ' | gawk '{print \$2}' | wc | gawk '{print \$1}'`;
 	chomp $inframestops;
@@ -1984,8 +1658,7 @@ open LOCID, "gawk '{if(length(\$2)==0){print \$1}}' $tempintron | sed 's/\\(.*\\
 	    
 	    
 	    my $cdstbl2 = "";
-  	  #  open LOCID, "sed 's/\\(.*\\)\_.*/\\1/g' $inframe_protein | egrep -vf - $tempallcds_nozero |";
-	     open LOCID, "sed 's/\\(.*\\)/\\1_/g' $inframe_protein | egrep -vf - $tempallcds_nozero |";
+  	    open LOCID, "sed 's/\\(.*\\)/\\1_/g' $inframe_protein | egrep -vf - $tempallcds_nozero |";
   	    while (<LOCID>) {
 		
 		$cdstbl2 .= $_;
@@ -2015,7 +1688,6 @@ open LOCID, "gawk '{if(length(\$2)==0){print \$1}}' $tempintron | sed 's/\\(.*\\
 	    
 	    my $new_locus_id_filter1 = "";
 	    
-	    #open LOCID, "sed 's/\\(.*\\)\_.*/\\1\$/g' $inframe_protein | egrep -vf - $templocus_id_nozero |";
 	    open LOCID, "sed 's/\\(.*\\)/\\1\$/g' $inframe_protein | egrep -vf - $templocus_id_nozero |";
   	    while (<LOCID>) {
 	    $new_locus_id_filter1 .= $_;
