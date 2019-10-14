@@ -28,7 +28,7 @@ _Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fa
 
 The required options are:
 
-### 1) "-species": the name of the species being trained with the format: <first letter of the genus name>.<species name>  (_i.e._ _H.sapiens_); 
+### 1) "-species": the name of the species being trained with the format: `<first letter of the genus name>`DOT`<species name>`  (_i.e._ _H.sapiens_); 
 
 ### 2) "-gff": a GFF-format file (version2) containing the coordinates of the gene models to be used in the training process; an example of a GFF file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2)  
 ### 3) "-fastas": a single (multi-)FASTA file with the DNA sequences of the gene models plus a good number of flanking nucleotides; an example of a FASTA file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.4training.fa).   
