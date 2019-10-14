@@ -47,11 +47,11 @@ The optional command line parameters are:
 
 The training set for geneid should:
 
-a) be made up of at least 400-500 protein-coding gene models (and up to ~2500 sequences to keep the training process as short as possible)
-b) be largely multi-exonic in order to accurately model the splice sites
-c) be made-up of sequences longer than at least 150-200 amino-acids
-d) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes
-e) include sequences that overlap with the database proteins above over at least 90% of their length
+a) be made up of at least 400-500 protein-coding gene models (and up to ~2500 sequences to keep the training process as short as possible)  
+b) be largely multi-exonic in order to accurately model the splice sites  
+c) be made-up of sequences longer than at least 150-200 amino-acids  
+d) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  
+e) include sequences that overlap with the database proteins above over at least 90% of their length  
 
 ## 2.3 PARAMETER FILE BUILDING MODULES
 
@@ -69,7 +69,7 @@ The start and spice site profile logos representing the nucleotide information c
 **Donor.pdf**  
 **Start.pdf**  
 
-You will also be able to find a **gff2ps**(http://genome.crg.es/software/gfftools/GFF2PS.html) (named **$SPECIES.pdf**) plot representing all genes predicted in the evaluation scaffold built by geneidTRAINer. 
+You will also be able to find a **gff2ps** (http://genome.crg.es/software/gfftools/GFF2PS.html) (named **$SPECIES.pdf**) plot representing all genes predicted in the evaluation scaffold built by geneidTRAINer. 
 
 ## 3.0 CONCLUSIONS
 
