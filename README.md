@@ -31,13 +31,13 @@ The example above uses test data found in https://public-docs.crg.eu/rguigo/Data
 
 a GFF2 file that includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**. The coordinates represented in this are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa".When training geneid for any species the user should provide GeneidTRAINer with a ggf2 with this format. 
 
-**NOTE:** The set of gene models in an actual training set for geneid should:  
+**NOTE:** An actual training set for geneid should:  
 
-a) be made up of at least **400-500** protein-coding genes (and up to **~2500** sequences to keep the training process as short as possible)  
+a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences to keep the training process as short as possible)  
 b) be largely multi-exonic   
-c) be longer than at least **150-200** amino-acids  
-d) have been previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  
-e) overlap with the database proteins over at least 90% of their length  
+c) be made-up of sequences longer than at least **150-200** amino-acids  
+d) be consituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  
+e) include sequences hat overlap with the database proteins above over at least 90% of their length  
 
 
 **2. M.cingulata.4training.fa**
