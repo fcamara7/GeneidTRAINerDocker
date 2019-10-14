@@ -26,7 +26,8 @@ my $TMP = "./tmp/";
 ##my $TMP      = "$TMPDIR";
 my $TMPROOT   = "trainer_$$";
 ##my $CEGMATMP  = "$TMP/$TMPROOT";
-
+#terminate script within docker(?)
+$SIG{TERM} = sub { die "Caught a sigterm $!" };
 
 ########PROGRAM SPECIFIC VARIABLES
 my $count = 0;
@@ -295,7 +296,7 @@ if ($minintergenicusr) {
 #open (CONFIGF, ">$extdata")or die;
 
 
-}###IF THERE IS AN FILE CONTAINING A FEW VALUES TO BE USED PREFERENTIALLY BY THE GENEIDTRAINER OVERRIDING THE VALUES DETERMINED TO BE THE BEST BY THE PIPELINE 
+} ###IF THERE IS AN FILE CONTAINING A FEW VALUES TO BE USED PREFERENTIALLY BY THE GENEIDTRAINER OVERRIDING THE VALUES DETERMINED TO BE THE BEST BY THE PIPELINE 
 #else {
 #print "\nFile \$extdata=$extdata does not exist\n" and exit;
 
@@ -365,9 +366,19 @@ print STDERR $usage and exit;
 #=head
 #print STDERR "\$reduced: \n$reduced\n"
 
+if ($reduced =~ /^(no|n)/i)
+{
+
+    $reducedtraining = 0;
+    print STDERR "reducedtraining:$reducedtraining\n";
+}
+
+#REDUCED BELOW
 if (-s "${results}$varsmemory" &&  $reduced =~ /^(yes|y)/i) { ###reduced/short training starting with PWMs 
 
 $reducedtraining = 1;
+
+print STDERR "\nreducedtraining:$reducedtraining\n";
 
 if (-d "$results") {
 print STDERR "There is a directory named $results..\nbut elected the option to repeat the training for this species so NOT removing its contents\n";
@@ -402,7 +413,7 @@ my $statsout = $statsdir.join('_', @timeData)."_training_statistics";
 ###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
 open SOUT,">$statsout";
 
-if (!$useallseqs){print STDERR "\nThe reduced training process will use 80% of the gene-model sequences ($totalseqs4training)/20% will used for posterior evaluation of the newly developed parameter file ($gffseqseval)\n";} else {print STDERR "The reduced training process will use ALL of the gene-model sequences ($total_seqs)\n"};
+if (!$useallseqs){print STDERR "\nCHECK The reduced training process will use 80% of the gene-model sequences ($totalseqs4training)/20% will used for posterior evaluation of the newly developed parameter file ($gffseqseval)\n";} else {print STDERR "The reduced training process will use ALL of the gene-model sequences ($total_seqs)\n"};
 #if ($jacknifevalidate){print STDERR "\nThe reduced training process will include a 10x cross validation of the accuracy of the new $species parameter file\n";}
 
 print STDERR "\nA subset of $totalseqs4training sequences (randomly chosen from the $total_seqs gene models) was used for training\n";
@@ -443,14 +454,29 @@ print STORV Data::Dumper->Dump([$results], ['$results']);
 print STORV Data::Dumper->Dump([$statsdir], ['$statsdir']);
 ####
 
-##CREATE A STATS/PARAMETER FILE 
-my @timeData = localtime(time);
+
+##CREATE A STATS FILE 
+#my @timeData = localtime(time);
+my @months = qw/Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec/;
+my @days = qw/Sun Mon Tue Wed Thu Fri Sat Sun/;
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+my @timeData = ($mday,$months[$mon],$days[$wday],$hour,$min);
+
 #STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
-#my $statsout = "$statsdir".join('_', @timeData)."_$sout";
-my $statsout = "$statsdir".join('_', @timeData)."_training_statistics";
+my $statsout = $statsdir.join('_', @timeData)."_training_statistics";
 ###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
 open SOUT,">$statsout";
 print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
+
+
+##CREATE A STATS/PARAMETER FILE 
+#my @timeData = localtime(time);
+#STATS DIR CREATED FIRST TIME PIPELINE IS RUN FOR A GIVEN SPECIES
+#my $statsout = "$statsdir".join('_', @timeData)."_$sout";
+#my $statsout = "$statsdir".join('_', @timeData)."_training_statistics";
+###OPEN STATISTICS OUTPUT AT THIS TIME...EVERY TIME PIPELINE IS RUN
+#open SOUT,">$statsout";
+#print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 ###################################
 ####Convert fasta to tabular format
       print STDERR "\nConverting genomics fasta file ($fasta) to tabular format\n";
@@ -1106,6 +1132,8 @@ open LOCID, "gawk '{print  substr(\$2,($startdonor-3),($prof_len_don+6))}' $outd
 print STDERR "pictogram $donorsubprofile  $plotsdir/Donor -bits -land\n";
 
 `pictogram $donorsubprofile $plotsdir/Donor -bits -land`;
+`ps2pdf $plotsdir/Donor.ps $plotsdir/Donor.pdf`;
+`rm $plotsdir/Donor.ps`;
 
 #`mv $path/Donor.ps $plotsdir`;
 
@@ -1167,6 +1195,9 @@ open LOCID, "gawk '{print  substr(\$2,($startacceptor-3),($prof_len_acc+6))}' $o
 print STDERR "pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land\n";
 
 `pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land`;
+`ps2pdf $plotsdir/Acceptor.ps $plotsdir/Acceptor.pdf`;
+`rm $plotsdir/Acceptor.ps`;
+
 
 #`mv $path/Acceptor.ps $plotsdir`;
 
@@ -1234,6 +1265,8 @@ open LOCID, "gawk '{print  substr(\$2,($startstart-3),($prof_len_sta+6))}' $outs
 print STDERR "pictogram $startsubprofile  $plotsdir/Start -bits -land\n";
 
 `pictogram $startsubprofile  $plotsdir/Start -bits -land`;
+`ps2pdf $plotsdir/Start.ps $plotsdir/Start.pdf`;
+`rm $plotsdir/Start.ps`;
 
 #`mv $path/Start.ps $plotsdir`;
 
@@ -1292,6 +1325,8 @@ open LOCID, "gawk '{print  substr(\$2,($startbranch-3),($prof_len_bra+6))}' $ful
 print STDERR "pictogram $branchsubprofile  $plotsdir/Branch -bits -land\n";
 
 `pictogram $branchsubprofile  $plotsdir/Branch -bits -land`;
+`ps2pdf $plotsdir/Branch.ps $plotsdir/Branch.pdf`;
+`rm $plotsdir/Branch.ps`;
 
 #`mv $path/Branch.ps $plotsdir`;
 #unlink $branchsubprofile;
@@ -3153,17 +3188,17 @@ sub getKmatrix {
  	`gawk -f frequency.awk 1 $false_seqs > $sitesdir/$false_seq_name.freq`;
 	
 	if ($donor) {
-	`gawk -f information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=38 && \$1>=25' > $true_seq_name-$false_seq_name`;
+	`information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=38 && \$1>=25' > $true_seq_name-$false_seq_name`;
 	
 	$tempinfolog = "$true_seq_name-$false_seq_name";
 	print STDERR "tempinfolog: $tempinfolog \n";
 	}
 	if ($accept) {
-	`gawk -f information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=33 && \$1>=2' > $true_seq_name-$false_seq_name`;
+	`information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=33 && \$1>=2' > $true_seq_name-$false_seq_name`;
          $tempinfolog = "$true_seq_name-$false_seq_name";
 	}
 	if ($star) {
-	`gawk -f information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=37 && \$1>=25' > $true_seq_name-$false_seq_name`;
+	`information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=37 && \$1>=25' > $true_seq_name-$false_seq_name`;
          $tempinfolog = "$true_seq_name-$false_seq_name";
 	}
 	
@@ -4430,7 +4465,9 @@ sub predictPlotgff2ps {
 		    print STDERR "#";}
 		    elsif ($contigopt) {
 			my $nucleotidesperline = 10000;
-			`gff2ps -v -p -N $nucleotidesperline -C $path/.gff2psrcNEW -- $TMP/$gene_id.gff > $plotsdir/$species.gv`;
+			`gff2ps -v -p -N $nucleotidesperline -C $path/.gff2psrcNEW -- $TMP/$gene_id.gff > $plotsdir/$species.ps`;
+			`ps2pdf $plotsdir/$species.ps $plotsdir/$species.pdf`;
+			`rm $plotsdir/$species.ps`;
 			print STDERR "#";
 		    }
     	}		       
