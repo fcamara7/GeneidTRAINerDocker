@@ -36,7 +36,7 @@ a GFF2 file that includes 100 gene models used to "mock" train (80) geneid for t
 a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences to keep the training process as short as possible)  
 b) be largely multi-exonic   
 c) be made-up of sequences longer than at least **150-200** amino-acids  
-d) be consituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  
+d) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  
 e) include sequences hat overlap with the database proteins above over at least 90% of their length  
 
 
