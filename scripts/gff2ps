@@ -1629,7 +1629,7 @@ BEGIN{ ######### INITIALITATION ###############
   "date +%T" | getline time; close("date +%T");
   #
   # Finding logged user...
-  "whoami" | getline usr; close("whoami");
+  #"whoami" | getline usr; close("whoami");
   #
   # Defining pre-variables by CommandLine
   READ_CL();
@@ -3430,7 +3430,7 @@ function CreateProps(flag,    STRING,prop,dffeat,feat,gpfeat,sofeat) {
     CF_HEAD=CF_HEAD"##   DEFAULT CUSTOM FILE FOR GFF2PS   ##\n";
     CF_HEAD=CF_HEAD"########################################\n";
     CF_HEAD=CF_HEAD"##\n## User Name: %s\n##   Created: %s at %s\n##\n";
-    printf CF_HEAD,usr,date,time > Var["customfile_name_default"];
+    printf CF_HEAD,date,time > Var["customfile_name_default"];
     printf STRING > Var["customfile_name_default"];
     for (dffeat in Default)
       printf "%s=%s\n", dffeat, Default[dffeat] > Var["customfile_name_default"];
@@ -3997,7 +3997,7 @@ function PSheader() {
   printf "%%%%Creator: %s\n", Var["PROGRAM"];
   printf "%%%%Version: %s\n", Var["VERSION"];
   printf "%%%%CreationDate: %s\n", date" "time;
-  printf "%%%%For: %s\n", usr;
+  #printf "%%%%For: %s\n", usr;
   printf "%%%%Pages: %s\n", "(atend)";
   printf "%%%%Orientation: Portrait\n";
   printf "%%%%BoundingBox: 0 0 %s %s\n", PsizeX[bbpgsz], PsizeY[bbpgsz];
