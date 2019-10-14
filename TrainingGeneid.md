@@ -59,7 +59,7 @@ We have developed a few parameter file-building modules in PERL programming lang
 
 ## 2.4 NEWLY DEVELOPED PARAMETER FILE AND TRAINING STATISTICS OUTPUT FILE
 
-The newly developed parameter file will be stored in the directory set by the mandatory **-results** results input option. It will be named as follows: _**`<species>`.geneid.optimized.param**_ (where the species name is taken from the mandatory input option **-species**; _i.e._ "M.cingulata")
+The newly developed parameter file will be stored in the directory set by the mandatory **-results** results input option. It will be named as follows: _**`<species>`.geneid.optimized.param**_ (where the species name is taken from the mandatory input option **-species**; _i.e._ "_M.cingulata_")
 
 As the newly developed parameter file for a particular species is being built a text file is being written which includes detailed statistics on the training set as well as on the training process itself. It also indicates the name of the optimized parameter file and the accuracy performance estimation (produced by running geneid on the 20% of sequences set aside at the beginning of the training process). This file will be produced each time the pipeline is executed and stored under the directory set by the option **-results** (_i.e._ "./output" in the example at the beginning of this document). The file will be stored in a directory called "statistics_$SPECIES" (_i.e._ statistics_M.cingulata). The statistics file name will include information with regard to its creation date and time (in hours and minutes): "_i.e._ 1_Oct_Tue_10_13_training_statistics". 
 
