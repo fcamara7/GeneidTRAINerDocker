@@ -110,7 +110,7 @@ The user can also find statistics on the training process by going the directory
 
 Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) includes a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).
 
-The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **`<userselecteddir>`/output/statistics_$SPECIES/plots_$SPECIES** (where $SPECIES=_M.cingulata_ in our test case):  
+The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **`<userselecteddir>`/output/statistics_`<speciesname>`/plots_`<speciesname>`** (where $SPECIES=_M.cingulata_ in our test case):  
 
 **Acceptor.pdf**  
 **Donor.pdf**  
