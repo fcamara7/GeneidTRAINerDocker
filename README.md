@@ -49,8 +49,11 @@ The mandatory command line parameter **-fastas** should consist of a multi-FASTA
 
 The mandatory **-results** parameter tells the pipeline in which directory to store the results of the training process. In our test case that would be **./output/** (remember that this is relative to the working folder "/data" within the docker container and that in relation the the user's machine the output folder would be a sub-directory of `<userselecteddir>`)    
 
+**5. -reduced** no
 
-**5. -userdata** config.ext  _(optional)_
+The mandatory command line parameter which for our test case should be set to **no** for the first time the user runs the mock training analysis tells geneidTRAINer to run the entire pipeline. Once it has been run once for a particular species and training set the user can set the option to **yes** which will start the process at the point when geneidTRAINer generates PWMs or Markov 1 models of the splice sites and start codon. Setting **-reduced** to **yes** would only be useful if the user decides to change at least one of the gene model/splice site profile length parameters using the option **-userdata**  
+
+**6. -userdata** config.ext  _(optional)_
 
 the optional command line option **-userdata** should have the path to a "user-configurable file" (_i.e._ config.ext) in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. 
 
@@ -72,10 +75,6 @@ $startusrbra = '0'; #start coordinate for the branch site profile
 $endusrbra = '0'; #end coordinate for the branch site profile (must be >> than the start coordinate)  
 
 refer to the profile diagram produced by geneidTRAINer (located for example in $PWD/output/statistics_M.cingulata ) in order to better select profiles alternative to the ones generated automatically. 
-
-**6. -reduced** no
-
-The mandatory command line parameter which for our test case should be set to **no** for the first time the user runs the mock training analysis tells geneidTRAINer to run the entire pipeline. Once it has been run once for a particular species and training set the user can set the option to **yes** which will start the process at the point when geneidTRAINer generates PWMs or Markov 1 models of the splice sites and start codon. Setting **-reduced** to **yes** would only be useful if the user decides to change at least one of the gene model/splice site profile length parameters using the option **-userdata**  
 
 **7. -v `<userselecteddir>`:/data -w /data**  (we recommend the user only change the `<userselecteddir>` and leave all else as is)  
 
