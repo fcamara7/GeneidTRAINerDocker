@@ -14,9 +14,9 @@ You must have a recent version of docker installed in your system (https://docs.
 
 Once docker is installed in you system and in order build the docker container GeneidTRAINerDocker type the following:
 
-**docker build -t  geneidtrainerdocker .**
+**docker build -t  geneidtrainerdocker .** (make sure Dockerfile is in the directory from which you are running this command)  
 
-To obtain the actual command line for the training pipeline type:
+To obtain the actual command line for the training pipeline you can type:
 
 **docker run -it geneidtrainerdocker**  
 _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
