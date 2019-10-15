@@ -108,7 +108,7 @@ The output files/directory of geneidTRAINer should be created in the path **sele
 
 _**M.cingulata.geneid.optimized.param**_  (in general `<speciesname>`.geneid.optimized.param)  
 
-The user can also find statistics on the training process by going the directory:
+The user can also find statistics files built during the training process by changing to the folder:
 
 **`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`** (the `<results_dir>` is "output" and  `<speciesname>`=_M.cingulata_ in this example)   
 
