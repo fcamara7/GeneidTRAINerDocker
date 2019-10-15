@@ -17,29 +17,35 @@ Once docker is installed in you system and in order build the docker container G
 To obtain the actual command line for the training pipeline type:
 
 **docker run -it geneidtrainerdocker**  
-_Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
+_Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
 
 The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
 
-**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ext**  
 
 The example above uses test data found in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
 
 ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
 
-Below we briefly describe the options that are required (and optional) to run geneidTRAINer in the context of the sample sequences provided as a test case:  
+Below we briefly describe sp,e of the command line options used to run geneidTRAINer in the context of the sample sequences provided as a test case:  
 
-**1. M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2**
+**1. -species** M.cingulata   
 
-a GFF2 file that includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**. The coordinates represented in this are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa".When training geneid for any species the user should provide GeneidTRAINer with a ggf2 with this format. 
+The mandatory command line parameter **-species** should have the name of the species being trained with the first letter of the Genus name and the species designation, with a dot and no spaces between genus letter and species name.
 
-**2. M.cingulata.4training.fa**
+**2. -gff** M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2  
 
-File containing a few contigs/scaffolds of the hymenoptera species _M.cingulata_ which incorporate the 100 gene models used to train/evaluate geneid for this species. 
+The mandatory command line parameter **-gff** should be a GFF2 file that in our test case includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**.  
 
-**3. config.ext** 
+The coordinates represented in this GFF2 file are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa". When training geneid for any species the user should provide GeneidTRAINer with a GFF2 with this format.  
 
-a "user-configurable file" in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. 
+**3. -fastas** M.cingulata.4training.fa  
+
+The mandatory command line parameter **-fastas** should consist of a multi-FASTA file containing a few contigs/scaffolds of (in this test case) the hymenoptera species _M.cingulata_ which incorporate the 100 gene models used to train/evaluate geneid for this species.  When training geneid for any species the user should provide GeneidTRAINer with a multi-FASTA file corresponding to the GFF2 models selected under **-gff**  
+
+**4. -userdata** config.ext  
+
+the optional command line option **-userdata** should have the path to a "user-configurable file" (_i.e._ config.ext) in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. 
 
 Currently the user can select **minimum and maximum intron size**, **minimum and maximum intergenic distance** (values to be incorporated into the gene model portion of the parameter file). The user can also select the **start and end coordinates of the acceptor, donor, start (and for a few species branch) profiles** which are incorporated into the parameter file as PWMs (POSITION-WEIGHT MATRICES) of Markov models of order 1.  
 
@@ -60,7 +66,19 @@ $endusrbra = '0'; #end coordinate for the branch site profile (must be >> than t
 
 refer to the profile diagram produced by geneidTRAINer (located for example in $PWD/output/statistics_M.cingulata ) in order to better select profiles alternative to the ones generated automatically. 
 
-#######################################################################################################
+**4. -reduced** no
+
+The mandatory command line parameter which for our test case should be set to **no** for the first time the user runs the mock training analysis tells geneidTRAINer to run the entire pipeline. Once it has been run once for a particular species and training set the user can set the option to **yes** which will start the process at the point when geneidTRAINer generates PWMs or Markov 1 models of the splice sites and start codon. Setting **-reduced** to **yes** would only be useful if the user decides to change at least one of the gene model/splice site profile length parameters using the option **-userdata**  
+
+**5. -v `<userselecteddir>`/:/data -w /data**  
+
+the docker option **-v** mounts a user-selected directory in a directory called **/data** within the the docker container and the option **-w** sets **/data** to be the working directory within the docker container.  
+
+**6. -u $(id -u):$(id -g)**  
+
+In a **shared file system** the option **-u** gives the docker container permissions to write in the user's directory system.  
+
+########################################################################################
 
 ## IMPORTANT: An actual **training set** for geneidTRAINer should:  
 
@@ -78,7 +96,7 @@ f) be constituted by sequences previously aligned to a curated protein database 
 
 g) include sequences that overlap with the database proteins above over at least **90%** of their length     
 
-#######################################################################################################
+#########################################################################################
 
 The output files/directory of geneidTRAINer should be created in the path **selected by the user**. These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
 
