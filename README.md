@@ -72,7 +72,7 @@ refer to the profile diagram produced by geneidTRAINer (located for example in $
 
 The mandatory command line parameter which for our test case should be set to **no** for the first time the user runs the mock training analysis tells geneidTRAINer to run the entire pipeline. Once it has been run once for a particular species and training set the user can set the option to **yes** which will start the process at the point when geneidTRAINer generates PWMs or Markov 1 models of the splice sites and start codon. Setting **-reduced** to **yes** would only be useful if the user decides to change at least one of the gene model/splice site profile length parameters using the option **-userdata**  
 
-**5. -v `<userselecteddir>`/:/data -w /data**  
+**5. -v `<userselecteddir>`:/data -w /data**  
 
 the docker option **-v** mounts a user-selected directory in a directory called **/data** within the the docker container and the option **-w** sets **/data** to be the working directory within the docker container.  
 
@@ -88,9 +88,9 @@ a) be made up of at least **400-500** protein-coding gene models (and up to **~2
 
 b) contain a large proportion of **multi-exonic** genes (in order for geneid to accurately model the splice sites)    
 
-c) include only **non-overapping** gene models (on the same and opposite strands)   
+c) include only **non-overlapping** gene models (on the same and opposite strands)   
 
-d) contain only **complete** gene sequences (with a first, internal and final exons in the case of multi-exon genes)  
+d) contain only **complete** gene sequences (with a first, all internal and final exons and including a canonical start and stop codons in the case of multi-exon genes and canonical start and stop codons in the case of single-exon genes)    
 
 e) be made up of sequences longer than at least **150-200** amino-acids  
 
