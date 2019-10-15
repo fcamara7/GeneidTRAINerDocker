@@ -16,62 +16,73 @@ Until relatively recently most training of geneid for different species, and sub
 
 In this document we describe the development of a PERL language integration tool (GeneidTrainer.pl ), which, in the context of a docker container, allows us to combine all the above-mentioned scripts/programs into a single pipeline-like script. While the original geneidTRAINer program versions were designed to be user-interactive at a few steps along the execution flow, for the purposes of this version of geneidTRAINer (within docker), user-intervention is not allowed except for for a few option that can be provided by the _a priori_ through a config file. Finally, the user is not required to have much knowledge of the training process itself.  The GeneidTrainer.pl script must be run directly from a Unix command line in a machine containing the latest version of docker. 
 
+# 1. REQUIREMENTS FOR THE GENEID TRAINING SET
+
+The training set for geneid should:
+
+a) be made up of at least **400-500** protein-coding gene models (and up to -optimally- **~2500** sequences). Adding more sequences is possible but will likely not results in improvements in the newly generated parameter file. The training will naturally take longer to complete the more sequences we start with.    
+
+b) contain a large proportion of **multi-exonic** genes (in order for geneid to accurately model the splice sites)    
+
+c) include only **non-overlapping** gene models (both on the same and opposite strands)   
+
+d) contain only **complete** gene sequences (with a first, all internal and final exons and including a canonical start and stop codons in the case of multi-exon genes and canonical start and stop codons in the case of single-exon genes)    
+
+e) be made up of sequences longer than at least **150-200** amino-acids  
+
+f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLAST to ensure that the sequences of the candidates correspond to actual protein-coding genes  **(recommended)**  
+
+g) include sequences that overlap with the database proteins above over at least **90%** of their length  **(recommended)**   
+
 # 2. DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer.pl)
 
 ## 2.1 INPUT OPTIONS
 
-THe input options are described in greater detail in the main README me for this project.
-
 The script has a number of input options:
 
-_Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
+_Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<inputpath><gffname>` -fastas `<inputpath><fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<inputpath><configfilename>`(optional) -branch `<inputpath><memeprofilefilename>[space]<memeprofilenumber>` (optional)_  
+
+In the context of the docker container:  
+
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species `<speciesname>` -gff `<inputpath><gffname>` -fastas  `<inputpath><fastasname>`  -results `<results_dir>` -reduced  `<yes/no>` -userdata  `<inputpath><configfilename>` (optional) -branch `<inputpath><memeprofilefilename>[space]<memeprofilenumber>` (optional)** 
 
 The required options are:
 
-### 1) "-species": the name of the species being trained with the format: `<first letter of the genus name>`DOT`<species name>`  (_i.e._ _H.sapiens_); 
+#### 1) "-species": the name of the species being trained with the format: `<first letter of the genus name>`DOT`<species>`  (_i.e._ _H.sapiens_); 
 
-### 2) "-gff": a GFF-format file (version2) containing the coordinates of the gene models to be used in the training process; an example of a GFF file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2)  
-### 3) "-fastas": a single (multi-)FASTA file with the DNA sequences of the gene models plus a good number of flanking nucleotides; an example of a FASTA file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.4training.fa).   
+#### 2) "-gff": the path to a GFF-format file (version2) containing the coordinates of the gene models to be used in the training process; an example of a GFF2 file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2)
 
-### 4) "-results": The directory in the where the results should be stored, in context of the $PWD (user-defined working directory). _i.e._ "./output"
+#### 3) "-fastas": a single (multi-)FASTA file with the DNA sequences of the gene models plus a good number of flanking nucleotides; an example of a FASTA file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.4training.fa).   
 
-### 5) "-reduced": (yes/no) an indication of whether the full pipeline should be run or, if the user has already trained once,a “reduced” version executed from the point at which the user chooses the boundaries of the different splice site (an occasionally branch) profiles
+#### 4) "-results": The directory in the where the results should be stored, as a sub-directory of `<results_dir>` (user-defined working directory). _i.e._ "./output" in the example above.  
+
+#### 5) "-reduced": (yes/no) an indication of whether the full pipeline should be run or, if the user has already trained for this specied and data set once,a “reduced” version executed from the point at which the user chooses the boundaries of the different splice site (an occasionally branch) profiles
 
 The optional command line parameters are:
 
-### 6) "-userdata" (config file name and path): a "user-configurable" file in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. (see beginning of this document for more details) 
+#### 6) "-userdata" (config file name and path): a "user-configurable" file in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. (see beginning of this document for more details) 
 
-### 7) "-branch": the path to, and name of branch site profile if it has been previously produced (using the motif-finding  program MEME) and should be used in the training process; (ONLY USED FOR TRAINING A SUB-SET OF SPECIES OF FUNGI WHICH ARE EXPECTED TO POSSESS A CONSERVED BRANCH POINT) 
+#### 7) "-branch": the path to, name of branch site profile and the number of the appropriate profile, if it has been previously produced (using the motif-finding program MEME) and should be used in the training process; (ONLY USED FOR TRAINING A SUB-SET OF SPECIES OF FUNGI EXPECTED TO POSSESS A CONSERVED BRANCH POINT) 
 
-## 2.2 REQUIREMENTS FOR THE GENEID TRAINING SET
+## 2.2 PARAMETER FILE BUILDING MODULES  
 
-The training set for geneid should:
+We have developed a few parameter file-building modules in PERL programming language that are intrinsic to the training pipeline. **Geneid::Param** allows the parameter file to be built on the fly as the different splice site and coding statistics are computed and optimizations completed. **Geneid::Isocore** is a handler for isocores in the geneid parameter file and is used mainly in the building of parameters for those species that possess more than one isocore. **Geneid::GeneModel** is a gandler for GeneModel objects in GeneID parameter files. **Geneid::geneidCEGMA** contains a number of functions that we used to derive the coding potential of the candidate sequences using markov models of order 4 or 5. This module was based on same tool from HMMstar.pm (Ian Korf) and on a module used by the program CEGMA.
 
-a) be made up of at least 400-500 protein-coding gene models (and up to ~2500 sequences to keep the training process as short as possible)  
-b) be largely multi-exonic in order to accurately model the splice sites  
-c) be made-up of sequences longer than at least 150-200 amino-acids  
-d) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  
-e) include sequences that overlap with the database proteins above over at least 90% of their length  
+## 2.3 NEWLY DEVELOPED PARAMETER FILE AND TRAINING STATISTICS OUTPUT FILE  
 
-## 2.3 PARAMETER FILE BUILDING MODULES
+The newly developed parameter file will be stored in the directory set by the mandatory **-results** input option. It will be named as follows: _**`<speciesname>`.geneid.optimized.param**_ (where the species name is taken from the mandatory input option **-species**; _i.e._ "_H.sapiens_")
 
-We have developed a few parameter file-building modules in PERL programming language that are intrinsic to the training pipeline. **Geneid::Param** allows the parameter file to be built on the fly as the different splice site and coding statistics are computed and optimizations completed. **Geneid::Isocore** is a handler for isocores in the geneid parameter file and is used mainly in the building of parameters for those species that possess more than one isocore. **Geneid::GeneModel** is a gandler for GeneModel objects in GeneID parameter files. **Geneid::geneidCEGMA** contains a number of functions that we used to derive the coding potential of the candidate sequences using markov models of order 4 or 5. This module was based on same tool from HMMstar.pm (Ian Korf) and on a module used by the program CEGMA (ref.).
+As the newly developed parameter file for a particular species is being built a text file is written which includes detailed statistics on the training set as well as on the training process itself. It also indicates the name of the optimized parameter file and the accuracy performance estimation (produced by running geneid on the 20% of sequences set aside at the beginning of the training process). This file will be produced each time the pipeline is executed and stored under the directory set by the option **-results** (_i.e._ "./output" in the example in the README). The file will be stored in a directory called "statistics_`<speciesname>`" (_i.e._ statistics_M.cingulata). The statistics file name will include information with regard to its creation date and time (in hours and minutes): "_i.e._ 1_Oct_Tue_10_13_training_statistics". 
 
-## 2.4 NEWLY DEVELOPED PARAMETER FILE AND TRAINING STATISTICS OUTPUT FILE
+## 2.4 PLOTS OF OF SPLICE SITES, START CODON PROFILES AND OF THE ANNOTATION ON THE TEST SEQUENCES  
 
-The newly developed parameter file will be stored in the directory set by the mandatory **-results** results input option. It will be named as follows: _**`<species>`.geneid.optimized.param**_ (where the species name is taken from the mandatory input option **-species**; _i.e._ "_M.cingulata_")
-
-As the newly developed parameter file for a particular species is being built a text file is being written which includes detailed statistics on the training set as well as on the training process itself. It also indicates the name of the optimized parameter file and the accuracy performance estimation (produced by running geneid on the 20% of sequences set aside at the beginning of the training process). This file will be produced each time the pipeline is executed and stored under the directory set by the option **-results** (_i.e._ "./output" in the example at the beginning of this document). The file will be stored in a directory called "statistics_$SPECIES" (_i.e._ statistics_M.cingulata). The statistics file name will include information with regard to its creation date and time (in hours and minutes): "_i.e._ 1_Oct_Tue_10_13_training_statistics". 
-
-## 2.5 PLOTS OF OF SPLICE SITES, START CODON PROFILES AND OF THE ANNOTATION OF THE TEST SCAFFOLD
-
-The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **statistics_$SPECIES/plots_$SPECIES**:
+The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **statistics_`<speciesname>`/plots_`<speciesname>`**:
 
 **Acceptor.pdf**  
 **Donor.pdf**  
 **Start.pdf**  
 
-You will also be able to find a **gff2ps** (http://genome.crg.es/software/gfftools/GFF2PS.html) (named **$SPECIES.pdf**) plot representing all genes predicted in the evaluation scaffold built by geneidTRAINer. 
+You will also be able to find a **gff2ps** (http://genome.crg.es/software/gfftools/GFF2PS.html) (named **`<speciesname>`.pdf**) plot representing all genes predicted in the evaluation scaffold built by geneidTRAINer. 
 
 ## 3.0 CONCLUSIONS
 
