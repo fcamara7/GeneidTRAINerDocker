@@ -248,6 +248,8 @@ if ($minintergenicusr) {
 
 }
 
+}
+
 ########################################
 ########################################
 ###IF THERE IS A MEME BRANCH PROFILE####
@@ -302,8 +304,8 @@ print STDERR "There is a directory named $results..\n\nbut elected the option to
 
 }else{
 
-    `mkdir -p $results;`;
-;}
+    `mkdir -p $results`;
+}
 
 
 print STDERR "\n\nYou chose to continue the training of $species by assuming the cds, intronic sequences and splice sites have already been extracted \n\n";
@@ -773,22 +775,19 @@ if (!$reducedtraining) { #ONLY FIRST TIME ("NOT SHORTER VERSION") FOR A GIVEN SP
 ####Convert general gff2 to geneid gff format
 ####extract and check cds and intron sequences. Remove inframe stops and check all seqs start with ATG and end with STOP
 
- ###TRAIN${results}.
+      print STDERR "\nConvert general gff2 to geneid-gff format\n\n";  
 
-     print STDERR "\nConvert general gff2 to geneid-gff format\n\n";  
-       $tempgeneidgffsorted = generalGFFtoGFFgeneid($tempgff4training,$species,".train",$results);
+ ###TRAIN
+       
+     $tempgeneidgffsorted = generalGFFtoGFFgeneid($tempgff4training,$species,".train",$results);
         
     ($outcds,$outintron,$outlocus_id,$outgff,$inframe) = @{extractCDSINTRON($tempgeneidgffsorted,$templocus_id_new,".train",$results)};
 
-   #  print STDERR " OUTSIDE EXTRACTCDSINTRON outgff: $outgff\noutlocus_id: $outlocus_id\n";
- ###TRAIN     
-
-
  ###EVAL
-       $tempgeneidgffsortedeval = generalGFFtoGFFgeneid($tempgff4evaluation,$species,".eval",$results);
+        $tempgeneidgffsortedeval = generalGFFtoGFFgeneid($tempgff4evaluation,$species,".eval",$results);
     
-   ($outcdseval,$outintroneval,$outlocus_id_eval,$outgffeval,$inframeeval) = @{extractCDSINTRON($tempgeneidgffsortedeval,$templocusid_eval,".eval",$results)};
- ###EVAL
+        ($outcdseval,$outintroneval,$outlocus_id_eval,$outgffeval,$inframeeval) = @{extractCDSINTRON($tempgeneidgffsortedeval,$templocusid_eval,".eval",$results)};
+
 
      #exit;
     	
@@ -821,7 +820,6 @@ if (!$reducedtraining) { #ONLY FIRST TIME ("NOT SHORTER VERSION") FOR A GIVEN SP
 ###STORE VARIABLE INFO IN DATA DUMPER###
     print STORV Data::Dumper->Dump([$outcds,$outintron,$outlocus_id,$outgff,$outcdseval,$outintroneval,$outlocus_id_eval,$outgffeval,$inframeeval,$tempgeneidgffsorted,$inframe,$outdonortbl,$totalnoncandon,$outacceptortbl,$totalnoncanacc,$outstarttbl,$totalnoncansta,$gptraingff,$gptrainfa,$gptraintbl,$gptrainlen,$gptraincontiggff,$gptraincontigfa,$gptraincontigtbl,$gptraincontiglen], ['$outcds','$outintron','$outlocus_id','$outgff','$outcdseval','$outintroneval','$outlocus_id_eval','$outgffeval','$inframeeval','$tempgeneidgffsorted','$inframe','$outdonortbl','$totalnoncandon','$outacceptortbl','$totalnoncanacc','$outstarttbl','$totalnoncansta','$gptraingff','$gptrainfa','$gptraintbl','$gptrainlen','$gptraincontiggff','$gptraincontigfa','$gptraincontigtbl','$gptraincontiglen']);
 ########################################
-
 
 #NOT USING ALL SEQS FOR TRAINING/EVALUATION ALSO PROCESS EVAL SEQS
 if (!$useallseqs){ 
