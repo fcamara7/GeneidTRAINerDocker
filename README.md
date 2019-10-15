@@ -19,23 +19,23 @@ To obtain the actual command line for the training pipeline type:
 **docker run -it geneidtrainerdocker**  
 _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
 
-The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
+## The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
 
-**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ext**  
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ext**  
 
 The example above uses test data found in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
 
 ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
 
-Below we briefly describe sp,e of the command line options used to run geneidTRAINer in the context of the sample sequences provided as a test case:  
+## Below we briefly describe the command line options used to run geneidTRAINer in the context of the sample sequences provided as a test case:  
 
 **1. -species** M.cingulata   
 
-The mandatory command line parameter **-species** should have the name of the species being trained with the first letter of the Genus name and the species designation, with a dot and no spaces between genus letter and species name.
+The mandatory command line parameter **-species** should have the name of the species being trained with the first letter of the Genus name and the species designation, with a dot and no spaces between genus letter and species name. In this case that would be "M.cingulata" 
 
 **2. -gff** M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2  
 
-The mandatory command line parameter **-gff** should be a GFF2 file that in our test case includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**.  
+The mandatory command line parameter **-gff** should be a GFF2 file that in our test case includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**).    
 
 The coordinates represented in this GFF2 file are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa". When training geneid for any species the user should provide GeneidTRAINer with a GFF2 with this format.  
 
