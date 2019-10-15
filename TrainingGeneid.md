@@ -42,7 +42,7 @@ The script has a number of input options:
 
 _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<inputpath><gffname>` -fastas `<inputpath><fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<inputpath><configfilename>`(optional) -branch `<inputpath><memeprofilefilename>[space]<memeprofilenumber>` (optional)_  
 
-In the context of the docker container:  
+This script is executed in the context of a docker container:  
 
 **docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species `<speciesname>` -gff `<inputpath><gffname>` -fastas  `<inputpath><fastasname>`  -results `<results_dir>` -reduced  `<yes/no>` -userdata  `<inputpath><configfilename>` (optional) -branch `<inputpath><memeprofilefilename>[space]<memeprofilenumber>` (optional)** 
 
@@ -54,7 +54,7 @@ The required options are:
 
 #### 3) "-fastas": a single (multi-)FASTA file with the DNA sequences of the gene models plus a good number of flanking nucleotides; an example of a FASTA file which can be used to test the pipeline can be obtained from (https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing/M.cingulata.4training.fa).   
 
-#### 4) "-results": The directory in the where the results should be stored, as a sub-directory of `<results_dir>` (user-defined working directory). _i.e._ "./output" in the example above.  
+#### 4) "-results": The directory (`<results_dir>`) where the results should be stored, as a sub-directory of `<userselecteddir>` (user-defined working directory). _i.e._ "./output" in the example above.  
 
 #### 5) "-reduced": (yes/no) an indication of whether the full pipeline should be run or, if the user has already trained for this specied and data set once,a “reduced” version executed from the point at which the user chooses the boundaries of the different splice site (an occasionally branch) profiles
 
