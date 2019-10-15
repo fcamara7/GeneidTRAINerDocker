@@ -104,7 +104,7 @@ g) include sequences that overlap with the database proteins above over at least
 
 #########################################################################################
 
-The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/output). These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
+The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/`<results_dir>` - ./output in this case). These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
 
 _**M.cingulata.geneid.optimized.param**_  (in general `<speciesname>`.geneid.optimized.param)  
 
