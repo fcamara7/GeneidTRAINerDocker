@@ -33,13 +33,13 @@ a GFF2 file that includes 100 gene models used to "mock" train (80) geneid for t
 
 **NOTE:** An actual **training set** for geneid should:  
 
-a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences to keep the training process as short as possible)   
-b) contain a large proportion of **multi-exonic** genes (in order to accurately model the splice sites)   
-c) include only **non-overapping** gene models (on the same and opposite strands)  
+a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences to keep the training process as short as possible)  
+b) contain a large proportion of **multi-exonic** genes (in order to accurately model the splice sites)    
+c) include only **non-overapping** gene models (on the same and opposite strands)   
 d) contain only **complete** gene sequences (with a first, internal and final exons in the case of multi-exon genes)  
 e) be made up of sequences longer than at least **150-200** amino-acids  
 f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes    
-g) include sequences that overlap with the database proteins above over at least **90%** of their length   
+g) include sequences that overlap with the database proteins above over at least **90%** of their length     
 
 
 **2. M.cingulata.4training.fa**
