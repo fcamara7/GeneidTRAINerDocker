@@ -47,7 +47,7 @@ The mandatory command line parameter **-fastas** should consist of a multi-FASTA
 
 **4. -results** ./output/  
 
-The mandatory **-results** parameter tells the pipeline in which directory to store the results of the training process. In our test case that would be **./output/** (remember that this is relative to the working folder "/data" within the docker container and that in relation the the user's machine the output folder would be a sub-directory of `<userselecteddir>`)    
+The mandatory **-results** parameter tells the pipeline in which directory to store the results of the training process. In our test case that would be **./output/** (remember that this is relative to the working folder "/data" within the docker container and that as far as the user is concerned the output folder is a sub-directory of `<userselecteddir>`)    
 
 **5. -reduced** no
 
