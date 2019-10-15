@@ -110,7 +110,7 @@ _**M.cingulata.geneid.optimized.param**_  (in general `<speciesname>`.geneid.opt
 
 The user can also find statistics on the training process by going the directory:
 
-**`<userselecteddir>`/`<results_dir>`/statistics_M.cingulata** (the `<results_dir>` is selected to be "./output" in this example)   
+**`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`** (the `<results_dir>` is "output" and  `<speciesname>`=_M.cingulata_ in this example)   
 
 Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) includes a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).
 
