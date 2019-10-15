@@ -28,7 +28,7 @@ c) include only **non-overlapping** gene models (both on the same and opposite s
 
 d) contain only **complete** gene sequences (with a first, all internal exons and final exon, canonical start and stop codons in the case of multi-exon genes and canonical start and stop codons in the case of single-exon genes)    
 
-e) be made up of sequences longer than at least **150-200** amino-acids  
+e) be made up of sequences longer than at least **100-150** amino-acids  
 
 f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLAST to ensure that the sequences of the candidates correspond to actual protein-coding genes  **(recommended)**  
 
