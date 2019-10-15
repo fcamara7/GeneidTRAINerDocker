@@ -33,11 +33,11 @@ The example above uses test data found in https://public-docs.crg.eu/rguigo/Data
 
 **1. -species** M.cingulata   
 
-The mandatory command line parameter **-species** should have the name of the species being trained with the **first letter** of the Genus name and the **species** designation, with **one dot and no spaces** between genus letter and species name. In this test case that would be "M.cingulata"  
+The mandatory command line parameter **-species** should have the name of the species being trained with the **first letter** of the Genus name and the **species** designation, with **one dot and no spaces** between genus letter and species name. In this test case that would be **"M.cingulata"**    
 
 **2. -gff** M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2  
 
-The mandatory command line parameter **-gff** should be a GFF2 file that in our test case includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**).    
+The mandatory command line parameter **-gff** should be a GFF2 file that in our test case includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**).  
 
 The coordinates represented in this GFF2 file are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa". When training geneid for any species the user should provide GeneidTRAINer with a GFF2 with this format.  
 
@@ -45,7 +45,12 @@ The coordinates represented in this GFF2 file are genomic and correspond to the 
 
 The mandatory command line parameter **-fastas** should consist of a multi-FASTA file containing a few contigs/scaffolds of (in this test case) the hymenoptera species _M.cingulata_ which incorporate the 100 gene models used to train/evaluate geneid for this species.  When training geneid for any species the user should provide GeneidTRAINer with a multi-FASTA file corresponding to the GFF2 models selected under **-gff**  
 
-**4. -userdata** config.ext  
+**4. -results** ./output/  
+
+The mandatory **-results** parameter tells the pipeline in which directory to store the results of the training process. In our test case that would be **./output/** (remember that this is relative to the working folder "/data" within the docker container and that in relation the the user's machine the output folder would be a sub-directory of `<userselecteddir>`)    
+
+
+**5. -userdata** config.ext  _(optional)_
 
 the optional command line option **-userdata** should have the path to a "user-configurable file" (_i.e._ config.ext) in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. 
 
@@ -68,15 +73,15 @@ $endusrbra = '0'; #end coordinate for the branch site profile (must be >> than t
 
 refer to the profile diagram produced by geneidTRAINer (located for example in $PWD/output/statistics_M.cingulata ) in order to better select profiles alternative to the ones generated automatically. 
 
-**5. -reduced** no
+**6. -reduced** no
 
 The mandatory command line parameter which for our test case should be set to **no** for the first time the user runs the mock training analysis tells geneidTRAINer to run the entire pipeline. Once it has been run once for a particular species and training set the user can set the option to **yes** which will start the process at the point when geneidTRAINer generates PWMs or Markov 1 models of the splice sites and start codon. Setting **-reduced** to **yes** would only be useful if the user decides to change at least one of the gene model/splice site profile length parameters using the option **-userdata**  
 
-**6. -v `<userselecteddir>`:/data -w /data**  (we recommend the user only change the `<userselecteddir>` and leave all else as is)  
+**7. -v `<userselecteddir>`:/data -w /data**  (we recommend the user only change the `<userselecteddir>` and leave all else as is)  
 
-the docker option **-v** mounts a user-selected directory in a directory called **/data** within the the docker container and the option **-w** sets **/data** to be the working directory within the docker container.  
+the docker option **-v** mounts a user-selected directory/volume in a directory called **/data** within the the docker container and the option **-w** sets **/data** to be the working directory within the docker container.  
 
-**7. -u $(id -u):$(id -g)**  
+**8. -u $(id -u):$(id -g)**  
 
 In a **queuing shared-file system** the option **-u** gives the docker container permissions to write in the user's directory system.  
 
