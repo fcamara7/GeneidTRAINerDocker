@@ -21,11 +21,13 @@ _Usage: /scripts/geneidTRAINer4docker.pl -species H.sapiens -gff `<gffname>` -fa
 
 The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
 
-**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
 
 The example above uses test data found in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
 
-***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline:***
+***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
+
+Below we briefly describe the options that are required (and optional) to run geneidTRAINer in the context of the sample sequences provided as a test case:  
 
 **1. M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2**
 
@@ -39,7 +41,7 @@ File containing a few contigs/scaffolds of the hymenoptera species _M.cingulata_
 
 a "user-configurable file" in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. 
 
-Currently the user can select minimum and maximum intron size, minimum and maximum intergenic distance (values to be incorporated into the gene model portion of the parameter file). The user can also select the start and end coordinates of the acceptor, donor, start (and for a few species branch) profiles which are incorporated into the parameter file as PWMs (POSITION-WEIGHT MATRICES) of Markov models of order 1.  
+Currently the user can select **minimum and maximum intron size**, **minimum and maximum intergenic distance** (values to be incorporated into the gene model portion of the parameter file). The user can also select the **start and end coordinates of the acceptor, donor, start (and for a few species branch) profiles** which are incorporated into the parameter file as PWMs (POSITION-WEIGHT MATRICES) of Markov models of order 1.  
 
 The config file currently has the following variables that can be modified by the user. Note that setting the variables to "0" tells geneidTRAINer to ignore them and tells the program to use automatically generated values:
 
@@ -60,11 +62,11 @@ refer to the profile diagram produced by geneidTRAINer (located for example in $
 
 #######################################################################################################
 
-## **NOTE:** An actual **training set** for geneid should:  
+## IMPORTANT: An actual **training set** for geneidTRAINer should:  
 
 a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences to keep the training process as short as possible)  
 
-b) contain a large proportion of **multi-exonic** genes (in order to accurately model the splice sites)    
+b) contain a large proportion of **multi-exonic** genes (in order for geneid to accurately model the splice sites)    
 
 c) include only **non-overapping** gene models (on the same and opposite strands)   
 
