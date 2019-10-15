@@ -4,7 +4,7 @@ Docker container that includes the perl pipeline that we use to automatically tr
 
 ---------------------------------------------------------------------------------------
 
-First the user must download the project repository containing GeneidTRAINer as a docker container. If you have git installed in your system this can be done by running by typing in the command line:
+First the user must download the project repository containing GeneidTRAINer as a docker container. If you have git installed in your system this can be done by typing in the command line:
 
 git clone https://github.com/fcamara7/GeneidTRAINerDocker.git
 
