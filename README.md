@@ -98,9 +98,9 @@ d) contain only **complete** gene sequences (with a first, all internal and fina
 
 e) be made up of sequences longer than at least **150-200** amino-acids  
 
-f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  
+f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  **(recommended)**  
 
-g) include sequences that overlap with the database proteins above over at least **90%** of their length     
+g) include sequences that overlap with the database proteins above over at least **90%** of their length  **(recommended)**  
 
 #########################################################################################
 
@@ -110,11 +110,11 @@ _**M.cingulata.geneid.optimized.param**_  (in general `<speciesname>`.geneid.opt
 
 The user can also find statistics on the training process by going the directory:
 
-**`<userselecteddir>`/output/statistics_M.cingulata** (if the results dir is selected to be "./output") 
+**`<userselecteddir>`/`<results_dir>`/statistics_M.cingulata** (the `<results_dir>` is selected to be "./output" in this example)   
 
 Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) includes a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).
 
-The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **`<userselecteddir>`/output/statistics_`<speciesname>`/plots_`<speciesname>`** (where $SPECIES=_M.cingulata_ in our test case):  
+The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`/plots_`<speciesname>`** (where `<speciesname>`=_M.cingulata_ in our test case):  
 
 **Acceptor.pdf**  
 **Donor.pdf**  
@@ -137,6 +137,6 @@ However, the user can also set -reduced to NO (**-reduced no**) and still provid
 
 Therefore if the user decides to use the **config file** the command line should instead be:
 
-**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced <no/yes> -userdata ./input/config.ext**
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced <no/yes> -userdata ./input/config.ext**
 
 ## IMPORTANT: IN ORDER TO ABORT THE TRAINING PROCESS WHILE IT IS RUNNING (WHICH WILL ALSO KILL THE DOCKER CONTAINER) THE USER CAN JUST PRESS CONTROL+C
