@@ -121,10 +121,10 @@ GetOptions(
 	
 	   	   );
 
-my $usage = "Usage: $0 -species H.sapiens -gff <gffname> -fastas <fastasname> -results <results_dir> -reduced <yes/no> -userdata <configfilenamepath> (optional) -branch <pathmemefilename profile#> (optional)\n ";
+my $usage = "Usage: $0 -species <speciesname> -gff <inputpath><gffname> -fastas <inputpath><fastasname> -results <results_dir> -reduced <yes/no> -userdata <inputpath><configfilename> (optional) -branch <inputpath><memeprofilefilename>[space]<memeprofilenumber> (optional)\n ";
 
 
-print STDERR $usage and exit unless ($species && $gff && $fasta && $results && ($reduced =~ /^(yes|y)|(n|no)$/i)); 
+print STDERR $usage and exit unless (($species =~ /^(\w\.\w+)|(\w+)$/i) && $gff && $fasta && $results && ($reduced =~ /^(yes|y)|(n|no)$/i)); 
 
 
 ####DECLARE A VARIABLE FOR A GIVEN SPECIES WHERE SEVERAL VALUES OBTAINED BY TRAINING NEED BE SAVED####
