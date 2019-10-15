@@ -104,7 +104,7 @@ g) include sequences that overlap with the database proteins above over at least
 
 #########################################################################################
 
-The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/`<results_dir>` - ./output in this case). These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
+The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/`<results_dir>` - "output" in this case). These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
 
 _**M.cingulata.geneid.optimized.param**_  (in general `<speciesname>`.geneid.optimized.param)  
 
@@ -114,7 +114,7 @@ The user can also find statistics on the training process by going the directory
 
 Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) includes a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).
 
-The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`/plots_`<speciesname>`** (where `<speciesname>`=_M.cingulata_ in our test case):  
+The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained in the folder: **`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`/plots_`<speciesname>`** (where `<speciesname>`=_M.cingulata_ and `<results_dir>` is "output" in our test case):  
 
 **Acceptor.pdf**  
 **Donor.pdf**  
