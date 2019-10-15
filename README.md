@@ -19,7 +19,7 @@ Once docker is installed in you system and in order build the docker container G
 To obtain the actual command line for the training pipeline the user can type:
 
 **docker run -it geneidtrainerdocker**  
-_Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
+_Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<inputpath><gffname>` -fastas `<inputpath><fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<inputpath><configfilename>`(optional) -branch `<inputpath><memeprofilefilename>[space]<memeprofilenumber>` (optional)_ 
 
 ## The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
 
