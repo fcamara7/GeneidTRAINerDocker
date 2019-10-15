@@ -8,7 +8,9 @@ First the user must download the project repository containing GeneidTRAINer as 
 
 git clone https://github.com/fcamara7/GeneidTRAINerDocker.git
 
-You must also have a recent version of docker installed in your system (https://docs.docker.com/install/). 
+## **In order to run geneidTRAINer you must have docker installed on your machine**
+
+You must have a recent version of docker installed in your system (https://docs.docker.com/install/). 
 
 Once docker is installed in you system and in order build the docker container GeneidTRAINerDocker type the following:
 
@@ -27,11 +29,11 @@ The example above uses test data found in https://public-docs.crg.eu/rguigo/Data
 
 ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
 
-## Below we briefly describe the command line options used to run geneidTRAINer in the context of the sample sequences provided as a test case:  
+## Below we briefly describe the command line options used to run geneidTRAINer in the context of the _sample sequences_ provided as a test case:  
 
 **1. -species** M.cingulata   
 
-The mandatory command line parameter **-species** should have the name of the species being trained with the first letter of the Genus name and the species designation, with a dot and no spaces between genus letter and species name. In this case that would be "M.cingulata" 
+The mandatory command line parameter **-species** should have the name of the species being trained with the **first letter** of the Genus name and the **species** designation, with **one dot and no spaces** between genus letter and species name. In this test case that would be "M.cingulata"  
 
 **2. -gff** M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2  
 
@@ -114,16 +116,13 @@ The start and spice site profile logos representing the nucleotide information c
 **Donor.pdf**  
 **Start.pdf**  
 
-You will also be able to find a **gff2ps** (**M.cingulata.pdf**) plot representing all genes predicted in the evaluation scaffold built by geneidtrainer.
+You will also be able to find a **gff2ps** (**M.cingulata.pdf** in our test case, otherwise `<speciesname>`.pdf) diagram representing all genes predicted in the evaluation scaffold built by geneidTRAINer.
 
-
-## **additional information concerning running geneidTRAIner in the context of DOCKER**
-
-**In order to run geneidTRAINer you must have docker installed on your machine**
+## **additional information concerning running geneidTRAINer in the context of DOCKER**
 
 The default command line for geneidTRAINer (no external config file) given the test files above is:
 
-**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
 
 Where `<userselecteddir>` is the user-selected working directory which INSIDE the docker container is mounted as "/data". The command line above also assumes that the user created a directory called **"input"** in the `<userselecteddir>` where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). The results are put into a directory called **"output"**  as selected by the user in this example (to be appended to the working directory `<userselecteddir>`).
 
@@ -136,4 +135,4 @@ Therefore if the user decides to use the **config file** the command line should
 
 **docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced <no/yes> -userdata ./input/config.ext**
 
-## IMPORTANT: IN ORDER TO ABORT THE TRAINING PROCESS, WHICH WILL ALSO KILL THE DOCKER CONTAINER, THE USER CAN JUST PRESS CONTROL+C
+## IMPORTANT: IN ORDER TO ABORT THE TRAINING PROCESS WHILE IT IS RUNNING (WHICH WILL ALSO KILL THE DOCKER CONTAINER) THE USER CAN JUST PRESS CONTROL+C
