@@ -104,11 +104,11 @@ _**M.cingulata.geneid.optimized.param**_
 
 The user can also find statistics on the training process by going the directory:
 
-**$PWD/output/statistics_M.cingulata** (if the results dir is selected to be "./output") 
+**`<userselecteddir>`/output/statistics_M.cingulata** (if the results dir is selected to be "./output") 
 
-Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) should include a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).
+Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) includes a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).
 
-The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **$PWD/output/statistics_$SPECIES/plots_$SPECIES** (where $SPECIES=_M.cingulata_ in our test case):  
+The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **`<userselecteddir>`/output/statistics_$SPECIES/plots_$SPECIES** (where $SPECIES=_M.cingulata_ in our test case):  
 
 **Acceptor.pdf**  
 **Donor.pdf**  
@@ -117,23 +117,23 @@ The start and spice site profile logos representing the nucleotide information c
 You will also be able to find a **gff2ps** (**M.cingulata.pdf**) plot representing all genes predicted in the evaluation scaffold built by geneidtrainer.
 
 
-## **IMPORTANT information concerning running geneidTRAIner in the context of DOCKER**
+## **additional information concerning running geneidTRAIner in the context of DOCKER**
 
 **In order to run geneidTRAINer you must have docker installed on your machine**
 
 The default command line for geneidTRAINer (no external config file) given the test files above is:
 
-**docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
 
-Where **$PWD** is the user-selected working directory which INSIDE the docker container is mounted as "/data". The command line above also assumes that the user created a directory called **"input"** in the $PWD where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). The results are put into a directory called **"output"**  as selected by the user in this example (to be appended to the working directory $PWD).
+Where `<userselecteddir>` is the user-selected working directory which INSIDE the docker container is mounted as "/data". The command line above also assumes that the user created a directory called **"input"** in the `<userselecteddir>` where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). The results are put into a directory called **"output"**  as selected by the user in this example (to be appended to the working directory `<userselecteddir>`).
 
 the option **"-reduced no"** tells the program to run the training from the beginning. If after having trained geneid for the species of interest AT LEAST ONCE the user wishes to retrain it starting only at the point where the splice sites and start profile lengths are selected (based on each nucletide information content) it can do so by setting "-reduced" to YES (**-reduced yes**). 
 
 _This will *ONLY* be useful when combined with using an external config file (i.e. -userdata .input/config.ext as described above) with user-selected profile start and end coordinates for any of the splice sites or startcodon (branch sites in a subser of fungi) and/or different minimum and maximum intron and intergenic sizes than those selected automatically by geneidTRAINer._    
-
 However, the user can also set -reduced to NO (**-reduced no**) and still provide an external config file (**"-userdata ./input/config.ext**") with non-default values of minimim/maximum intron/intergenic sizes and start/end coordinates for splice sites/start profiles. 
-
 
 Therefore if the user decides to use the **config file** the command line should instead be:
 
 **docker run -u $(id -u):$(id -g) -v $PWD/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced <no/yes> -userdata ./input/config.ext**
+
+## IMPORTANT: IN ORDER TO ABORT THE TRAINING PROCESS, WHICH WILL ALSO KILL THE DOCKER CONTAINER, THE USER CAN JUST PRESS CONTROL+C
