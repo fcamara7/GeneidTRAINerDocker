@@ -23,7 +23,7 @@ _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<gffname
 
 ## The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
 
-**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ext**  
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ex (optional)**      
 
 The example above uses test data found in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
 
