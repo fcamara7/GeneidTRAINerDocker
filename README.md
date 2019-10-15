@@ -88,7 +88,7 @@ In a **shared-file cluster system** the option **-u** gives the docker container
 
 ## IMPORTANT: An actual **training set** for geneidTRAINer should:  
 
-a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences to keep the training process as short as possible)  
+a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences). Adding more sequences is possible but will likely not results in improvements in the newly generated parameter file.    
 
 b) contain a large proportion of **multi-exonic** genes (in order for geneid to accurately model the splice sites)    
 
