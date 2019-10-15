@@ -88,7 +88,7 @@ a) be made up of at least **400-500** protein-coding gene models (and up to **~2
 
 b) contain a large proportion of **multi-exonic** genes (in order for geneid to accurately model the splice sites)    
 
-c) include only **non-overlapping** gene models (on the same and opposite strands)   
+c) include only **non-overlapping** gene models (both on the same and opposite strands)   
 
 d) contain only **complete** gene sequences (with a first, all internal and final exons and including a canonical start and stop codons in the case of multi-exon genes and canonical start and stop codons in the case of single-exon genes)    
 
@@ -100,7 +100,7 @@ g) include sequences that overlap with the database proteins above over at least
 
 #########################################################################################
 
-The output files/directory of geneidTRAINer should be created in the path **selected by the user**. These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
+The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/output). These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
 
 _**M.cingulata.geneid.optimized.param**_
 
