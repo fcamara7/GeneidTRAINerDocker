@@ -68,17 +68,17 @@ $endusrbra = '0'; #end coordinate for the branch site profile (must be >> than t
 
 refer to the profile diagram produced by geneidTRAINer (located for example in $PWD/output/statistics_M.cingulata ) in order to better select profiles alternative to the ones generated automatically. 
 
-**4. -reduced** no
+**5. -reduced** no
 
 The mandatory command line parameter which for our test case should be set to **no** for the first time the user runs the mock training analysis tells geneidTRAINer to run the entire pipeline. Once it has been run once for a particular species and training set the user can set the option to **yes** which will start the process at the point when geneidTRAINer generates PWMs or Markov 1 models of the splice sites and start codon. Setting **-reduced** to **yes** would only be useful if the user decides to change at least one of the gene model/splice site profile length parameters using the option **-userdata**  
 
-**5. -v `<userselecteddir>`:/data -w /data**  
+**6. -v `<userselecteddir>`:/data -w /data**  (we recommend the user only change the `<userselecteddir>` and leave all else as is)  
 
 the docker option **-v** mounts a user-selected directory in a directory called **/data** within the the docker container and the option **-w** sets **/data** to be the working directory within the docker container.  
 
-**6. -u $(id -u):$(id -g)**  
+**7. -u $(id -u):$(id -g)**  
 
-In a **shared file system** the option **-u** gives the docker container permissions to write in the user's directory system.  
+In a **queuing system** the option **-u** gives the docker container permissions to write in the user's directory system.  
 
 ########################################################################################
 
