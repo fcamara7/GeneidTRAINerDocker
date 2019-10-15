@@ -37,13 +37,13 @@ The mandatory command line parameter **-species** should have the name of the sp
 
 **2. -gff** M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2  
 
-The mandatory command line parameter **-gff** should be a GFF2 file that in our test case includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**).  
+The mandatory command line parameter **-gff** should be a GFF2 file that in our test case includes 100 gene models used to "mock" train (80) geneid for the hymenoptera species _M.cingulata_ as well as to "mock" evaluate (20) the resulting parameter file (which should be named by the program as **"M.cingulata.geneid.optimized.param"**). In the example above this file was placed in the _user-created_ folder **./input** which is a sub-directory of `<userselecteddir>` as far as the user is concerned. The user can change the name of the input folder as she sees fit always taking in consideration that it will be under the `<userselecteddir>`.
 
 The coordinates represented in this GFF2 file are genomic and correspond to the contigs and scaffolds in "M.cingulata.4training.fa". When training geneid for any species the user should provide GeneidTRAINer with a GFF2 with this format.  
 
 **3. -fastas** M.cingulata.4training.fa  
 
-The mandatory command line parameter **-fastas** should consist of a multi-FASTA file containing a few contigs/scaffolds of (in this test case) the hymenoptera species _M.cingulata_ which incorporate the 100 gene models used to train/evaluate geneid for this species.  When training geneid for any species the user should provide GeneidTRAINer with a multi-FASTA file corresponding to the GFF2 models selected under **-gff**  
+The mandatory command line parameter **-fastas** should consist of a multi-FASTA file containing a few contigs/scaffolds of (in this test case) the hymenoptera species _M.cingulata_ which incorporate the 100 gene models used to train/evaluate geneid for this species.  When training geneid for any species the user should provide GeneidTRAINer with a multi-FASTA file corresponding to the GFF2 models selected under **-gff**. In the example above this file was placed in the _user-created_ folder **input** which is a sub-directory of `<userselecteddir>` as far as the user is concerned. The user can change the name of the input folder as she sees fit always taking in consideration that it will be under the `<userselecteddir>`.
 
 **4. -results** ./output/  
 
