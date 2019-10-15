@@ -29,7 +29,7 @@ The example above uses test data found in https://public-docs.crg.eu/rguigo/Data
 
 ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
 
-## Below we briefly describe the command line options used to run geneidTRAINer in the context of the _sample sequences_ provided as a test case:  
+## Below we briefly describe the command line options used to run geneidTRAINer in the context of the _sample sequences_ provided as a test case (through the link shown above):  
 
 **1. -species** M.cingulata   
 
