@@ -82,7 +82,7 @@ the docker option **-v** mounts a user-selected directory/volume in a directory 
 
 **8. -u $(id -u):$(id -g)**  
 
-In a **queuing shared-file system** the option **-u** gives the docker container permissions to write in the user's directory system.  
+In a **shared-file cluster system** the option **-u** gives the docker container permissions to write in the user's directory system.  
 
 ########################################################################################
 
