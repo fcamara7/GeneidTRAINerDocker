@@ -16,14 +16,14 @@ Once docker is installed in you system and in order build the docker container G
 
 **docker build -t  geneidtrainerdocker .** (make sure Dockerfile is in the directory from which you are running this command)  
 
-To obtain the actual command line for the training pipeline you can type:
+To obtain the actual command line for the training pipeline the user can type:
 
 **docker run -it geneidtrainerdocker**  
 _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<gffname>` -fastas `<fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<configfilenamepath> (optional)` -branch `<pathmemefilename profile#> (optional)`_
 
 ## The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
 
-**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ex (optional)**      
+**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ext (optional)**      
 
 The example above uses test data found in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
 
@@ -98,7 +98,7 @@ d) contain only **complete** gene sequences (with a first, all internal and fina
 
 e) be made up of sequences longer than at least **150-200** amino-acids  
 
-f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLASTP to ensure that the sequences of the candidates correspond to actual protein-coding genes  **(recommended)**  
+f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLAST to ensure that the sequences of the candidates correspond to actual protein-coding genes  **(recommended)**  
 
 g) include sequences that overlap with the database proteins above over at least **90%** of their length  **(recommended)**  
 
