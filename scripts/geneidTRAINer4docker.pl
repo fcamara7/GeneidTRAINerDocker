@@ -284,7 +284,7 @@ if ($reduced =~ /^(no|n)/i)
 {
 
     $reducedtraining = 0;
-    print STDERR "should run the entire pipeline: $reducedtraining\n";
+    print STDERR "user selected to run the entire pipeline\n";
 }
 
 #############################################################
@@ -296,7 +296,7 @@ if (-s "${results}$varsmemory" &&  $reduced =~ /^(yes|y)/i) { ###reduced/short t
 
 $reducedtraining = 1;
 
-print STDERR "\nshould run pipeline from PWM profile selection: $reducedtraining\n";
+print STDERR "\nuser selected to run pipeline from PWM profile length selection\n";
 
 if (-d "$results") {
 
@@ -351,7 +351,7 @@ print STDERR "\nmkdir -p $results\n";
     `mkdir -p $results;`;
 ;}
 
-print STDERR "OPEN ${results}/$varsmemory\n";
+##print STDERR "OPEN ${results}/$varsmemory\n";
 open (STORV, ">${results}/$varsmemory")or die;
 
 #######################################################
@@ -466,7 +466,7 @@ print STDERR "There is already a directory named $results/fastas_${species}!\nRe
     $fastasdir = "$results/fastas_$species/";
     print STDERR "\n";
 } else {
-    print STDERR "Create a new one\nNo directory $results/fastas_${species} exists\n";
+    print STDERR "\nNo directory $results/fastas_${species} exists\nCreate a new one\n";
        `mkdir -p $results/fastas_$species/;`;
        $fastasdir = "$results/fastas_$species/";
 }
@@ -478,7 +478,7 @@ print STDERR "There is already a directory named $results/fastas_${species}!\nRe
     $plotsdir = "$statsdir/plots_${species}";
     print STDERR "\n";
 } else {
-    print STDERR "Create a new one\nNo directory $statsdir"."plots_${species} exists\n";
+    print STDERR "\nNo directory $statsdir"."plots_${species} exists\nCreate a new one\n";
        `mkdir -p $statsdir/plots_${species};`;
        $plotsdir = "$statsdir/plots_${species}";
 }
@@ -533,7 +533,7 @@ print STDERR "Convert $temptblcaps to multiple genomic fastas and place them in 
 
 ####get locus_id file only first time pipeline is run for a given species #ALL GENE MODELS 
     
-     print STDERR "\nEliminate undesirable (_ and .) characters from $gff\n";
+     print STDERR "\nEliminate undesirable (_ and .) characters \n";
            
      my $filtergff = "";
      
