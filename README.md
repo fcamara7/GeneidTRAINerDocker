@@ -84,26 +84,6 @@ the docker option **-v** mounts a user-selected directory/volume in a directory 
 
 In a **shared-file cluster system** the option **-u** gives the docker container permissions to write in the user's directory system.  
 
-########################################################################################
-
-## An actual **training set** for geneidTRAINer should:  
-
-a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences). Adding more sequences is possible but will most likely not results in improvements in the newly generated parameter file.     
-
-b) contain a large proportion of **multi-exonic** genes (in order for geneid to accurately model the splice sites)    
-
-c) include only **non-overlapping** gene models (both on the same and opposite strands)   
-
-d) contain only **complete** gene sequences (with a first, all internal exons and final exon, canonical start and stop codons in the case of multi-exon genes and canonical start and stop codons in the case of single-exon genes)    
-
-e) be made up of sequences longer than at least **100-150** amino-acids  
-
-f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLAST to ensure that the sequences of the candidates correspond to actual protein-coding genes  **(recommended)**  
-
-g) include sequences that overlap with the database proteins above over at least **90%** of their length  **(recommended)**  
-
-#########################################################################################
-
 ## results produced by geneidTRAINer
 
 The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/`<results_dir>` - "output" in this case). These include several files that are generally not relevant to the regular user. The most important file is the optimized **geneid parameter** matrix which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest. It should be named as: 
@@ -125,5 +105,25 @@ The start and spice site profile logos representing the nucleotide information c
 **Start.pdf**  
 
 You will also be able to find a **gff2ps** (**M.cingulata.pdf** in our test case, otherwise `<speciesname>`.pdf) diagram representing all genes predicted in the evaluation scaffold built by geneidTRAINer.
+
+########################################################################################
+
+## - IMPORTANT - An actual **training set** for geneidTRAINer should:  
+
+a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences). Adding more sequences is possible but will most likely not results in improvements in the newly generated parameter file.     
+
+b) contain a large proportion of **multi-exonic** genes (in order for geneid to accurately model the splice sites)    
+
+c) include only **non-overlapping** gene models (both on the same and opposite strands)   
+
+d) contain only **complete** gene sequences (with a first, all internal exons and final exon, canonical start and stop codons in the case of multi-exon genes and canonical start and stop codons in the case of single-exon genes)    
+
+e) be made up of sequences longer than at least **100-150** amino-acids  
+
+f) be constituted by sequences previously aligned to a curated protein database (_i.e._ Uniprot90) using a program such as BLAST to ensure that the sequences of the candidates correspond to actual protein-coding genes  **(recommended)**  
+
+g) include sequences that overlap with the database proteins above over at least **90%** of their length  **(recommended)**  
+
+#########################################################################################
 
 ## IMPORTANT: IN ORDER TO ABORT THE TRAINING PROCESS WHILE IT IS RUNNING (WHICH WILL ALSO KILL THE DOCKER CONTAINER) THE USER CAN JUST PRESS CONTROL+C
