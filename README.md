@@ -25,11 +25,9 @@ _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<inputpa
 
 **docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ext (optional)**      
 
-The example above uses test data found in https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing.
+The example above uses **test data** found in ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** which contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
 
-***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
-
-## Below we briefly describe the command line options used to run geneidTRAINer in the context of the _sample sequences_ provided as a test case (through the link shown above):  
+## Below we briefly describe the command line options used to run geneidTRAINer in the context of the _sample sequences_ provided as a test case:  
 
 **1. -species** M.cingulata   
 
@@ -86,9 +84,9 @@ In a **shared-file cluster system** the option **-u** gives the docker container
 
 ########################################################################################
 
-## IMPORTANT: An actual **training set** for geneidTRAINer should:  
+## An actual **training set** for geneidTRAINer should:  
 
-a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences). Adding more sequences is possible but will likely not results in improvements in the newly generated parameter file.    
+a) be made up of at least **400-500** protein-coding gene models (and up to **~2500** sequences). Adding more sequences is possible but will most likely not results in improvements in the newly generated parameter file.     
 
 b) contain a large proportion of **multi-exonic** genes (in order for geneid to accurately model the splice sites)    
 
@@ -104,17 +102,21 @@ g) include sequences that overlap with the database proteins above over at least
 
 #########################################################################################
 
-The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/`<results_dir>` - "output" in this case). These include several files that are in most cases not relevant to the user. The most important file is the geneid parameter file which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest, in this case:
+## results produced by geneidTRAINer
 
-_**M.cingulata.geneid.optimized.param**_  (in general `<speciesname>`.geneid.optimized.param)  
+The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/`<results_dir>` - "output" in this case). These include several files that are generally not relevant to the regular user. The most important file is the optimized **geneid parameter** matrix which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest. It should be named as: 
 
-The user can also find statistics files built during the training process by changing to the folder:
+_**`<speciesname>`.geneid.optimized.param**_  (using our test data, M.cingulata.geneid.optimized.param)  
+
+The user can also find **statistics** files built during the training process by changing to the folder:
 
 **`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`** (the `<results_dir>` is "output" and  `<speciesname>`=_M.cingulata_ in this example)   
 
-Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) includes a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).
+Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) includes a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).  
 
-The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained in the folder: **`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`/plots_`<speciesname>`** (where `<speciesname>`=_M.cingulata_ and `<results_dir>` is "output" in our test case):  
+The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from the folder: 
+
+**`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`/plots_`<speciesname>`** (where `<speciesname>`=_M.cingulata_ and `<results_dir>` is "output" in our test case):  
 
 **Acceptor.pdf**  
 **Donor.pdf**  
