@@ -27,6 +27,8 @@ _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<inputpa
 
 The example above uses **test data** found in ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** which contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
 
+`<userselecteddir>` is the user-selected working directory which INSIDE the docker container is mounted as "/data". The sample command line above also assumes that the user created a directory called **"input"** in the `<userselecteddir>` where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). 
+
 ## Below we briefly describe the command line options used to run geneidTRAINer in the context of the _sample sequences_ provided as a test case:  
 
 **1. -species** M.cingulata   
@@ -49,11 +51,11 @@ The mandatory **-results** parameter tells the pipeline in which directory to st
 
 **5. -reduced** no
 
-The mandatory command line parameter which for our test case should be set to **no** for the first time the user runs the mock training analysis tells geneidTRAINer to run the entire pipeline. Once it has been run once for a particular species and training set the user can set the option to **yes** which will start the process at the point when geneidTRAINer generates PWMs or Markov 1 models of the splice sites and start codon. Setting **-reduced** to **yes** would only be useful if the user decides to change at least one of the gene model/splice site profile length parameters using the option **-userdata**  
+The mandatory command line parameter which for our test case should be set to **no** for the first time the user runs the mock training analysis tells geneidTRAINer to run the entire pipeline. Once it has been **run at least once** for a particular species and training set the user can set the option to **yes** which will start the process at the point when geneidTRAINer generates PWMs or Markov 1 models of the splice sites and start codon. Setting **-reduced** to **yes** would only be useful if the user decides to change at least one of the gene model/splice site profile length parameters using the option **-userdata**  
 
 **6. -userdata** config.ext  _(optional)_
 
-the optional command line option **-userdata** should have the path to a "user-configurable file" (_i.e._ config.ext) in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid prediction file for your species of interest. 
+the optional command line option **-userdata** should have the path to a "user-configurable file" (_i.e._ config.ext) in which the user rather than the program selects a few of the parameters needed to generate an optimized geneid parameter file the species being trained. 
 
 Currently the user can select **minimum and maximum intron size**, **minimum and maximum intergenic distance** (values to be incorporated into the gene model portion of the parameter file). The user can also select the **start and end coordinates of the acceptor, donor, start (and for a few species branch) profiles** which are incorporated into the parameter file as PWMs (POSITION-WEIGHT MATRICES) of Markov models of order 1.  
 
@@ -123,22 +125,5 @@ The start and spice site profile logos representing the nucleotide information c
 **Start.pdf**  
 
 You will also be able to find a **gff2ps** (**M.cingulata.pdf** in our test case, otherwise `<speciesname>`.pdf) diagram representing all genes predicted in the evaluation scaffold built by geneidTRAINer.
-
-## **additional information concerning running geneidTRAINer in the context of DOCKER**
-
-The default command line for geneidTRAINer (no external config file) given the test files above is:
-
-**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no**
-
-Where `<userselecteddir>` is the user-selected working directory which INSIDE the docker container is mounted as "/data". The command line above also assumes that the user created a directory called **"input"** in the `<userselecteddir>` where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). The results are put into a directory called **"output"**  as selected by the user in this example (to be appended to the working directory `<userselecteddir>`).
-
-the option **"-reduced no"** tells the program to run the training from the beginning. If after having trained geneid for the species of interest AT LEAST ONCE the user wishes to retrain it starting only at the point where the splice sites and start profile lengths are selected (based on each nucletide information content) it can do so by setting "-reduced" to YES (**-reduced yes**). 
-
-_This will *ONLY* be useful when combined with using an external config file (i.e. -userdata .input/config.ext as described above) with user-selected profile start and end coordinates for any of the splice sites or startcodon (branch sites in a subser of fungi) and/or different minimum and maximum intron and intergenic sizes than those selected automatically by geneidTRAINer._    
-However, the user can also set -reduced to NO (**-reduced no**) and still provide an external config file (**"-userdata ./input/config.ext**") with non-default values of minimim/maximum intron/intergenic sizes and start/end coordinates for splice sites/start profiles. 
-
-Therefore if the user decides to use the **config file** the command line should instead be:
-
-**docker run -u $(id -u):$(id -g) -v `<userselecteddir>`/:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced <no/yes> -userdata ./input/config.ext**
 
 ## IMPORTANT: IN ORDER TO ABORT THE TRAINING PROCESS WHILE IT IS RUNNING (WHICH WILL ALSO KILL THE DOCKER CONTAINER) THE USER CAN JUST PRESS CONTROL+C
