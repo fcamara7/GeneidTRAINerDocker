@@ -25,7 +25,7 @@ _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<inputpa
 
 **docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ext (optional)**      
 
-The example above uses **test data** found in ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** which contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections set by the GeneidTRAINer pipeline.
+The example above uses **test data** found in ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** which contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections made by the GeneidTRAINer pipeline.
 
 `<userselecteddir>` is the user-selected working directory which INSIDE the docker container is mounted as "/data". The sample command line above also assumes that the user created a directory called **"input"** in the `<userselecteddir>` where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). 
 
