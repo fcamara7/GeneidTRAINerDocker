@@ -132,7 +132,7 @@ print STDERR $usage and exit unless (($species =~ /^(\w\.\w+)|(\w+)$/i) && $gff 
 
 my $varsmemory = "${species}.variables";
 
-print STDERR "\ndeclaring ${species}.variables file\n";
+print STDERR "\n\ndeclaring ${species}.variables file\n\n";
 
 ##########################################################################
 ##                                                                      ##
@@ -340,7 +340,7 @@ print SOUT "GENE MODEL STATISTICS FOR $species\n\n";
 if (!$reducedtraining) { #DO ONLY FIRST TIME YOU RUN FULL TRAINING PIPELINE 
 
 if (-d "$results") {
-print STDERR "There is a directory named $results..\nremoving directory and its contents\n";
+print STDERR "\nThere is a directory named $results..\nremoving directory and its contents\n";
 
 	rmtree([ "$results/" ]);
 print STDERR "\nmkdir -p $results\n";
@@ -358,7 +358,7 @@ open (STORV, ">${results}/$varsmemory")or die;
 
 ###MAKE A STATISTICS DIRECTORY
 
-print STDERR "Create a statistics directory for this species\n";
+print STDERR "\nCreate a statistics directory for this species\n";
 `mkdir -p $results/statistics_${species}/`;
 $statsdir = "$results/statistics_${species}/";
 
@@ -422,10 +422,10 @@ print STORV Data::Dumper->Dump([$temptblcaps], ['$temptblcaps']);
 ####
 
 ####CREATE FASTAS CDS; INTRON, SITES DIRs WITHIN PATH (ONLY FIRST TIME)
-     print STDERR "\ncreate FASTAS, CDS, INTRON and SITES DIRECTORIES within PATH\n\n";
+     print STDERR "\n\ncreate FASTAS, CDS, INTRON and SITES DIRECTORIES within PATH\n\n";
 #CDS     
 if (-d "$results/cds_${species}/") {
-print STDERR "There is a directory named $results/cds_${species}/..\nRemove directory and its contents\n";
+print STDERR "\nThere is a directory named $results/cds_${species}/..\nRemove directory and its contents\n";
 	rmtree([ "$results/cds_${species}/" ]);
         `mkdir -p $results/cds_${species}/;`;
         $cdsdir = "$results/cds_${species}/";
@@ -459,7 +459,7 @@ print "There is a directory named $results/intron_${species}/!\nRemove directory
 #FASTAS   
  if (-d "$results/fastas_${species}") {
 
-print STDERR "There is already a directory named $results/fastas_${species}!\nRemove its contents and re-create it\n";
+print STDERR "\nThere is already a directory named $results/fastas_${species}!\nRemove its contents and re-create it\n";
 
      rmtree([ "$results/fastas_$species/" ]);
     `mkdir -p $results/fastas_$species/`;
@@ -473,7 +473,7 @@ print STDERR "There is already a directory named $results/fastas_${species}!\nRe
 #PLOTS JUST ONCE KEEP DATA IF IT HAD ALREADY BEEN CREATED
  if (-d "$statsdir/plots_${species}") { ###$statsdir = "$results/statistics_${species}/";
 
-     print STDERR "\nThere is already a directory named $statsdir"."plots, however will keep contents, they may be overwritten";
+     print STDERR "\nThere is already a directory named $statsdir"."plots, however will keep contents, they may be overwritten\n";
     `mkdir -p $statsdir/plots_${species}`;
     $plotsdir = "$statsdir/plots_${species}";
     print STDERR "\n";
@@ -924,7 +924,7 @@ open LOCID, "gawk '{print  substr(\$2,($startdonor-3),($prof_len_don+6))}' $outd
  	    print FOUT "$donsub";
  	    close FOUT;
 
-print STDERR "pictogram $donorsubprofile  $plotsdir/Donor -bits -land\n";
+#print STDERR "pictogram $donorsubprofile  $plotsdir/Donor -bits -land\n";
 
 `pictogram $donorsubprofile $plotsdir/Donor -bits -land`;
 `ps2pdf $plotsdir/Donor.ps $plotsdir/Donor.pdf`;
@@ -978,7 +978,7 @@ open LOCID, "gawk '{print  substr(\$2,($startacceptor-3),($prof_len_acc+6))}' $o
  	    print FOUT "$accsub";
  	    close FOUT;
 
-print STDERR "pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land\n";
+#print STDERR "pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land\n";
 
 `pictogram $acceptorsubprofile  $plotsdir/Acceptor -bits -land`;
 `ps2pdf $plotsdir/Acceptor.ps $plotsdir/Acceptor.pdf`;
@@ -1033,7 +1033,7 @@ open LOCID, "gawk '{print  substr(\$2,($startstart-3),($prof_len_sta+6))}' $outs
  	    print FOUT "$stasub";
  	    close FOUT;
 
-print STDERR "pictogram $startsubprofile  $plotsdir/Start -bits -land\n";
+#print STDERR "pictogram $startsubprofile  $plotsdir/Start -bits -land\n";
 
 `pictogram $startsubprofile  $plotsdir/Start -bits -land`;
 `ps2pdf $plotsdir/Start.ps $plotsdir/Start.pdf`;
@@ -1085,7 +1085,7 @@ open LOCID, "gawk '{print  substr(\$2,($startbranch-3),($prof_len_bra+6))}' $ful
  	    print FOUT "$brasub";
  	    close FOUT;
 
-print STDERR "pictogram $branchsubprofile  $plotsdir/Branch -bits -land\n";
+##print STDERR "pictogram $branchsubprofile  $plotsdir/Branch -bits -land\n";
 
 `pictogram $branchsubprofile  $plotsdir/Branch -bits -land`;
 `ps2pdf $plotsdir/Branch.ps $plotsdir/Branch.pdf`;
