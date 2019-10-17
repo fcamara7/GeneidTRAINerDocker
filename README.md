@@ -8,20 +8,20 @@ First the user must download the project repository containing GeneidTRAINer as 
 
 git clone https://github.com/fcamara7/GeneidTRAINerDocker.git
 
-## **In order to run geneidTRAINer you must have docker installed on your machine**
+## **Steps required for running geneidTRAINer in the context of a Docker container**
 
 You must have a recent version of docker installed in your system (https://docs.docker.com/install/). 
 
 Once docker is installed in you system and in order build the docker container GeneidTRAINerDocker type the following:
 
-**docker build -t  geneidtrainerdocker .** (make sure Dockerfile is in the directory from which you are running this command)  
+**docker build -t  geneidtrainerdocker .** (make sure **Dockerfile** is in the directory from which you are running this command)  
 
 To obtain the actual command line for the training pipeline the user can type:
 
 **docker run -it geneidtrainerdocker**  
 _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<inputpath><gffname>` -fastas `<inputpath><fastasname>` -results `<results_dir>` -reduced `<yes/no>` -userdata `<inputpath><configfilename>`(optional) -branch `<inputpath><memeprofilefilename>[space]<memeprofilenumber>` (optional)_ 
 
-## The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
+### The "minimal" set of options needed to run geneidTRAINer in the context of docker are: 
 
 **docker run -u $(id -u):$(id -g) -v `<userselecteddir>`:/data -w /data geneidtrainerdocker -species M.cingulata -gff ./input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 -fastas ./input/M.cingulata.4training.fa -results ./output/ -reduced no -userdata ./output/config.ext (optional)**      
 
