@@ -86,19 +86,23 @@ In a **shared-file cluster system** the option **-u** gives the docker container
 
 ## results produced by geneidTRAINer
 
-The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/`<results_dir>` - "output" in this case). These include several files that are generally not relevant to the regular user. The most important file is the optimized **geneid parameter** matrix which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest. It should be named as: 
+The output files/directory of geneidTRAINer should be created in the path **selected by the user** (_i.e._ `<userselecteddir>`/`<results_dir>` - "output" in this case). These include several files that are generally not relevant to the regular user. The most important file is the optimized **geneid parameter** matrix which can (in a full training protocol NOT this mock example) be used to predict sequences on your species of interest. It is named by the pipeline as: 
 
 _**`<speciesname>`.geneid.optimized.param**_  (using our test data, M.cingulata.geneid.optimized.param)  
 
 The user can also find **statistics** files built during the training process by changing to the folder:
 
-**`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`** (the `<results_dir>` is "output" and  `<speciesname>`=_M.cingulata_ in this example)   
+**`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`**   
+
+(where `<results_dir>` is "output" and  `<speciesname>`=_M.cingulata_ in this example)    
 
 Importantly, the statistics file (_i.e._ **"1_Oct_Tue_10_13_training_statistics"**) includes a graphical ASCII representation of the nucleotide information content within the profiles for the start codon and splice sites which are obtained after the user runs the program the first time. By looking at the profiles the user can decide whether she wants to change their automatically selected start and end coordinates using the **"config.ext"** file on a subsequent execution (**"-reduced no"**).  
 
 The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from the folder: 
 
-**`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`/plots_`<speciesname>`** (where `<speciesname>`=_M.cingulata_ and `<results_dir>` is "output" in our test case):  
+**`<userselecteddir>`/`<results_dir>`/statistics_`<speciesname>`/plots_`<speciesname>`**  
+
+(where `<speciesname>`=_M.cingulata_ and `<results_dir>` is "output" in our test case):
 
 **Acceptor.pdf**  
 **Donor.pdf**  
