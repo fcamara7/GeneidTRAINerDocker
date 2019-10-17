@@ -27,7 +27,7 @@ _Usage: /scripts/geneidTRAINer4docker.pl -species `<speciesname>` -gff `<inputpa
 
 The example above uses **test data** found in ***https://public-docs.crg.eu/rguigo/Data/fcamara/geneidtrainer/testing*** which contains a number of files that can be used to test the geneidTRAINer program contained within the distributed docker image, as well as a sample config file where the user can select some values that would override the automatic selections made by the GeneidTRAINer pipeline.
 
-`<userselecteddir>` is the user-selected working directory which INSIDE the docker container is mounted as "/data". The sample command line above also assumes that the user created a directory called **"input"** in the `<userselecteddir>` where it placed the files used by "geneidTRAINer" (geneidtrainerdocker). 
+`<userselecteddir>` is the user-selected working directory which INSIDE the docker container is mounted as "/data". The sample command line above also assumes that the user creates a directory called **"input"** under `<userselecteddir>` where the files used by "geneidTRAINer" are placed (you may actually create a folder with any name). 
 
 ## Below we briefly describe the command line options used to run geneidTRAINer in the context of the _sample sequences_ provided as a test case:  
 
@@ -104,7 +104,7 @@ The start and spice site profile logos representing the nucleotide information c
 **Donor.pdf**  
 **Start.pdf**  
 
-You will also be able to find a **gff2ps** (**M.cingulata.pdf** in our test case, otherwise `<speciesname>`.pdf) diagram representing all genes predicted in the evaluation scaffold built by geneidTRAINer.
+You will also be able to find a **gff2ps**-generated diagram (**M.cingulata.pdf** in our test case, otherwise `<speciesname>`.pdf) representing all genes predicted in the evaluation scaffold built by geneidTRAINer.
 
 ########################################################################################
 
