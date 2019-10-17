@@ -1451,7 +1451,7 @@ predictPlotgff2ps($paramopt,$gptrainfa,$gptraingff,$gptrainlen,$temp_jkf_geneid)
 
 }
 
-print STDERR "\nplotting of the gff2ps graphs with the annotations and predictions given by the new $species parameter file completed\n";
+print STDERR "\nplotting of the gff2ps graphs with the annotations and predictions given by the new $species parameter file completed\n\nBUILDING OF PARAMETER FILE FOR $species ALSO COMPLETED!\n";
 
 #}
 #####
@@ -4124,7 +4124,7 @@ sub predictPlotgff2ps {
    	print STDERR "\nCreating gff2ps plots for $species\n\n";
   	 	while (<LOCI>) {
 		    my ($gene_id,$genelength)=split;
-		    	print STDERR "\n$gplen $gpgff $tempjkf_geneid $gene_id $genelength\n";
+		    #	print STDERR "\n$gplen $gpgff $tempjkf_geneid $gene_id $genelength\n";
 		    `egrep -w '$gene_id' $gpgff > $TMP/$gene_id.gff`;
 		    `egrep -w '$gene_id' $tempgeneidgffpreds >> $TMP/$gene_id.gff`;
 		    if ($jacknifevalidate){
@@ -4132,13 +4132,14 @@ sub predictPlotgff2ps {
 		}
 		    if (!$contigopt){
 		       `gff2ps -v -p -- $TMP/$gene_id.gff > $plotsdir/$species.${gene_id}.ps`;
-		    print STDERR "#";}
+		    #print STDERR "#" 
+                     ;}
 		    elsif ($contigopt) {
 			my $nucleotidesperline = 10000;
 			`gff2ps -v -p -N $nucleotidesperline -C $path/.gff2psrcNEW -- $TMP/$gene_id.gff > $plotsdir/$species.ps`;
 			`ps2pdf $plotsdir/$species.ps $plotsdir/$species.pdf`;
 			`rm $plotsdir/$species.ps`;
-			print STDERR "#";
+			##print STDERR "#";
 		    }
     	}		       
     	close LOCI;
