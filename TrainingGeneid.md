@@ -14,7 +14,7 @@ Generally as few as 200 gene models could be used to build an accurate geneid pa
 
 Until relatively recently most training of geneid for different species, and subsequent evaluation of the newly built parameter file required separately running a relatively large number of programs and scripts directly from a Unix command line, programs which were often “wrapped” in BASH shell scripting language. This training was done manually, mostly _in-house_, and involved over 30 AWK and PERL programs.   The training/evaluation process also required running directly, or through BASH shell scripting command calls, eight C-language programs (including geneid). This training strategy, while effective, was cumbersome and could require up several to complete. It also demanded that the user be knowledgeable of the all the intricacies of the training process, and of the different programming languages being used, as script and parameter file modifications were almost always needed. 
 
-In this document we describe the development of a PERL language integration tool (GeneidTrainer.pl ), which, in the context of a docker container, allows us to combine all the above-mentioned scripts/programs into a single pipeline-like script. While the original geneidTRAINer program versions were designed to be user-interactive at a few steps along the execution flow, for the purposes of this version of geneidTRAINer (within docker), user-intervention is not allowed except for for a few option that can be provided by the _a priori_ through a config file. Finally, the user is not required to have much knowledge of the training process itself.  The GeneidTrainer.pl script must be run directly from a Unix command line in a machine containing the latest version of docker. 
+In this document we describe the development of a PERL language integration tool (geneidTRAINer4docker.pl), which, in the context of a docker container, allows us to combine all the above-mentioned scripts/programs into a single pipeline-like script. While the original geneidTRAINer program versions were designed to be user-interactive at a few steps along the execution flow, for the purposes of this version of geneidTRAINer (within docker), user-intervention is not allowed except for for a few option that can be provided _a priori_ through a config file. Finally, the user is not required to have much knowledge of the training process itself.  The geneidTRAINer4docker.pl script must be run directly from a Unix-compatible command line in a machine containing the latest version of docker. 
 
 # 1.0 REQUIREMENTS FOR THE GENEID TRAINING SET
 
@@ -34,7 +34,7 @@ f) be constituted by sequences previously aligned to a curated protein database 
 
 g) include sequences that overlap with the database proteins above over at least **90%** of their length  **(recommended)**   
 
-# 2.0 DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer.pl)
+# 2.0 DESCRIPTION OF TRAINING SCRIPT (GeneidTRAINer4Docker.pl)
 
 ## 2.1 INPUT OPTIONS
 
