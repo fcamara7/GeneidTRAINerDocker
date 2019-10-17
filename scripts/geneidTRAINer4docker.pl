@@ -1451,7 +1451,7 @@ predictPlotgff2ps($paramopt,$gptrainfa,$gptraingff,$gptrainlen,$temp_jkf_geneid)
 
 }
 
-print STDERR "\nplotting of the gff2ps graphs with the annotations and predictions given by the new $species parameter file completed\n\nBUILDING OF PARAMETER FILE FOR $species ALSO COMPLETED!\n";
+print STDERR "\nplotting of the gff2ps graphs with the annotations and predictions given by the new $species parameter file completed\n\nTRAINING OF $species FOR GENEID PREDICTION ALSO COMPLETED!\n";
 
 #}
 #####
