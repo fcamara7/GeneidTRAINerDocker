@@ -16,7 +16,7 @@ Until relatively recently most training of geneid for different species, and sub
 
 In this document we describe the development of a PERL language integration tool (geneidTRAINer4docker.pl), which, in the context of a docker container, allows us to combine all the above-mentioned scripts/programs into a single pipeline-like script. While the original geneidTRAINer program versions were designed to be user-interactive at a few steps along the execution flow, for the purposes of this version of geneidTRAINer (within docker), user-intervention is not allowed except for for a few option that can be provided _a priori_ through a config file. Finally, the user is not required to have much knowledge of the training process itself.  The geneidTRAINer4docker.pl script must be run directly from a Unix-compatible command line in a machine containing the latest version of docker. 
 
-# 1.0 REQUIREMENTS FOR THE GENEID TRAINING SET
+# 1.0 REQUIREMENTS FOR BUILDING A GENEID TRAINING SET
 
 The training set for geneid should:
 
