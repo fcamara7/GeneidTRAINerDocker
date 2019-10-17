@@ -74,7 +74,7 @@ The newly developed parameter file will be stored in the directory set by the ma
 
 As the newly developed parameter file for a particular species is being built a text file is written which includes detailed statistics on the training set as well as on the training process itself. It also indicates the name of the optimized parameter file and the accuracy performance estimation (produced by running geneid on the 20% of sequences set aside at the beginning of the training process). This file will be produced each time the pipeline is executed and stored under the directory set by the option **-results** (_i.e._ "./output" in the example in the README). The file will be stored in a directory called "statistics_`<speciesname>`" (_i.e._ statistics_M.cingulata). The statistics file name will include information with regard to its creation date and time (in hours and minutes): "_i.e._ 1_Oct_Tue_10_13_training_statistics". 
 
-## 2.4 DIAGRAMS OF SPLICE SITES AND START CODON PROFILES AND OF THE ANNOTATION ON THE TEST SEQUENCES  
+## 2.4 DIAGRAMS OF SPLICE SITES AND START CODON PROFILES AND GFF2PS PLOT OF THE ANNOTATION ON THE TEST SEQUENCES USING THE NEW PARAMETER FILE  
 
 The start and spice site profile logos representing the nucleotide information content around the start codon, donor and acceptor sites can be obtained from **statistics_`<speciesname>`/plots_`<speciesname>`**:
 
@@ -82,7 +82,7 @@ The start and spice site profile logos representing the nucleotide information c
 **Donor.pdf**  
 **Start.pdf**  
 
-You will also be able to find a **gff2ps** (http://genome.crg.es/software/gfftools/GFF2PS.html) (named **`<speciesname>`.pdf**) plot representing all genes predicted in the evaluation scaffold built by geneidTRAINer. 
+You will also be able to find a **gff2ps** (http://genome.crg.es/software/gfftools/GFF2PS.html) plot (named **`<speciesname>`.pdf**) representing all genes predicted in the evaluation scaffold built by geneidTRAINer. 
 
 ## 3.0 CONCLUSIONS
 
