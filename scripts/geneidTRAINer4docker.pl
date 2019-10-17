@@ -178,7 +178,7 @@ system("which preparetrimatrixstart4parameter.awk > /dev/null;")   && &go_to_die
 if (-s $extdata) { ###IF THERE IS A USER DATA CONFIG FILE 
 
 $useextdata = 1;
-print "File exists and is named: ($extdata) \n\n";
+print "\nA config file with user-selected data exists and is named: ($extdata) \n\n";
 
 open FILE, "<$extdata" || die "You need to provide a file with used derived data \n";
 while(<FILE>){eval $_};
@@ -300,7 +300,7 @@ print STDERR "\nuser selected to run pipeline from PWM profile length selection\
 
 if (-d "$results") {
 
-print STDERR "There is a directory named $results..\n\nbut elected the option to repeat the training for this species so NOT removing its contents\n";
+print STDERR "\nThere is a directory named $results..\n\nbut elected the option to repeat the training for this species so NOT removing its contents\n";
 
 }else{
 
@@ -436,7 +436,7 @@ print STDERR "\nThere is a directory named $results/cds_${species}/..\nRemove di
 }
 #INTRON
 if (-d "$results/intron_${species}/") {
-print "There is a directory named $results/intron_${species}/!\nRemove directory and its contents\n";
+print "\nThere is a directory named $results/intron_${species}/!\nRemove directory and its contents\n";
 	rmtree([ "$results/intron_${species}/" ]);
         `mkdir -p $results/intron_${species}/;`;
         $introndir = "$results/intron_${species}/";
@@ -447,7 +447,7 @@ print "There is a directory named $results/intron_${species}/!\nRemove directory
 }
 #SITES
    if (-d "$results/sites_${species}/") {
-   print "There is a directory named $results/sites_${species}/!\nRemove directory and its contents\n";
+   print "\nThere is a directory named $results/sites_${species}/!\nRemove directory and its contents\n";
    	rmtree([ "$results/sites_${species}/" ]);
            `mkdir -p $results/sites_${species}/;`;
            $sitesdir = "$results/sites_${species}/";
@@ -898,7 +898,7 @@ my $donoffset = "30"; #position before intron (last of exon (31) -1 for offset)
    $order = "0";
 }
 
-print STDERR "\nThere are $numbersites donor sites, enough for a matrix of order $order, prior offset: $donoffset $outdonortbl $bckgrnd\n";
+print STDERR "\nThere are $numbersites donor sites, enough for a matrix of order $order, prior offset: $donoffset\n";
 
 if ($startusrdon)
 
@@ -1340,12 +1340,12 @@ if (!$contigopt){
 
 if (!$usebranch) {
 
-print STDERR "\nPerformance of new optimized parameter file on test set:\n\n".join("\t",@evaluationinit[2..$#evaluationinit]),"\n";
-print SOUT "\nPerformance of new optimized parameter file on test set:\n\n".join("\t",@evaluationinit[2..$#evaluationinit]),"\n";
+print STDERR "\nPerformance of new optimized parameter file on the test set:\n\n".join("\t",@evaluationinit[2..$#evaluationinit]),"\n";
+print SOUT "\nPerformance of new optimized parameter file on the test set:\n\n".join("\t",@evaluationinit[2..$#evaluationinit]),"\n";
 } elsif ($usebranch) {
 
-print STDERR "\nPerformance of new optimized parameter file on test set:\n\n".join("\t",@evaluationinit[4..$#evaluationinit]),"\n";
-print SOUT "\nPerformance of new optimized parameter file on test set:\n\n".join("\t",@evaluationinit[4..$#evaluationinit]),"\n";
+print STDERR "\nPerformance of new optimized parameter file on the test set:\n\n".join("\t",@evaluationinit[4..$#evaluationinit]),"\n";
+print SOUT "\nPerformance of new optimized parameter file on the test set:\n\n".join("\t",@evaluationinit[4..$#evaluationinit]),"\n";
 
 }
 
@@ -2044,18 +2044,18 @@ sub extractprocessSITES{
      my $totalnoncodingbases=`gawk '{ l=length(\$2); L+=l;} END{ print L;}' $intron`;
      chomp $totalnoncodingbases;
 
-     print STDERR "There are $totalcodingbases coding bases and $totalnoncodingbases non-coding bases on this training set:\n";
+     print STDERR "There are $totalcodingbases coding bases and $totalnoncodingbases non-coding bases on this training set\n";
      
      if (($totalcodingbases>400000 && $totalnoncodingbases>100000) ||($totalcodingbases>375000 && $totalnoncodingbases>150000) ||($totalnoncodingbases>35000 && $totalcodingbases>(25*$totalnoncodingbases))) {
 	 $markov = "5";
 	 $markovm = "4";
-	  print STDERR "Deriving a markov model of order $markov\n";
+	  print STDERR "\nDeriving a markov model of order $markov\n";
 
      } else {
 
 	 $markov = "4";
 	 $markovm = "3";
-	 print STDERR "Deriving a markov model of order $markov\n";
+	 print STDERR "\nDeriving a markov model of order $markov\n";
 
      }
 
@@ -2077,7 +2077,7 @@ open (TRAN,"<$cds");
  	close TRAN;
 
 
-     print STDERR "Intron model\n markov: ($markovm)";
+     print STDERR "\nIntron model markov: ($markovm)\n";
 
 my $intron_initial = new geneidCEGMA::SequenceModel('intron', 'FREQ', $markovm,
 			 \@introndois, 10, 0);
@@ -2090,7 +2090,7 @@ my $intron_transition = new geneidCEGMA::SequenceModel('intron', 'MM', $markov,
 # $intron_transition->write("$DIR/intron.transition.5.freq");
 
  
-print STDERR "\nCoding model\n";
+print STDERR "\nCoding model markov: ($markov)\n";
 
 my $coding_initial = new geneidCEGMA::SequenceModel('coding', 'FREQ', $markov-1,
 			 \@coding, 0.25, 2);
@@ -2861,7 +2861,7 @@ sub getKmatrix {
 	`information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=38 && \$1>=25' > $true_seq_name-$false_seq_name`;
 	
 	$tempinfolog = "$true_seq_name-$false_seq_name";
-	print STDERR "tempinfolog: $tempinfolog \n";
+	#print STDERR "tempinfolog: $tempinfolog \n";
 	}
 	if ($accept) {
 	`information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=33 && \$1>=2' > $true_seq_name-$false_seq_name`;
@@ -3877,7 +3877,7 @@ elsif ($useextdata && $shortintronusr>0) {
     #my $longintronaut=$longintron;
 
 
-print "\n The user-selected range of introns in the geneid gene model was set to be ($shortintronusr to $longintronusr) rather than the automatically selected $shortintron to $longintron \n(Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
+print "\nThe user-selected range of introns in the geneid gene model was set to be ($shortintronusr to $longintronusr) rather than the automatically selected $shortintron to $longintron (Note that the 5 smallest introns were found to be: ".join(", ",@slice1)." nucleotides long and the 5 longest introns: ".join(", ",@slice2)." bases in length)\n";
 
  }
 
