@@ -1,3 +1,4 @@
+#!/usr/bin/gawk -f
 #USAGE= gawk -f aux.awk Background_P_file, Observed_P_file
 BEGIN{
   while(getline<ARGV[1]>0) # read backgrounb probabilities
