@@ -1168,13 +1168,13 @@ my $array_ref = "";
 
 
 ##EXON WEIGHT PARAMETER 
-     my $IeWF = "-6.5";
+     my $IeWF = "-4.5";
      my $deWF = "0.5";
-     my $FeWF = "-2.0";
+     my $FeWF = "-2.5";
 ##EXON/OLIGO FACTOR PARAMETER     
      my $IoWF = "0.20";		
      my $doWF = "0.05";		
-     my $FoWF = "0.70";
+     my $FoWF = "0.60";
 ##Minimum Branch Profile Distance
      my $iMin = "5";		
      my $dMin = "2";		
