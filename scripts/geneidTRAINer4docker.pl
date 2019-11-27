@@ -2853,10 +2853,11 @@ sub getKmatrix {
  	######
  #	die "$len != $len2\n" if $len != $len2;
 	#	print STDERR "$path/frequency.awk 1 $true_seqs > $true_seq_name.freq\n";
- 	`gawk -f frequency.awk 1 $true_seqs > $true_seq_name.freq`;
+ #	`gawk -f frequency.awk 1 $true_seqs > $true_seq_name.freq`;
+	`frequency.awk 1 $true_seqs > $true_seq_name.freq`;
 	 #      print STDERR "$path/frequency.awk 1 $false_seqs > $sitesdir/$false_seq_name.freq\n";
- 	`gawk -f frequency.awk 1 $false_seqs > $sitesdir/$false_seq_name.freq`;
-	
+ #	`gawk -f frequency.awk 1 $false_seqs > $sitesdir/$false_seq_name.freq`;
+	`frequency.awk 1 $false_seqs > $sitesdir/$false_seq_name.freq`;
 	if ($donor) {
 	`information.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=38 && \$1>=25' > $true_seq_name-$false_seq_name`;
 	
@@ -2873,19 +2874,19 @@ sub getKmatrix {
 	}
 	
 	if ($branch) {
-	`gawk -f information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=41 && \$1>=28' > $true_seq_name-$false_seq_name`;
+	`information.awk  $sitesdir/$false_seq_name.freq $true_seq_name.freq | gawk 'NF==2 && \$1<=41 && \$1>=28' > $true_seq_name-$false_seq_name`;
          $tempinfolog = "$true_seq_name-$false_seq_name";
 	}
 	
 
  	if (! $order) {
-	     `gawk -f logratio_zero_order.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq > $true_seq_name-log.$ordname-matrix`;		
+	     `logratio_zero_order.awk $sitesdir/$false_seq_name.freq $true_seq_name.freq > $true_seq_name-log.$ordname-matrix`;		
 	    
 
  	} else {
- 	    `gawk -f Getkmatrix.awk $order $len $true_seqs | $sort > $true_seq_name.$ordname-matrix`;
- 	    `gawk -f Getkmatrix.awk $order $len2 $false_seqs | $sort > $sitesdir/$false_seq_name.$ordname-matrix`;
- 	    `gawk -f logratio_kmatrix.awk $sitesdir/$false_seq_name.$ordname-matrix $true_seq_name.$ordname-matrix > $true_seq_name-log.$ordname-matrix`;
+ 	    `Getkmatrix.awk $order $len $true_seqs | $sort > $true_seq_name.$ordname-matrix`;
+ 	    `Getkmatrix.awk $order $len2 $false_seqs | $sort > $sitesdir/$false_seq_name.$ordname-matrix`;
+ 	    `logratio_kmatrix.awk $sitesdir/$false_seq_name.$ordname-matrix $true_seq_name.$ordname-matrix > $true_seq_name-log.$ordname-matrix`;
  	}
  	#need to check output and then go on
  
@@ -3048,7 +3049,7 @@ if (!$jacknife){
 	  my $newoffset = $offset + 3;
 	  my $posoffset = $offset + 4;
 	    
- 	`gawk -f submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
+ 	`submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
 	`preparedimatrixdonor4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `;
      # print STDERR "submatrix.awk $start $end $true_seq_name-log.$ordname-matrix/$true_seq_name-log-info.$ordname-matrix";
 
@@ -3058,7 +3059,7 @@ if (!$jacknife){
 	  my $newoffset = $offset;
 	  my $posoffset = $offset + 1;
 	    
- 	`gawk -f submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
+ 	`submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
 	`preparedimatrixacceptor4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `;
     #	  print STDERR "submatrix.awk $start $end $true_seq_name-log.$ordname-matrix/$true_seq_name-log-info.$ordname-matrix";
  
@@ -3068,14 +3069,14 @@ if (!$jacknife){
 	  my $newoffset = $offset - 1;
 	  my $posoffset = $offset;
 	    
- 	`gawk -f submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
+ 	`submatrix.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info-pre.$ordname-matrix`;
 	`preparetrimatrixstart4parameter.awk $preoffset $newoffset $posoffset $true_seq_name-log-info-pre.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix `; 
 }
 else {
 
    # print STDERR "submatrix_order0.awk $start $end $true_seq_name-log.$ordname-matrix\n";
 	
-	`gawk -f submatrix_order0.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix`;
+	`submatrix_order0.awk $start $end $true_seq_name-log.$ordname-matrix > $true_seq_name-log-info.$ordname-matrix`;
 
 
     }
