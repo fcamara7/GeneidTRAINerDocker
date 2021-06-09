@@ -70,7 +70,7 @@ $endusrsta = '35';   #end coordinate for the start codon profile (must be >> tha
 $startusracc = '7';  #start coordinate for the acceptor profile  
 $endusracc = '31';  #end coordinate for the acceptor profile (must be >> than the start coordinate)  
 $startusrdon = '0'; #start coordinate for the donor profile  
-$endusrdon = '0';  #end coordinate for the donir profile (must be >> than the start coordinate)  
+$endusrdon = '0';  #end coordinate for the donor profile (must be >> than the start coordinate)  
 $startusrbra = '0'; #start coordinate for the branch site profile  
 $endusrbra = '0'; #end coordinate for the branch site profile (must be >> than the start coordinate)  
 
