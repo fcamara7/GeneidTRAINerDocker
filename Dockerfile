@@ -1,7 +1,7 @@
 FROM guigolab/geneid:1.4.5
 
 # File Author / Maintainer
-MAINTAINER Francisco Camara Ferreira <francisco.camara@crg.eu> 
+MAINTAINER Francisco Camara Ferreira <francisco.camara@cnag.eu> 
 
 # install all required updates
 
