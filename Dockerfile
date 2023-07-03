@@ -1,7 +1,7 @@
 FROM debian:bookworm
 
 # File Author / Maintainer
-MAINTAINER Francisco Camara Ferreira <francisco.camara@crg.eu> 
+MAINTAINER Francisco Camara Ferreira <francisco.camara@cnag.eu> 
 
 ARG GENEID_VER=1.4.5
 
@@ -61,9 +61,6 @@ WORKDIR /scripts
 COPY scripts/pictogram.tar.gz ./
 COPY scripts/SSgff.tgz ./
 COPY scripts/Evaluation.tgz ./
-COPY input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 ./
-COPY input/M.cingulata.4training.fa ./
-COPY input/config.ext ./
 
 
 # compile pictogram.tar.gz binary will be in /scripts/pictogram
