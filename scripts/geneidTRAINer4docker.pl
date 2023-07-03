@@ -1492,8 +1492,11 @@ sub extractCDSINTRON{
      	my $count = 0;
     	while (<LOCUS>) {
     	    my ($genomic_id,$gene_id)=split;
+	     print STDERR "\negrep -w '$gene_id\$' $gff > $TMP/$gene_id.gff\n";
 	    `egrep -w '$gene_id\$' $gff > $TMP/$gene_id.gff`;
+	    # print STDERR "SSgff -cE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ CDS//' >> $results/cds_${species}/${species}${type}.cds.fa";
 	    `SSgff -cE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ CDS//' >> $results/cds_${species}/${species}${type}.cds.fa`;
+	    # print STDERR "SSgff -iE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ Intron.*//' >> $results/intron_${species}/${species}${type}.intron.fa";
             `SSgff -iE $results/fastas_$species/$genomic_id $TMP/$gene_id.gff | sed -e 's/:/_/' -e 's/ Intron.*//' >> $results/intron_${species}/${species}${type}.intron.fa`;
    	    $count++;
    	    print STDERR "$count ..";

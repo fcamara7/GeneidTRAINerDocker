@@ -1,7 +1,7 @@
-FROM debian:buster
+FROM debian:bookworm
 
 # File Author / Maintainer
-MAINTAINER Francisco Camara Ferreira <francisco.camara@cnag.eu> 
+MAINTAINER Francisco Camara Ferreira <francisco.camara@crg.eu> 
 
 ARG GENEID_VER=1.4.5
 
@@ -26,7 +26,10 @@ RUN apt-get update && \
      apt-file \
      ghostscript \
      dumb-init \
-     libxml2-dev
+     libxml2-dev 
+     
+
+
 
 
 # Install BioPerl using cpan
@@ -58,6 +61,10 @@ WORKDIR /scripts
 COPY scripts/pictogram.tar.gz ./
 COPY scripts/SSgff.tgz ./
 COPY scripts/Evaluation.tgz ./
+COPY input/M.cingulata.cDNAs.450nt.complete.Uniprot98span.cds.4training4testing.gff2 ./
+COPY input/M.cingulata.4training.fa ./
+COPY input/config.ext ./
+
 
 # compile pictogram.tar.gz binary will be in /scripts/pictogram
 RUN tar -xzvf pictogram.tar.gz && cd pictogram && make pictogram
@@ -72,7 +79,7 @@ RUN tar -xzvf Evaluation.tgz && cd Evaluation && cd objects/ && rm *.o && cd ../
 RUN rm ./Evaluation.tgz ./SSgff.tgz ./pictogram.tar.gz
 
 #copy these gawk programs required by geneidTRAINer1_14DockerTesting.pl
-COPY scripts/*.awk scripts/cds2gff scripts/gff2cds scripts/gff2ps ./
+COPY scripts/*.awk scripts/cds2gff scripts/gff2cds scripts/gff2ps scripts/FastaToTbl scripts/TblToFasta ./
 
 # copy PERL modules required by the trainer program to scripts directory 
 COPY scripts/Geneid/ Geneid/
